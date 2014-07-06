@@ -1,4 +1,4 @@
-Foxie = require 'Foxie'
+Foxie = require 'foxie'
 Item = require '../Item'
 
 module.exports = class SongItem extends Item

@@ -1,4 +1,4 @@
-Foxie = require 'Foxie'
+Foxie = require 'foxie'
 Pantomime = require 'pantomime'
 
 module.exports = class Item

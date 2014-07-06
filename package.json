@@ -2,6 +2,7 @@
   "name": "Jik",
   "version": "0.1.0-beta.1",
   "description": "Listen and Download persian music via phone",
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/pouriaMaleki/Jik.git"
@@ -10,10 +11,6 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/pouriaMaleki/Jik/issues"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "node ./node_modules/coffee-script/bin/cake build"
   },
   "keywords": [
     "Music",
@@ -27,6 +24,7 @@
     "utila": "~0.3.3"
   },
   "devDependencies": {
-    "coffee-script": "~1.7.1"
+    "coffee-script": "~1.7.1",
+    "node-static": "*"
   }
 }
