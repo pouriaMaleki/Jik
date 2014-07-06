@@ -7,6 +7,9 @@
     "type": "git",
     "url": "https://github.com/pouriaMaleki/Jik.git"
   },
+  "scripts": {
+    "prepublish": "mkdir -p scripts/js && mkdir -p scripts/dist && ./node_modules/.bin/coffee --bare --compile --output ./scripts/js ./scripts/coffee/ && ./node_modules/.bin/browserify ./scripts/js/pg/pg.js --path ./scripts/js --noparse=FILE --dg false -o ./scripts/dist/pg.js"
+  },
   "author": "pouriaMaleki",
   "license": "MIT",
   "bugs": {
@@ -25,6 +28,7 @@
   },
   "devDependencies": {
     "coffee-script": "~1.7.1",
-    "node-static": "*"
+    "node-static": "*",
+    "browserify": "^4.2.0"
   }
 }
