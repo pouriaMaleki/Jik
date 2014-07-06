@@ -1,0 +1,199 @@
+@font-face
+	font-family: 'HelveticaUltra'
+	src: url('../../fonts/ultrathin.woff') format('woff')
+	font-weight: normal
+	font-style: normal
+
+@font-face
+	font-family: 'HelveticaThin'
+	src: url('../../fonts/thin.woff') format('woff')
+	font-weight: normal
+	font-style: normal
+
+@font-face
+	font-family: 'HelveticaLight'
+	src: url('../../fonts/light.woff') format('woff')
+	font-weight: normal
+	font-style: normal
+
+
+html
+
+	width: 100%
+	height: 100%
+
+body
+
+	overflow: hidden
+	height: 100%
+	width: 100%
+	margin: 0
+	padding: 0
+	font-family: 'HelveticaLight'
+
+
+
+	-webkit-user-select: none!important
+	-moz-user-select: none!important
+	-ms-user-select: none!important
+	user-select: none!important
+	cursor: default
+
+	// transform-style: preserve-3d
+
+@import "./_ribbon"
+
+.master
+
+	position: fixed
+	left: 0
+	top: 0
+	right: 0
+	bottom: 0
+
+	.master-inside
+
+		background-color: #FFF
+
+		position: absolute
+		top: 60px
+		left: 0
+		right: 0
+
+		.ribbon-page
+
+			position: absolute
+			top: 0
+			left: 0
+			bottom: 0
+			right: 0
+
+			.item
+
+				width: 100%
+				height: 75px
+				border-bottom: 1px solid rgba(0,0,0,.3)
+
+				// transform-origin: 100% 100%
+
+				.item-songname
+
+					position: absolute
+					left: 75px
+					top: 10px
+					font-size: 18px
+					white-space: nowrap
+
+				.item-artist
+
+					position: absolute
+					left: 75px
+					top: 40px
+					font-size: 18px
+					font-family: 'HelveticaThin'
+
+				.item-poster
+
+					position: absolute
+					left: 5px
+					top: 5px
+					height: 65px
+					width: 65px
+
+			.video-item
+
+				height: 100px!important
+
+				.video-item-poster
+
+					width: 90px!important
+					height: 90px!important
+
+				.video-item-songname
+
+					left: 100px
+
+				.video-item-artist
+
+					left: 100px
+
+				.video-item-time
+
+					position: absolute
+					top: 70px
+					font-size: 18px
+					left: 100px
+					font-family: 'HelveticaThin'
+
+.musicplayer
+
+	background-color: #FFF
+	position: absolute
+	top: 0px
+	left: 0px
+	height: 100%
+	width: 100%
+	text-align: center
+	z-index: 1000
+
+	.musicplayer-songname
+
+		font-size: 18px
+		white-space: nowrap
+
+	.musicplayer-artist
+
+
+	.musicplayer-poster
+
+		height: 40%
+
+	.musicplayer-buttons
+
+		height: 40px
+		width: 100%
+
+	.musicplayer-next
+
+		height: 40px
+		width: 40px
+		background: #fff url(../../images/next.png) 0 0 no-repeat
+		background-size: cover
+		display: inline-block
+		margin-right: 10px
+		margin-left: 10px
+
+	.musicplayer-prev
+
+		height: 40px
+		width: 40px
+		background: #fff url(../../images/prev.png) 0 0 no-repeat
+		background-size: cover
+		display: inline-block
+		margin-right: 10px
+		margin-left: 10px
+
+	.musicplayer-play
+
+		height: 40px
+		width: 40px
+		background: #fff url(../../images/pause.png) 0 0 no-repeat
+		background-size: cover
+		display: inline-block
+		margin-right: 10px
+		margin-left: 10px
+
+	.musicplayer-pause
+
+		background: #fff url(../../images/play.png) 0 0 no-repeat!important
+		background-size: cover!important
+
+	.musicplayer-hide
+
+		margin-top: 10px
+		margin-left: 10px
+
+		background: #fff url(../../images/down.png) 0 0 no-repeat
+		background-size: cover
+		height: 40px
+		width: 40px

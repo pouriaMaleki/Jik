@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jik Player</title><meta charset="utf-8" />
+	<script>
+		(function() {
+		var lastTime = 0;
+		var vendors = ['ms', 'moz', 'webkit', 'o'];
+		for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+		window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+		window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+		|| window[vendors[x]+'CancelRequestAnimationFrame'];
+		}
+
+		if (!window.requestAnimationFrame)
+		window.requestAnimationFrame = function(callback, element) {
+		var currTime = new Date().getTime();
+		var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+		var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+		timeToCall);
+		lastTime = currTime + timeToCall;
+		return id;
+		};
+
+		if (!window.cancelAnimationFrame)
+		window.cancelAnimationFrame = function(id) {
+		clearTimeout(id);
+		};
+		}());
+	</script>
+
+	<script type="text/javascript">
+		var deviceAgent = navigator.userAgent.toLowerCase();
+
+		var isTouchDevice = (deviceAgent.match(/(iphone|ipod|ipad)/) ||
+		deviceAgent.match(/(android)/)  ||
+		deviceAgent.match(/(iemobile)/) ||
+		deviceAgent.match(/iphone/i) ||
+		deviceAgent.match(/ipad/i) ||
+		deviceAgent.match(/ipod/i) ||
+		deviceAgent.match(/blackberry/i) ||
+		deviceAgent.match(/bada/i));
+
+		window.isTouchDevice = isTouchDevice;
+	</script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="./styles/css/main.css">
+</head>
+<body>
+	<script type="text/javascript" src="./scripts/dist/pg.js"></script>
+</body>
+</html>

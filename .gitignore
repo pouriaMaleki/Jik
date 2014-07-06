@@ -1,0 +1,16 @@
+.htaccess
+
+scripts/js/*.*
+xeno/*.*
+xeno/**
+node_modules
+scripts/dist/**
+scripts/js/**
+
+-p
+
+npm-debug.log
+!*.gitkeep
+
+styles/css/**
+.sass-cache
