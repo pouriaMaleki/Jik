@@ -10,6 +10,7 @@ module.exports = class Ribbon
 		@ribbonBarSpace = 50
 
 		@el = Foxie '.ribbon'
+		.moveZTo 150
 		.putIn @rootView.el
 
 		line = Foxie '.ribbon-line'

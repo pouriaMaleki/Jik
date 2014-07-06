@@ -12,7 +12,7 @@ module.exports = class MusicPlayer
 		@showing = false
 
 		@el = Foxie '.musicplayer'
-		.moveZTo 150
+		.moveZTo 500
 		.moveYTo @height
 		.trans @transTime
 		.perspective 4000
