@@ -1,10 +1,9 @@
 .htaccess
 
-scripts/js/*.*
+scripts/coffee/**
 xeno/*.*
 xeno/**
 node_modules
-scripts/dist/**
 scripts/js/**
 
 -p
@@ -12,5 +11,5 @@ scripts/js/**
 npm-debug.log
 !*.gitkeep
 
-styles/css/**
+styles/sass/**
 .sass-cache
