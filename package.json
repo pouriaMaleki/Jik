@@ -28,7 +28,9 @@
   },
   "devDependencies": {
     "coffee-script": "~1.7.1",
-    "node-static": "*",
-    "browserify": "^4.2.0"
+    "node-static": "*"
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }

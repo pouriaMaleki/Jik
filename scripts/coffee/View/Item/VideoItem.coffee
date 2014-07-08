@@ -1,4 +1,4 @@
-Foxie = require 'foxie'
+Foxie = require 'Foxie'
 Item = require '../Item'
 
 module.exports = class VideoItem extends Item
