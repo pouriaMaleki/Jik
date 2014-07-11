@@ -51,6 +51,9 @@ body
 	right: 0
 	bottom: 0
 
+	height: 100%
+	width: 100%
+
 	.master-inside
 
 		background-color: #FFF
@@ -60,6 +63,9 @@ body
 		left: 0
 		right: 0
 
+		height: 100%
+		width: 100%
+
 		.ribbon-page
 
 			position: absolute
@@ -67,63 +73,72 @@ body
 			left: 0
 			bottom: 0
 			right: 0
+			height: 100%
+			width: 100%
 
-			.item
+			.insider
 
+				height: 100%
 				width: 100%
-				height: 75px
-				border-bottom: 1px solid rgba(0,0,0,.3)
+				overflow-y: scroll!important
+				-webkit-overflow-scrolling: touch!important
 
-				// transform-origin: 100% 100%
+				.item
 
-				.item-songname
+					width: 100%
+					height: 75px
+					border-bottom: 1px solid rgba(0,0,0,.3)
 
-					position: absolute
-					left: 75px
-					top: 10px
-					font-size: 18px
-					white-space: nowrap
+					// transform-origin: 100% 100%
 
-				.item-artist
+					.item-songname
 
-					position: absolute
-					left: 75px
-					top: 40px
-					font-size: 18px
-					font-family: 'HelveticaThin'
+						position: absolute
+						left: 75px
+						top: 10px
+						font-size: 18px
+						white-space: nowrap
 
-				.item-poster
+					.item-artist
 
-					position: absolute
-					left: 5px
-					top: 5px
-					height: 65px
-					width: 65px
+						position: absolute
+						left: 75px
+						top: 40px
+						font-size: 18px
+						font-family: 'HelveticaThin'
 
-			.video-item
+					.item-poster
 
-				height: 100px!important
+						position: absolute
+						left: 5px
+						top: 5px
+						height: 65px
+						width: 65px
 
-				.video-item-poster
+				.video-item
 
-					width: 90px!important
-					height: 90px!important
+					height: 100px!important
 
-				.video-item-songname
+					.video-item-poster
 
-					left: 100px
+						width: 90px!important
+						height: 90px!important
 
-				.video-item-artist
+					.video-item-songname
 
-					left: 100px
+						left: 100px
 
-				.video-item-time
+					.video-item-artist
 
-					position: absolute
-					top: 70px
-					font-size: 18px
-					left: 100px
-					font-family: 'HelveticaThin'
+						left: 100px
+
+					.video-item-time
+
+						position: absolute
+						top: 70px
+						font-size: 18px
+						left: 100px
+						font-family: 'HelveticaThin'
 
 .musicplayer
 

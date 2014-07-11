@@ -10,9 +10,11 @@ mainView = new MainView model
 
 model.getHomeList()
 
+# Scrollable = require './View/scroll/scrollable'
 
+# @scroll = new Scrollable document.body
 
-
+# @scroll.forceCalculated(1000)
 
 
 # window.addEventListener 'error', (e) =>

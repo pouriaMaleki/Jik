@@ -5997,8 +5997,7 @@ module.exports = Scrollable = (function() {
   }
 
   Scrollable.prototype.recalculate = function() {
-    this._scrolls._scrollerY._resetSizeAndSpace(this._scrolls._childEl.getBoundingClientRect().height + 100, this._scrolls.node.getBoundingClientRect().height);
-    return console.log(this._scrolls._childEl.getBoundingClientRect().height + 100);
+    return this._scrolls._scrollerY._resetSizeAndSpace(this._scrolls._childEl.getBoundingClientRect().height + 100, this._scrolls.node.getBoundingClientRect().height);
   };
 
   Scrollable.prototype.forceCalculated = function(x, s) {
@@ -6016,9 +6015,9 @@ module.exports = Scrollable = (function() {
 },{"./scrolls":118,"pantomime":97}],118:[function(_dereq_,module,exports){
 var Scrolls, SingleAxisScroller, emptyFunction, object;
 
-SingleAxisScroller = _dereq_('./singleAxis');
-
 object = _dereq_('../utility/object');
+
+SingleAxisScroller = _dereq_('./singleAxis');
 
 emptyFunction = function() {};
 
@@ -6170,7 +6169,7 @@ module.exports = Scrolls = (function() {
   };
 
   Scrolls.prototype._setElMovement = function(x, y) {
-    return this._childEl.style.webkitTransform = 'translate3d(' + x + 'px, ' + y + 'px, ' + '0)';
+    return this._childEl.style.webkitTransform = 'translate3d(' + x + 'px, ' + y + 'px, ' + '10px)';
   };
 
   return Scrolls;
@@ -6210,14 +6209,14 @@ initBezier = function() {
 module.exports = SingleAxisScroller = (function() {
 
   /*
-  	 * @param  {Object} @props 	Reference to an object where
-  	 * this scroller can keep and update the current
-  	 * delta.
-  	 *
-  	 * @param  {Function} @askForAnimation This function gets called when
-  	 * this scroller needs to request an animation.
-  	 *
-  	 * @param  {Object} options = {} Options - Look at the source
+  		 * @param  {Object} @props 	Reference to an object where
+  		 * this scroller can keep and update the current
+  		 * delta.
+  		 *
+  		 * @param  {Function} @askForAnimation This function gets called when
+  		 * this scroller needs to request an animation.
+  		 *
+  		 * @param  {Object} options = {} Options - Look at the source
    */
   function SingleAxisScroller(props, askForAnimation, options) {
     this.props = props;

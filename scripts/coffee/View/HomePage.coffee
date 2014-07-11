@@ -4,6 +4,7 @@ Item =
 	song: require './Item/SongItem'
 	video: require './Item/VideoItem'
 	album: require './Item/AlbumItem'
+
 Scrollable = require './scroll/scrollable'
 
 module.exports = class HomePage

@@ -1,207 +1,207 @@
-SingleAxisScroller = require './singleAxis'
 object = require '../utility/object'
+SingleAxisScroller = require './singleAxis'
 
 emptyFunction = ->
 
 module.exports = class Scrolls
 
-	constructor: (@node) ->
+		constructor: (@node) ->
 
-		# Default options
-		@options =
+			# Default options
+			@options =
 
-			axis: 'y'
+				axis: 'y'
 
-		# Load more options from the data-attrs of @node
-		# Example:
-		# <div data-types="scroll" data-scroll-options='"axis":"x"'>
-
-
-		# To make sure we only scroll in the desired axis
-		@_enabledAxis =
-			x: 1
-			y: 1
-
-		# for x/y -only axis configs
-		if @options.axis is 'x' then @_enabledAxis.y = 0
-
-		else if @options.axis is 'y' then @_enabledAxis.x = 0
-
-		# Reference to dimensions
-		parentRects = @node.getBoundingClientRect()
-
-		# Child element's references
-		@_childEl = @node.children[0]
-
-		@_childElTrans =
-
-			x: 0
-			y: 0
-			z: 1
-
-		# Child element's dimensions
-		childRects = @_childEl.getBoundingClientRect()
-
-		# Single
-		boundNeedAnimation = @_scrollerAskedForAnimation.bind @
-
-		@propsX =
-
-			delta: 0
-
-		@_scrollerX = new SingleAxisScroller @propsX, boundNeedAnimation, do =>
-
-			ops =
-
-				size: childRects.width
-				space: parentRects.width
-
-			if @options.x?
-
-				object.append ops, @options.x
-
-			ops
-
-		@_lastScrollX = 0
-
-		@propsY =
-
-			delta: 0
-
-		@_scrollerY = new SingleAxisScroller @propsY, boundNeedAnimation, do =>
-
-			ops =
-
-				size: childRects.height
-				space: parentRects.height
-
-			if @options.y?
-
-				object.append ops, @options.y
-
-			ops
-
-		@_lastScrollY = 0
-
-		# Animation frame reference
-		@_animFrame = 0
-
-		# This function gets called by window.requestAnimationFrame()
-		@_boundAnimFunction = @_animFunction.bind @
-
-		# If we are listening to a persistent gesture, we have to call its
-		# finish() method when animation is over. This will be a reference to
-		# that finish() method.
-		@_finishCallback = emptyFunction
-
-		@_finishCallbackWaiting = false
-
-	# Called when fingers are on screen, moving around.
-	drag: (x, y) ->
-
-		do @_cancelAnimation
-
-		if @_enabledAxis.x
-			@_scrollerX.drag x - @_lastScrollX
-			@_lastScrollX = x
+			# Load more options from the data-attrs of @node
+			# Example:
+			# <div data-types="scroll" data-scroll-options='"axis":"x"'>
 
 
-		if @_enabledAxis.y
-			@_scrollerY.drag y - @_lastScrollY
-			@_lastScrollY = y
+			# To make sure we only scroll in the desired axis
+			@_enabledAxis =
+				x: 1
+				y: 1
 
-		# Translate the child element
-		do @_transformElement
+			# for x/y -only axis configs
+			if @options.axis is 'x' then @_enabledAxis.y = 0
 
-	# Called when touch is released. It will do the slipping thing.
-	release: (finish) ->
+			else if @options.axis is 'y' then @_enabledAxis.x = 0
 
-		if @_enabledAxis.x
+			# Reference to dimensions
+			parentRects = @node.getBoundingClientRect()
 
-			do @_scrollerX.release
+			# Child element's references
+			@_childEl = @node.children[0]
+
+			@_childElTrans =
+
+				x: 0
+				y: 0
+				z: 1
+
+			# Child element's dimensions
+			childRects = @_childEl.getBoundingClientRect()
+
+			# Single
+			boundNeedAnimation = @_scrollerAskedForAnimation.bind @
+
+			@propsX =
+
+				delta: 0
+
+			@_scrollerX = new SingleAxisScroller @propsX, boundNeedAnimation, do =>
+
+				ops =
+
+					size: childRects.width
+					space: parentRects.width
+
+				if @options.x?
+
+					object.append ops, @options.x
+
+				ops
 
 			@_lastScrollX = 0
 
-		if @_enabledAxis.y
+			@propsY =
 
-			do @_scrollerY.release
+				delta: 0
+
+			@_scrollerY = new SingleAxisScroller @propsY, boundNeedAnimation, do =>
+
+				ops =
+
+					size: childRects.height
+					space: parentRects.height
+
+				if @options.y?
+
+					object.append ops, @options.y
+
+				ops
 
 			@_lastScrollY = 0
 
-		if finish
+			# Animation frame reference
+			@_animFrame = 0
+
+			# This function gets called by window.requestAnimationFrame()
+			@_boundAnimFunction = @_animFunction.bind @
+
+			# If we are listening to a persistent gesture, we have to call its
+			# finish() method when animation is over. This will be a reference to
+			# that finish() method.
+			@_finishCallback = emptyFunction
+
+			@_finishCallbackWaiting = false
+
+		# Called when fingers are on screen, moving around.
+		drag: (x, y) ->
+
+			do @_cancelAnimation
+
+			if @_enabledAxis.x
+				@_scrollerX.drag x - @_lastScrollX
+				@_lastScrollX = x
+
+
+			if @_enabledAxis.y
+				@_scrollerY.drag y - @_lastScrollY
+				@_lastScrollY = y
+
+			# Translate the child element
+			do @_transformElement
+
+		# Called when touch is released. It will do the slipping thing.
+		release: (finish) ->
+
+			if @_enabledAxis.x
+
+				do @_scrollerX.release
+
+				@_lastScrollX = 0
+
+			if @_enabledAxis.y
+
+				do @_scrollerY.release
+
+				@_lastScrollY = 0
+
+			if finish
+
+				if @_animFrame
+
+					@_finishCallback = -> do finish
+
+					@_finishCallbackWaiting = true
+
+				else
+
+					do finish
+
+		_scrollerAskedForAnimation: ->
+
+			unless @_animFrame
+				@_animFrame = requestAnimationFrame @_boundAnimFunction
+
+		_cancelAnimation: ->
 
 			if @_animFrame
 
-				@_finishCallback = -> do finish
+				webkitCancelAnimationFrame @_animFrame
 
-				@_finishCallbackWaiting = true
+				@_animFrame = 0
 
-			else
-
-				do finish
-
-	_scrollerAskedForAnimation: ->
-
-		unless @_animFrame
-			@_animFrame = requestAnimationFrame @_boundAnimFunction
-
-	_cancelAnimation: ->
-
-		if @_animFrame
-
-			cancelAnimationFrame @_animFrame
+		_animFunction: ->
 
 			@_animFrame = 0
 
-	_animFunction: ->
+			if @_enabledAxis.x
 
-		@_animFrame = 0
+				do @_scrollerX.animate
 
-		if @_enabledAxis.x
+			if @_enabledAxis.y
 
-			do @_scrollerX.animate
+				do @_scrollerY.animate
 
-		if @_enabledAxis.y
+			# Translate the child element
+			do @_transformElement
 
-			do @_scrollerY.animate
+			if @_finishCallbackWaiting
 
-		# Translate the child element
-		do @_transformElement
+				unless @_animFrame
 
-		if @_finishCallbackWaiting
+					do @_finishCallback
 
-			unless @_animFrame
+					do @finish
 
-				do @_finishCallback
+		finish: ->
 
-				do @finish
+			@_finishCallback = emptyFunction
 
-	finish: ->
+			@_finishCallbackWaiting = false
 
-		@_finishCallback = emptyFunction
+		_transformElement: ->
 
-		@_finishCallbackWaiting = false
+			x = 0
 
-	_transformElement: ->
+			if @_enabledAxis.x
 
-		x = 0
+				x = @propsX.delta
 
-		if @_enabledAxis.x
+			y = 0
 
-			x = @propsX.delta
+			if @_enabledAxis.y
 
-		y = 0
+				y = @propsY.delta
 
-		if @_enabledAxis.y
+			@_setElMovement x, y
 
-			y = @propsY.delta
+		_setElMovement: (x, y) ->
 
-		@_setElMovement x, y
+			@_childEl.style.webkitTransform = 'translate3d(' +
 
-	_setElMovement: (x, y) ->
-
-		@_childEl.style.transform = 'translate3d(' +
-
-			x + 'px, ' +
-			y + 'px, ' +
-			'0)'
+				x + 'px, ' +
+				y + 'px, ' +
+				'10px)'

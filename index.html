@@ -10,7 +10,10 @@
 		window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
 		window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
 		|| window[vendors[x]+'CancelRequestAnimationFrame'];
+		window.webkitCancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+		|| window[vendors[x]+'CancelRequestAnimationFrame'];
 		}
+
 
 		if (!window.requestAnimationFrame)
 		window.requestAnimationFrame = function(callback, element) {
@@ -43,10 +46,12 @@
 
 		window.isTouchDevice = isTouchDevice;
 	</script>
+
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<link rel="stylesheet" href="./styles/css/main.css">
 </head>
 <body>
+	<script type="text/javascript" src="./scripts/iscroll-lite.js"></script>
 	<script type="text/javascript" src="./scripts/dist/pg.js"></script>
 </body>
 </html>

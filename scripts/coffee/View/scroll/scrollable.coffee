@@ -1,41 +1,42 @@
 Scrolls = require './scrolls'
 Pantomime = require 'pantomime'
+
 TouchyEl = Pantomime.TouchyEl
 
 module.exports = class Scrollable
 
-	constructor: (@node) ->
+		constructor: (@node) ->
 
-		@_scrolls = new Scrolls @node
+			@_scrolls = new Scrolls @node
 
-		@tel = TouchyEl.get @node
+			@tel = TouchyEl.get @node
 
-		@tel.on 'move', (pos) =>
+			@tel.on 'move', (pos) =>
 
-			@_scrolls.drag pos.absX, pos.absY
+				@_scrolls.drag pos.absX, pos.absY
 
-		@tel.on 'move:end', =>
+			@tel.on 'move:end', =>
 
-			@_scrolls.release()
+				@_scrolls.release()
 
-		setTimeout =>
+			setTimeout =>
 
-			do @recalculate
+				do @recalculate
 
-		, 1000
+			, 1000
 
-	recalculate: ->
-
-
-		# console.log @_scrolls
-
-		@_scrolls._scrollerY._resetSizeAndSpace @_scrolls._childEl.getBoundingClientRect().height + 100, @_scrolls.node.getBoundingClientRect().height
-
-		console.log @_scrolls._childEl.getBoundingClientRect().height + 100
-
-	forceCalculated: (x, s) ->
+		recalculate: ->
 
 
-		# console.log @_scrolls
+			# console.log @_scrolls
 
-		@_scrolls._scrollerY._resetSizeAndSpace x, s
+			@_scrolls._scrollerY._resetSizeAndSpace @_scrolls._childEl.getBoundingClientRect().height + 100, @_scrolls.node.getBoundingClientRect().height
+
+			# console.log 'size', @_scrolls._scrollerY.size, 'space', @_scrolls._scrollerY.space
+
+		forceCalculated: (x, s) ->
+
+
+			# console.log @_scrolls
+
+			@_scrolls._scrollerY._resetSizeAndSpace x, s
