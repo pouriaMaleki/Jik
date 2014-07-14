@@ -11,8 +11,8 @@ Project State:
 
  + Model-View Architecture
  + Smooth animations
- - Non-native scroll
- - Touch
+ + Non-native scroll
+ - Touch gestures
  - Pull-up refresh
  - Load-more end of screen
  - Download music
