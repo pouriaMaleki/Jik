@@ -24,6 +24,8 @@ module.exports = RibbonPage = (function() {
           } else {
             return _this.rootView.model.page.nextActiveTitle();
           }
+        } else {
+          return _this.rootView.model.page.activeTitle(index);
         }
       };
     })(this));

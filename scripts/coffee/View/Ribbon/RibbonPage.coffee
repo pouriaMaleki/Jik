@@ -31,6 +31,10 @@ module.exports = class RibbonPage
 
 					do @rootView.model.page.nextActiveTitle
 
+			else
+
+				@rootView.model.page.activeTitle index
+
 	moveTo: (x) ->
 
 		@el.moveXTo x
