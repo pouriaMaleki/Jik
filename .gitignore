@@ -4,7 +4,6 @@ scripts/coffee/**
 xeno/*.*
 xeno/**
 node_modules
-scripts/js/**
 
 -p
 

@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "pg.js",
+  "sourceRoot": "..\\..",
+  "sources": [
+    "coffee\\pg\\pg.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA,MAAM,CAAC,OAAP,GAAiB,OAAA,CAAQ,KAAR,CAAjB,CAAA"
+}
