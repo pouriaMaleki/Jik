@@ -10,18 +10,11 @@ module.exports = class Item
 		.moveZTo 100
 		.putIn @parentNode
 
-		Pantomime.TouchyEl.get(@el.node).on 'tap', (e) =>
+		hammer = new Hammer @el.node
+
+		hammer.on 'tap', (arg) =>
 
 			@mainView.model.musicPlayer.play(data)
-
-			return
-
-		unless window.isTouchDevice
-
-			@el.node.addEventListener 'click', =>
-
-				@mainView.model.musicPlayer.play(data)
-
 
 		@title1 = Foxie '.item-songname'
 		.putIn @el
@@ -40,7 +33,6 @@ module.exports = class Item
 		.noTrans()
 		.moveXTo 100
 		.setOpacity 0
-		# .rotateYTo Math.PI / 2
 
 		@
 
@@ -53,6 +45,5 @@ module.exports = class Item
 			.trans 400
 			.moveXTo 0
 			.setOpacity 1
-			# .rotateYTo 0
 
 		@

@@ -13,3 +13,19 @@ module.exports = class PageModel extends _Emitter
 		@currentActive = title
 
 		@_emit 'page-active', @currentActive
+
+	prevActiveTitle: ->
+
+		if @currentActive > 0
+
+			@currentActive--
+
+		@_emit 'page-active', @currentActive
+
+	nextActiveTitle: ->
+
+		if @currentActive < 4
+
+			@currentActive++
+
+		@_emit 'page-active', @currentActive

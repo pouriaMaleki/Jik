@@ -12,11 +12,15 @@ module.exports = class Main
 
 		@inside = Foxie '.master-inside'
 		.moveZTo 100
-		.putIn @el
 
+		@ribbon = new Ribbon @, ['home', 'artist', 'album', 'song', 'video']
 
-		@ribbon = new Ribbon @, ['Home', 'Artists']
+		@inside.putIn @el
 
 		@homePage = new HomePage @, @ribbon.getPage(0)
+		@homePage = new HomePage @, @ribbon.getPage(1)
+		@homePage = new HomePage @, @ribbon.getPage(2)
+		@homePage = new HomePage @, @ribbon.getPage(3)
+		@homePage = new HomePage @, @ribbon.getPage(4)
 
 		@musicPlayer = new MusicPlayer @

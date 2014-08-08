@@ -7,7 +7,7 @@ module.exports = class Ribbon
 	constructor: (@rootView, @t) ->
 
 		@width = window.innerWidth
-		@ribbonBarSpace = 50
+		@ribbonBarSpace = 20
 
 		@el = Foxie '.ribbon'
 		.moveZTo 150
@@ -27,11 +27,9 @@ module.exports = class Ribbon
 
 			@addTitle title
 
-			@pages.push new RibbonPage @rootView, (i * @width)
+			@pages.push new RibbonPage @rootView, (i * @width), i
 
 		@rootView.model.page.on 'page-active', (num) =>
-
-			@moveTo num
 
 			@showPage num
 
@@ -39,9 +37,11 @@ module.exports = class Ribbon
 
 			@width = window.innerWidth
 
-			for page, i in @pages
+			for page, i in pages
 
 				page.moveTo i * @width
+
+		@rootView.model.page.activeTitle 0
 
 	showPage: (index) ->
 
@@ -49,59 +49,30 @@ module.exports = class Ribbon
 		.trans 700
 		.moveXTo index * (-1 * @width)
 
+		for title in @titles
+
+			do title.inactive
+
+		do @titles[index].active
+
 	getPage: (index) ->
 
 		@pages[index].el
 
-	_setUnderlineWidth: (width) ->
-
-		@underLine
-		.trans 300
-		.setWidth width
-
-	_setUnderlinePosition: (position) ->
-
-		@underLine
-		.trans 300
-		.moveXTo position
-
 	addTitle: (title) ->
 
-		tit = new Title @el, title, @ribbonBarSpace + @ribbonBarSpace * 2 * @titles.length
+		tit = new Title @el, title
 
 		num = @titles.length
 
 		do (num) =>
 
-			Pantomime.TouchyEl.get(tit.el.node).on 'tap', (e) =>
+			hammer = new Hammer tit.el.node
+
+			hammer.on 'tap', (arg) =>
 
 				@rootView.model.page.activeTitle num
-
-				return
-
-			unless window.isTouchDevice
-
-				tit.el.node.addEventListener 'click', =>
-
-					@rootView.model.page.activeTitle num
-
-					return
 
 			return
 
 		@titles.push tit
-
-		if @titles.length is 1
-
-			# buggy getComputedStyle or getBoundingClientRects on chrome
-			setTimeout =>
-
-				@_setUnderlineWidth @titles[0].getSize()
-				@_setUnderlinePosition @ribbonBarSpace
-
-			, 400
-
-	moveTo: (index) ->
-
-		@_setUnderlineWidth @titles[index].getSize()
-		@_setUnderlinePosition @titles[index].position

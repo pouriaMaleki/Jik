@@ -2,11 +2,34 @@ Foxie = require 'foxie'
 
 module.exports = class RibbonPage
 
-	constructor: (@rootView, pos) ->
+	constructor: (@rootView, pos, index) ->
 
 		@el = Foxie '.ribbon-page'
 		.putIn @rootView.inside
 		.moveXTo pos
+
+		hammer = new Hammer @el.node
+
+		console.log index
+
+		hammer.on 'pan', (event) =>
+
+			if Math.abs(event.deltaX) > Math.abs(event.deltaY)
+
+				@rootView.inside
+				.moveXTo event.deltaX - index * @rootView.ribbon.width
+
+		hammer.on 'panend', (event) =>
+
+			if Math.abs(event.deltaX) > Math.abs(event.deltaY) and Math.abs(event.deltaY) < 50
+
+				if event.deltaX > 0
+
+					do @rootView.model.page.prevActiveTitle
+
+				else
+
+					do @rootView.model.page.nextActiveTitle
 
 	moveTo: (x) ->
 

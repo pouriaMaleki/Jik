@@ -51,33 +51,18 @@ module.exports = class MusicPlayer
 
 			return
 
-		Pantomime.TouchyEl.get(@play.node).on 'tap', (e) =>
+
+		playHammer = new Hammer @play.node
+
+		playHammer.on 'tap', (arg) =>
 
 			@mainView.model.musicPlayer.toggle()
 
-			return
+		hideBtnHammer = new Hammer @hideBtn.node
 
-		unless window.isTouchDevice
-
-			@play.node.addEventListener 'click', =>
-
-				@mainView.model.musicPlayer.toggle()
-
-				return
-
-		Pantomime.TouchyEl.get(@hideBtn.node).on 'tap', (e) =>
+		hideBtnHammer.on 'tap', (arg) =>
 
 			@hide()
-
-			return
-
-		unless window.isTouchDevice
-
-			@hideBtn.node.addEventListener 'click', =>
-
-				@hide()
-
-				return
 
 		@mainView.model.musicPlayer.on 'show-player', =>
 

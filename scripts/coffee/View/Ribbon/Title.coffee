@@ -2,19 +2,15 @@ Foxie = require 'foxie'
 
 module.exports = class Title
 
-	constructor: (@parentNode, text, @position) ->
+	constructor: (@parentNode, text) ->
 
-		@el =  Foxie '.ribbon-title'
-		.moveXTo @position
-		.innerHTML text
+		@el =  Foxie '.ribbon-title-icons.ribbon-title-' + text
 		.putIn @parentNode
 
-		@size = 0
+	active: ->
 
-	getSize: ->
+		@el.setOpacity 1
 
-		if @size is 0
+	inactive: ->
 
-			@size = parseInt(getComputedStyle(@el.node).width)
-
-		@size
+		@el.setOpacity 0.3
