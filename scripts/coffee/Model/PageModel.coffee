@@ -10,7 +10,9 @@ module.exports = class PageModel extends _Emitter
 
 	activeTitle: (title) ->
 
-		@currentActive = title
+		if title?
+
+			@currentActive = title
 
 		@_emit 'page-active', @currentActive
 

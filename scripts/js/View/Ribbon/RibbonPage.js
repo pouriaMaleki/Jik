@@ -12,7 +12,8 @@ module.exports = RibbonPage = (function() {
     hammer.on('pan', (function(_this) {
       return function(event) {
         if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-          return _this.rootView.inside.moveXTo(event.deltaX - index * _this.rootView.ribbon.width);
+          _this.rootView.inside.moveXTo(event.deltaX - index * _this.rootView.ribbon.width);
+          return _this.rootView.bg.moveXTo(event.deltaX / 10 - index * 100 - 200);
         }
       };
     })(this));

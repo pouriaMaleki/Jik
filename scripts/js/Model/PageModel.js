@@ -13,7 +13,9 @@ module.exports = PageModel = (function(_super) {
   }
 
   PageModel.prototype.activeTitle = function(title) {
-    this.currentActive = title;
+    if (title != null) {
+      this.currentActive = title;
+    }
     return this._emit('page-active', this.currentActive);
   };
 

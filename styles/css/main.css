@@ -39,7 +39,6 @@ body {
   -ms-user-select: none !important;
   user-select: none !important;
   cursor: default;
-  background: transparent url(../../images/bg.jpg) 0 0 no-repeat;
 }
 
 /* line 1, ../sass/_ribbon.sass */
@@ -94,7 +93,7 @@ body {
   background: transparent url(../../images/icons/white/wvideo40.png) 0 0 no-repeat;
 }
 
-/* line 48, ../sass/main.sass */
+/* line 47, ../sass/main.sass */
 .master {
   position: fixed;
   left: 0;
@@ -104,7 +103,17 @@ body {
   height: 100%;
   width: 100%;
 }
-/* line 59, ../sass/main.sass */
+/* line 58, ../sass/main.sass */
+.master .master-bg {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: -700px;
+  background: black url(../../images/bg.jpg) 0 0 no-repeat;
+}
+/* line 70, ../sass/main.sass */
 .master .master-inside {
   background-color: transparent;
   height: 100%;
@@ -112,7 +121,7 @@ body {
   margin-top: 20px;
   -webkit-overflow-scrolling: touch;
 }
-/* line 70, ../sass/main.sass */
+/* line 81, ../sass/main.sass */
 .master .master-inside .ribbon-page {
   height: 100%;
   width: 100%;
@@ -120,7 +129,7 @@ body {
   overflow: hidden;
   position: absolute;
 }
-/* line 80, ../sass/main.sass */
+/* line 91, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider {
   width: 100%;
   padding-bottom: 70px;
@@ -130,12 +139,12 @@ body {
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
 }
-/* line 93, ../sass/main.sass */
+/* line 109, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .item {
   width: 100%;
   height: 75px;
 }
-/* line 101, ../sass/main.sass */
+/* line 117, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .item .item-songname {
   position: absolute;
   left: 75px;
@@ -143,7 +152,7 @@ body {
   font-size: 18px;
   white-space: nowrap;
 }
-/* line 109, ../sass/main.sass */
+/* line 125, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .item .item-artist {
   position: absolute;
   left: 75px;
@@ -151,7 +160,7 @@ body {
   font-size: 18px;
   font-family: "HelveticaThin";
 }
-/* line 117, ../sass/main.sass */
+/* line 133, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .item .item-poster {
   position: absolute;
   left: 5px;
@@ -160,24 +169,24 @@ body {
   width: 65px;
   border-radius: 50%;
 }
-/* line 127, ../sass/main.sass */
+/* line 143, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .video-item {
   height: 100px !important;
 }
-/* line 131, ../sass/main.sass */
+/* line 147, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .video-item .video-item-poster {
   width: 90px !important;
   height: 90px !important;
 }
-/* line 136, ../sass/main.sass */
+/* line 152, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .video-item .video-item-songname {
   left: 100px;
 }
-/* line 140, ../sass/main.sass */
+/* line 156, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .video-item .video-item-artist {
   left: 100px;
 }
-/* line 144, ../sass/main.sass */
+/* line 160, ../sass/main.sass */
 .master .master-inside .ribbon-page .insider .video-item .video-item-time {
   position: absolute;
   top: 70px;
@@ -186,7 +195,7 @@ body {
   font-family: "HelveticaThin";
 }
 
-/* line 152, ../sass/main.sass */
+/* line 168, ../sass/main.sass */
 .musicplayer {
   background-color: transparent;
   position: absolute;
@@ -197,21 +206,21 @@ body {
   text-align: center;
   z-index: 500;
 }
-/* line 163, ../sass/main.sass */
+/* line 179, ../sass/main.sass */
 .musicplayer .musicplayer-songname {
   font-size: 18px;
   white-space: nowrap;
 }
-/* line 171, ../sass/main.sass */
+/* line 187, ../sass/main.sass */
 .musicplayer .musicplayer-poster {
   height: 40%;
 }
-/* line 175, ../sass/main.sass */
+/* line 191, ../sass/main.sass */
 .musicplayer .musicplayer-buttons {
   height: 40px;
   width: 100%;
 }
-/* line 180, ../sass/main.sass */
+/* line 196, ../sass/main.sass */
 .musicplayer .musicplayer-next {
   height: 40px;
   width: 40px;
@@ -221,7 +230,7 @@ body {
   margin-right: 10px;
   margin-left: 10px;
 }
-/* line 190, ../sass/main.sass */
+/* line 206, ../sass/main.sass */
 .musicplayer .musicplayer-prev {
   height: 40px;
   width: 40px;
@@ -231,7 +240,7 @@ body {
   margin-right: 10px;
   margin-left: 10px;
 }
-/* line 200, ../sass/main.sass */
+/* line 216, ../sass/main.sass */
 .musicplayer .musicplayer-play {
   height: 40px;
   width: 40px;
@@ -241,12 +250,12 @@ body {
   margin-right: 10px;
   margin-left: 10px;
 }
-/* line 210, ../sass/main.sass */
+/* line 226, ../sass/main.sass */
 .musicplayer .musicplayer-pause {
   background: white url(../../images/play.png) 0 0 no-repeat !important;
   background-size: cover !important;
 }
-/* line 215, ../sass/main.sass */
+/* line 231, ../sass/main.sass */
 .musicplayer .musicplayer-hide {
   margin-top: 10px;
   margin-left: 10px;

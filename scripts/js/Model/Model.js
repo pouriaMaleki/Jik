@@ -27,6 +27,11 @@ module.exports = Model = (function(_super) {
     })(this), 2500);
   };
 
+  Model.prototype.refreshHomeList = function() {
+    this._emit('home-list-refresh');
+    return this.getHomeList();
+  };
+
   return Model;
 
 })(_Emitter);

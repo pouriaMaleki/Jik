@@ -37,11 +37,13 @@ module.exports = class Ribbon
 
 			@width = window.innerWidth
 
-			for page, i in pages
+			for page, i in @pages
 
 				page.moveTo i * @width
 
-		@rootView.model.page.activeTitle 0
+			do @rootView.model.page.activeTitle
+
+		do @rootView.model.page.activeTitle
 
 	showPage: (index) ->
 
@@ -54,6 +56,8 @@ module.exports = class Ribbon
 			do title.inactive
 
 		do @titles[index].active
+
+		@rootView.bg.moveXTo index * -100 - 200
 
 	getPage: (index) ->
 
@@ -70,6 +74,8 @@ module.exports = class Ribbon
 			hammer = new Hammer tit.el.node
 
 			hammer.on 'tap', (arg) =>
+
+				console.log num
 
 				@rootView.model.page.activeTitle num
 

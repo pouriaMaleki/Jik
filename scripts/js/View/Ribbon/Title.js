@@ -13,7 +13,7 @@ module.exports = Title = (function() {
   };
 
   Title.prototype.inactive = function() {
-    return this.el.setOpacity(0.3);
+    return this.el.setOpacity(.4);
   };
 
   return Title;

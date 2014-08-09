@@ -33,17 +33,17 @@ module.exports = Ribbon = (function() {
     })(this));
     window.addEventListener('resize', (function(_this) {
       return function() {
-        var page, _j, _len1, _results;
+        var page, _j, _len1, _ref1;
         _this.width = window.innerWidth;
-        _results = [];
-        for (i = _j = 0, _len1 = pages.length; _j < _len1; i = ++_j) {
-          page = pages[i];
-          _results.push(page.moveTo(i * _this.width));
+        _ref1 = _this.pages;
+        for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+          page = _ref1[i];
+          page.moveTo(i * _this.width);
         }
-        return _results;
+        return _this.rootView.model.page.activeTitle();
       };
     })(this));
-    this.rootView.model.page.activeTitle(0);
+    this.rootView.model.page.activeTitle();
   }
 
   Ribbon.prototype.showPage = function(index) {
@@ -54,7 +54,8 @@ module.exports = Ribbon = (function() {
       title = _ref[_i];
       title.inactive();
     }
-    return this.titles[index].active();
+    this.titles[index].active();
+    return this.rootView.bg.moveXTo(index * -100 - 200);
   };
 
   Ribbon.prototype.getPage = function(index) {
@@ -70,6 +71,7 @@ module.exports = Ribbon = (function() {
         var hammer;
         hammer = new Hammer(tit.el.node);
         hammer.on('tap', function(arg) {
+          console.log(num);
           return _this.rootView.model.page.activeTitle(num);
         });
       });

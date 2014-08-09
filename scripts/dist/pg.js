@@ -10539,6 +10539,11 @@ module.exports = Model = (function(_super) {
     })(this), 2500);
   };
 
+  Model.prototype.refreshHomeList = function() {
+    this._emit('home-list-refresh');
+    return this.getHomeList();
+  };
+
   return Model;
 
 })(_Emitter);
@@ -10626,7 +10631,9 @@ module.exports = PageModel = (function(_super) {
   }
 
   PageModel.prototype.activeTitle = function(title) {
-    this.currentActive = title;
+    if (title != null) {
+      this.currentActive = title;
+    }
     return this._emit('page-active', this.currentActive);
   };
 
@@ -10794,19 +10801,74 @@ Item = {
 
 module.exports = HomePage = (function() {
   function HomePage(mainView, parentNode) {
+    var myscroll;
     this.mainView = mainView;
     this.parentNode = parentNode;
     this.el = Foxie('.insider').putIn(this.parentNode);
+    this.pullDown = Foxie('.pullDown').putIn(this.el).innerHTML('Refreshing');
+    this.items = [];
+    this.refresh = false;
+    this.loadMore = false;
+    myscroll = new IScroll(this.parentNode.node, {
+      mouseWheel: true,
+      probeType: 1
+    });
+    myscroll.scrollTo(0, parseInt(this.pullDown.node.getBoundingClientRect.height) * (-1), 200);
+    myscroll.on('scroll', (function(_this) {
+      return function() {
+        if (myscroll.y > 50) {
+          _this.pullDown.innerHTML('Release to refresh');
+          _this.refresh = true;
+        }
+        if (myscroll.y < myscroll.maxScrollY) {
+          if (!_this.loadMore) {
+            _this.mainView.model.getHomeList();
+            return _this.loadMore = true;
+          }
+        }
+      };
+    })(this));
+    myscroll.on('scrollEnd', (function(_this) {
+      return function() {
+        if (_this.refresh) {
+          _this.mainView.model.refreshHomeList();
+          _this.pullDown.innerHTML('Refreshing');
+        }
+        if (myscroll.y <= myscroll.maxScrollY) {
+          if (!_this.loadMore) {
+            _this.mainView.model.getHomeList();
+            return _this.loadMore = true;
+          }
+        }
+      };
+    })(this));
+    this.mainView.model.on('home-list-refresh', (function(_this) {
+      return function() {
+        var item, _i, _len, _ref;
+        _this.refresh = false;
+        _ref = _this.items;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          item = _ref[_i];
+          item.remove();
+        }
+        return _this.items = [];
+      };
+    })(this));
     this.mainView.model.on('home-list', (function(_this) {
       return function(items) {
-        var i, item, scroll, _i, _len;
+        var i, item, _i, _len;
         for (i = _i = 0, _len = items.length; _i < _len; i = ++_i) {
           item = items[i];
-          new Item[item.type](_this.mainView, _this.el, item).hideMe().showMe(i * 50);
+          item = new Item[item.type](_this.mainView, _this.el, item).hideMe().showMe(i * 50);
+          _this.items.push(item);
+          myscroll.refresh();
+          _this.pullDown.innerHTML('Pull down to refresh');
         }
-        scroll = new IScroll(_this.parentNode.node, {
-          mouseWheel: true
-        });
+        if (_this.loadMore === false) {
+          console.log('here');
+          myscroll.scrollTo(0, -22, 200);
+        }
+        _this.loadMore = false;
       };
     })(this));
   }
@@ -10855,6 +10917,10 @@ module.exports = Item = (function() {
       };
     })(this));
     return this;
+  };
+
+  Item.prototype.remove = function() {
+    return this.parentNode.node.removeChild(this.el.node);
   };
 
   return Item;
@@ -10966,6 +11032,7 @@ module.exports = Main = (function() {
   function Main(model) {
     this.model = model;
     this.el = Foxie('.master').putIn(document.body);
+    this.bg = Foxie('.master-bg').moveZTo(1).moveXTo(-200).trans(300).putIn(this.el);
     this.inside = Foxie('.master-inside').moveZTo(100);
     this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video']);
     this.inside.putIn(this.el);
@@ -11115,17 +11182,17 @@ module.exports = Ribbon = (function() {
     })(this));
     window.addEventListener('resize', (function(_this) {
       return function() {
-        var page, _j, _len1, _results;
+        var page, _j, _len1, _ref1;
         _this.width = window.innerWidth;
-        _results = [];
-        for (i = _j = 0, _len1 = pages.length; _j < _len1; i = ++_j) {
-          page = pages[i];
-          _results.push(page.moveTo(i * _this.width));
+        _ref1 = _this.pages;
+        for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
+          page = _ref1[i];
+          page.moveTo(i * _this.width);
         }
-        return _results;
+        return _this.rootView.model.page.activeTitle();
       };
     })(this));
-    this.rootView.model.page.activeTitle(0);
+    this.rootView.model.page.activeTitle();
   }
 
   Ribbon.prototype.showPage = function(index) {
@@ -11136,7 +11203,8 @@ module.exports = Ribbon = (function() {
       title = _ref[_i];
       title.inactive();
     }
-    return this.titles[index].active();
+    this.titles[index].active();
+    return this.rootView.bg.moveXTo(index * -100 - 200);
   };
 
   Ribbon.prototype.getPage = function(index) {
@@ -11152,6 +11220,7 @@ module.exports = Ribbon = (function() {
         var hammer;
         hammer = new Hammer(tit.el.node);
         hammer.on('tap', function(arg) {
+          console.log(num);
           return _this.rootView.model.page.activeTitle(num);
         });
       });
@@ -11182,7 +11251,8 @@ module.exports = RibbonPage = (function() {
     hammer.on('pan', (function(_this) {
       return function(event) {
         if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-          return _this.rootView.inside.moveXTo(event.deltaX - index * _this.rootView.ribbon.width);
+          _this.rootView.inside.moveXTo(event.deltaX - index * _this.rootView.ribbon.width);
+          return _this.rootView.bg.moveXTo(event.deltaX / 10 - index * 100 - 200);
         }
       };
     })(this));
@@ -11229,7 +11299,7 @@ module.exports = Title = (function() {
   };
 
   Title.prototype.inactive = function() {
-    return this.el.setOpacity(0.3);
+    return this.el.setOpacity(.4);
   };
 
   return Title;

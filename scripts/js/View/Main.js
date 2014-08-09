@@ -12,6 +12,7 @@ module.exports = Main = (function() {
   function Main(model) {
     this.model = model;
     this.el = Foxie('.master').putIn(document.body);
+    this.bg = Foxie('.master-bg').moveZTo(1).moveXTo(-200).trans(300).putIn(this.el);
     this.inside = Foxie('.master-inside').moveZTo(100);
     this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video']);
     this.inside.putIn(this.el);

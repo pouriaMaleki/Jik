@@ -39,7 +39,6 @@ body
 	user-select: none!important
 	cursor: default
 
-	background: transparent url(../../images/bg.jpg) 0 0 no-repeat
 
 	// transform-style: preserve-3d
 
@@ -55,6 +54,18 @@ body
 
 	height: 100%
 	width: 100%
+
+	.master-bg
+
+		height: 100%
+
+		position: absolute
+		top: 0
+		bottom: 0
+		left: 0
+		right: -700px
+
+		background: black url(../../images/bg.jpg) 0 0 no-repeat
 
 	.master-inside
 
@@ -89,6 +100,11 @@ body
 				-webkit-text-size-adjust: none
 				text-size-adjust: none
 				// -webkit-overflow-scrolling: touch
+
+				.pullDown
+
+					// position: absolute
+					// top: -30px
 
 				.item
 

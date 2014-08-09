@@ -13,4 +13,4 @@ module.exports = class Title
 
 	inactive: ->
 
-		@el.setOpacity 0.3
+		@el.setOpacity .4

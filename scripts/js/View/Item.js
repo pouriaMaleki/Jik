@@ -35,6 +35,10 @@ module.exports = Item = (function() {
     return this;
   };
 
+  Item.prototype.remove = function() {
+    return this.parentNode.node.removeChild(this.el.node);
+  };
+
   return Item;
 
 })();

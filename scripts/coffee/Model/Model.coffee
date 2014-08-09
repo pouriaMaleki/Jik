@@ -23,3 +23,8 @@ module.exports = class Model extends _Emitter
 
 		, 2500
 
+	refreshHomeList: ->
+
+		@_emit 'home-list-refresh'
+
+		do @getHomeList

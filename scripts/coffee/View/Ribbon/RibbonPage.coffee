@@ -19,6 +19,8 @@ module.exports = class RibbonPage
 				@rootView.inside
 				.moveXTo event.deltaX - index * @rootView.ribbon.width
 
+				@rootView.bg.moveXTo event.deltaX / 10 - index * 100 - 200
+
 		hammer.on 'panend', (event) =>
 
 			if Math.abs(event.deltaX) > Math.abs(event.deltaY) and Math.abs(event.deltaY) < 50

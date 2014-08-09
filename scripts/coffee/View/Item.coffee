@@ -47,3 +47,7 @@ module.exports = class Item
 			.setOpacity 1
 
 		@
+
+	remove: ->
+
+		@parentNode.node.removeChild @el.node

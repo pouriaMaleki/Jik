@@ -48,7 +48,7 @@ var utils = (function () {
 	};
 
 	me.prefixPointerEvent = function (pointerEvent) {
-		return window.MSPointerEvent ?
+		return window.MSPointerEvent ? 
 			'MSPointer' + pointerEvent.charAt(9).toUpperCase() + pointerEvent.substr(10):
 			pointerEvent;
 	};
@@ -258,7 +258,7 @@ function IScroll (el, options) {
 
 		snapThreshold: 0.334,
 
-// INSERT POINT: OPTIONS
+// INSERT POINT: OPTIONS 
 
 		startX: 0,
 		startY: 0,
@@ -313,9 +313,12 @@ function IScroll (el, options) {
 
 	this.options.invertWheelDirection = this.options.invertWheelDirection ? -1 : 1;
 
+	if ( this.options.probeType == 3 ) {
+		this.options.useTransition = false;	}
+
 // INSERT POINT: NORMALIZATION
 
-	// Some defaults
+	// Some defaults	
 	this.x = 0;
 	this.y = 0;
 	this.directionX = 0;
@@ -512,13 +515,19 @@ IScroll.prototype = {
 		this._translate(newX, newY);
 
 /* REPLACE START: _move */
-
 		if ( timestamp - this.startTime > 300 ) {
 			this.startTime = timestamp;
 			this.startX = this.x;
 			this.startY = this.y;
+
+			if ( this.options.probeType == 1 ) {
+				this._execEvent('scroll');
+			}
 		}
 
+		if ( this.options.probeType > 1 ) {
+			this._execEvent('scroll');
+		}
 /* REPLACE END: _move */
 
 	},
@@ -1113,6 +1122,10 @@ IScroll.prototype = {
 
 		this.scrollTo(newX, newY, 0);
 
+		if ( this.options.probeType > 1 ) {
+			this._execEvent('scroll');
+		}
+
 // INSERT POINT: _wheel
 	},
 
@@ -1501,7 +1514,7 @@ IScroll.prototype = {
 			if ( now >= destTime ) {
 				that.isAnimating = false;
 				that._translate(destX, destY);
-
+				
 				if ( !that.resetPosition(that.options.bounceTime) ) {
 					that._execEvent('scrollEnd');
 				}
@@ -1518,11 +1531,16 @@ IScroll.prototype = {
 			if ( that.isAnimating ) {
 				rAF(step);
 			}
+
+			if ( that.options.probeType == 3 ) {
+				that._execEvent('scroll');
+			}
 		}
 
 		this.isAnimating = true;
 		step();
 	},
+
 	handleEvent: function (e) {
 		switch ( e.type ) {
 			case 'touchstart':
@@ -1759,6 +1777,15 @@ Indicator.prototype = {
 
 		this._pos(newX, newY);
 
+
+		if ( this.scroller.options.probeType == 1 && timestamp - this.startTime > 300 ) {
+			this.startTime = timestamp;
+			this.scroller._execEvent('scroll');
+		} else if ( this.scroller.options.probeType > 1 ) {
+			this.scroller._execEvent('scroll');
+		}
+
+
 // INSERT POINT: indicator._move
 
 		e.preventDefault();
@@ -1870,7 +1897,7 @@ Indicator.prototype = {
 				this.maxBoundaryX = this.maxPosX;
 			}
 
-			this.sizeRatioX = this.options.speedRatioX || (this.scroller.maxScrollX && (this.maxPosX / this.scroller.maxScrollX));
+			this.sizeRatioX = this.options.speedRatioX || (this.scroller.maxScrollX && (this.maxPosX / this.scroller.maxScrollX));	
 		}
 
 		if ( this.options.listenY ) {
