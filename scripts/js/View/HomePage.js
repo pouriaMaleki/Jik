@@ -19,7 +19,14 @@ module.exports = HomePage = (function() {
     this.pullDown = Foxie('.pullDown').putIn(this.el).innerHTML('Refreshing');
     this.items = [];
     this.refresh = false;
-    this.loadMore = false;
+    this.loadMore = true;
+    this.viewPort = window.innerHeight;
+    document.addEventListener('resize', (function(_this) {
+      return function() {
+        _this.viewPort = window.innerHeight;
+        return _this.updateSize();
+      };
+    })(this));
     this.scroll = new Scrolla({
       maxStretch: 1000
     });
@@ -47,7 +54,14 @@ module.exports = HomePage = (function() {
         _this.el.moveYTo(_this.scroll.position);
         if (_this.scroll.position > 100) {
           _this.pullDown.innerHTML('Release to refresh');
-          return _this.refresh = true;
+          _this.refresh = true;
+        }
+        if (_this.scroll.position < _this.scroll.min) {
+          console.log('loadMore');
+          if (!_this.loadMore) {
+            _this.mainView.model.home.get();
+            return _this.loadMore = true;
+          }
         }
       };
     })(this));
@@ -56,6 +70,12 @@ module.exports = HomePage = (function() {
         if (_this.refresh) {
           _this.mainView.model.home.refresh();
           return _this.pullDown.innerHTML('Refreshing');
+        } else if (_this.scroll.position <= _this.scroll.min) {
+          console.log('loadMore');
+          if (!_this.loadMore) {
+            _this.mainView.model.home.get();
+            return _this.loadMore = true;
+          }
         } else if (_this.scroll.position === 0) {
           return _this.hidePullup();
         }
@@ -94,7 +114,8 @@ module.exports = HomePage = (function() {
   }
 
   HomePage.prototype.updateSize = function() {
-    return this.height = this.el.node.getBoundingClientRect().height;
+    this.height = this.el.node.getBoundingClientRect().height;
+    return this.scroll.setSizeAndSpace(this.height, this.viewPort);
   };
 
   HomePage.prototype.hidePullup = function() {

@@ -19,7 +19,15 @@ module.exports = class HomePage
 
 		@items = []
 		@refresh = no
-		@loadMore = no
+		@loadMore = yes
+
+		@viewPort = window.innerHeight
+
+		document.addEventListener 'resize', =>
+
+			@viewPort = window.innerHeight
+
+			do @updateSize
 
 		@scroll = new Scrolla maxStretch: 1000
 
@@ -54,13 +62,15 @@ module.exports = class HomePage
 
 				@refresh = yes
 
-			# if @scroll.position < @scroll.size
+			if @scroll.position < @scroll.min
 
-			# 	unless @loadMore
+				console.log 'loadMore'
 
-			# 		do @mainView.model.home.get
+				unless @loadMore
 
-			# 		@loadMore = yes
+					do @mainView.model.home.get
+
+					@loadMore = yes
 
 		@scroll.on 'end', =>
 
@@ -70,13 +80,15 @@ module.exports = class HomePage
 
 				@pullDown.innerHTML 'Refreshing'
 
-			# else if @scroll.position <= @scroll.size
+			else if @scroll.position <= @scroll.min
 
-			# 	unless @loadMore
+				console.log 'loadMore'
 
-			# 		do @mainView.model.home.get
+				unless @loadMore
 
-			# 		@loadMore = yes
+					do @mainView.model.home.get
+
+					@loadMore = yes
 
 			else if @scroll.position is 0
 
@@ -124,7 +136,7 @@ module.exports = class HomePage
 
 		@height = @el.node.getBoundingClientRect().height
 
-		# @scroll.setSizeAndSpace @height, @height
+		@scroll.setSizeAndSpace @height, @viewPort
 
 	hidePullup: ->
 
