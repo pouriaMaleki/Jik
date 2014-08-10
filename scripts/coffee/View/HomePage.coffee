@@ -43,6 +43,12 @@ module.exports = class HomePage
 
 		hammer.on 'pan', (arg) =>
 
+			if @scroll.position > 100
+
+				@pullDown.innerHTML 'Release to refresh'
+
+				@refresh = yes
+
 			@scroll.drag arg.deltaY - x
 			x = arg.deltaY
 
@@ -56,17 +62,11 @@ module.exports = class HomePage
 
 			@el.moveYTo @scroll.position
 
-			if @scroll.position > 100
-
-				@pullDown.innerHTML 'Release to refresh'
-
-				@refresh = yes
-
 			if @scroll.position < @scroll.min
 
 				unless @loadMore
 
-					do @mainView.model.home.get
+					do @mainView.model.home.loadmore
 
 					@loadMore = yes
 
@@ -82,7 +82,7 @@ module.exports = class HomePage
 
 				unless @loadMore
 
-					do @mainView.model.home.get
+					do @mainView.model.home.loadmore
 
 					@loadMore = yes
 
@@ -104,6 +104,27 @@ module.exports = class HomePage
 			@items = []
 
 			do @updateSize
+
+		@mainView.model.home.on 'home-load-more', (itemsData) =>
+
+			for itemData, i in itemsData
+
+				item = new Item[itemData.type] @mainView, @el, itemData
+				.hideMe()
+				.showMe(i * 50)
+
+				@items.push item
+
+			do @updateSize
+
+			@pullDown
+			.innerHTML 'Pull down to refresh'
+
+			if @loadMore is no
+
+				do @hidePullup
+
+			@loadMore = no
 
 		@mainView.model.home.on 'home-list', (itemsData) =>
 

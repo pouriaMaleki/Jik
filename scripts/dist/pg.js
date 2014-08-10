@@ -11001,6 +11001,16 @@ module.exports = HomeModel = (function(_super) {
     })(this), 2500);
   };
 
+  HomeModel.prototype.loadmore = function() {
+    return setTimeout((function(_this) {
+      return function() {
+        var json;
+        json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"}]';
+        return _this._emit('home-load-more', JSON.parse(json));
+      };
+    })(this), 1000);
+  };
+
   HomeModel.prototype.refresh = function() {
     this._emit('home-list-refresh');
     return this.get();
@@ -11354,6 +11364,10 @@ module.exports = HomePage = (function() {
     x = 0;
     hammer.on('pan', (function(_this) {
       return function(arg) {
+        if (_this.scroll.position > 100) {
+          _this.pullDown.innerHTML('Release to refresh');
+          _this.refresh = true;
+        }
         _this.scroll.drag(arg.deltaY - x);
         return x = arg.deltaY;
       };
@@ -11367,13 +11381,9 @@ module.exports = HomePage = (function() {
     this.scroll.on('position-change', (function(_this) {
       return function(event) {
         _this.el.moveYTo(_this.scroll.position);
-        if (_this.scroll.position > 100) {
-          _this.pullDown.innerHTML('Release to refresh');
-          _this.refresh = true;
-        }
         if (_this.scroll.position < _this.scroll.min) {
           if (!_this.loadMore) {
-            _this.mainView.model.home.get();
+            _this.mainView.model.home.loadmore();
             return _this.loadMore = true;
           }
         }
@@ -11386,7 +11396,7 @@ module.exports = HomePage = (function() {
           return _this.pullDown.innerHTML('Refreshing');
         } else if (_this.scroll.position <= _this.scroll.min) {
           if (!_this.loadMore) {
-            _this.mainView.model.home.get();
+            _this.mainView.model.home.loadmore();
             return _this.loadMore = true;
           }
         } else if (_this.scroll.position === 0) {
@@ -11406,6 +11416,22 @@ module.exports = HomePage = (function() {
         }
         _this.items = [];
         return _this.updateSize();
+      };
+    })(this));
+    this.mainView.model.home.on('home-load-more', (function(_this) {
+      return function(itemsData) {
+        var i, item, itemData, _i, _len;
+        for (i = _i = 0, _len = itemsData.length; _i < _len; i = ++_i) {
+          itemData = itemsData[i];
+          item = new Item[itemData.type](_this.mainView, _this.el, itemData).hideMe().showMe(i * 50);
+          _this.items.push(item);
+        }
+        _this.updateSize();
+        _this.pullDown.innerHTML('Pull down to refresh');
+        if (_this.loadMore === false) {
+          _this.hidePullup();
+        }
+        return _this.loadMore = false;
       };
     })(this));
     this.mainView.model.home.on('home-list', (function(_this) {
@@ -11620,9 +11646,6 @@ module.exports = Main = (function() {
     this.inside.putIn(this.el);
     this.homePage = new HomePage(this, this.ribbon.getPage(0));
     this.artistPage = new Artist(this, this.ribbon.getPage(1));
-    this.homePage = new HomePage(this, this.ribbon.getPage(2));
-    this.homePage = new HomePage(this, this.ribbon.getPage(3));
-    this.homePage = new HomePage(this, this.ribbon.getPage(4));
     this.musicPlayer = new MusicPlayer(this);
   }
 

@@ -39,6 +39,10 @@ module.exports = HomePage = (function() {
     x = 0;
     hammer.on('pan', (function(_this) {
       return function(arg) {
+        if (_this.scroll.position > 100) {
+          _this.pullDown.innerHTML('Release to refresh');
+          _this.refresh = true;
+        }
         _this.scroll.drag(arg.deltaY - x);
         return x = arg.deltaY;
       };
@@ -52,13 +56,9 @@ module.exports = HomePage = (function() {
     this.scroll.on('position-change', (function(_this) {
       return function(event) {
         _this.el.moveYTo(_this.scroll.position);
-        if (_this.scroll.position > 100) {
-          _this.pullDown.innerHTML('Release to refresh');
-          _this.refresh = true;
-        }
         if (_this.scroll.position < _this.scroll.min) {
           if (!_this.loadMore) {
-            _this.mainView.model.home.get();
+            _this.mainView.model.home.loadmore();
             return _this.loadMore = true;
           }
         }
@@ -71,7 +71,7 @@ module.exports = HomePage = (function() {
           return _this.pullDown.innerHTML('Refreshing');
         } else if (_this.scroll.position <= _this.scroll.min) {
           if (!_this.loadMore) {
-            _this.mainView.model.home.get();
+            _this.mainView.model.home.loadmore();
             return _this.loadMore = true;
           }
         } else if (_this.scroll.position === 0) {
@@ -91,6 +91,22 @@ module.exports = HomePage = (function() {
         }
         _this.items = [];
         return _this.updateSize();
+      };
+    })(this));
+    this.mainView.model.home.on('home-load-more', (function(_this) {
+      return function(itemsData) {
+        var i, item, itemData, _i, _len;
+        for (i = _i = 0, _len = itemsData.length; _i < _len; i = ++_i) {
+          itemData = itemsData[i];
+          item = new Item[itemData.type](_this.mainView, _this.el, itemData).hideMe().showMe(i * 50);
+          _this.items.push(item);
+        }
+        _this.updateSize();
+        _this.pullDown.innerHTML('Pull down to refresh');
+        if (_this.loadMore === false) {
+          _this.hidePullup();
+        }
+        return _this.loadMore = false;
       };
     })(this));
     this.mainView.model.home.on('home-list', (function(_this) {

@@ -20,9 +20,6 @@ module.exports = Main = (function() {
     this.inside.putIn(this.el);
     this.homePage = new HomePage(this, this.ribbon.getPage(0));
     this.artistPage = new Artist(this, this.ribbon.getPage(1));
-    this.homePage = new HomePage(this, this.ribbon.getPage(2));
-    this.homePage = new HomePage(this, this.ribbon.getPage(3));
-    this.homePage = new HomePage(this, this.ribbon.getPage(4));
     this.musicPlayer = new MusicPlayer(this);
   }
 

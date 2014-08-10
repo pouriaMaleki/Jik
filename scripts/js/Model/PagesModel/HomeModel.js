@@ -22,6 +22,16 @@ module.exports = HomeModel = (function(_super) {
     })(this), 2500);
   };
 
+  HomeModel.prototype.loadmore = function() {
+    return setTimeout((function(_this) {
+      return function() {
+        var json;
+        json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"}]';
+        return _this._emit('home-load-more', JSON.parse(json));
+      };
+    })(this), 1000);
+  };
+
   HomeModel.prototype.refresh = function() {
     this._emit('home-list-refresh');
     return this.get();

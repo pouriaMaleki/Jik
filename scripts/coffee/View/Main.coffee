@@ -26,8 +26,8 @@ module.exports = class Main
 
 		@homePage = new HomePage @, @ribbon.getPage(0)
 		@artistPage = new Artist @, @ribbon.getPage(1)
-		@homePage = new HomePage @, @ribbon.getPage(2)
-		@homePage = new HomePage @, @ribbon.getPage(3)
-		@homePage = new HomePage @, @ribbon.getPage(4)
+		# @homePage = new HomePage @, @ribbon.getPage(2)
+		# @homePage = new HomePage @, @ribbon.getPage(3)
+		# @homePage = new HomePage @, @ribbon.getPage(4)
 
 		@musicPlayer = new MusicPlayer @
