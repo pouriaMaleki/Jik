@@ -12,8 +12,6 @@ model = new Model;
 
 mainView = new MainView(model);
 
-model.getHomeList();
-
 /*
 //@ sourceMappingURL=1.map
 */

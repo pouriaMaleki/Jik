@@ -1,8 +1,10 @@
-var Foxie, HomePage, Main, MusicPlayer, Ribbon;
+var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon;
 
 Foxie = require('foxie');
 
 Ribbon = require('./Ribbon/Ribbon');
+
+Artist = require('./Artist');
 
 HomePage = require('./HomePage');
 
@@ -17,7 +19,7 @@ module.exports = Main = (function() {
     this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video']);
     this.inside.putIn(this.el);
     this.homePage = new HomePage(this, this.ribbon.getPage(0));
-    this.homePage = new HomePage(this, this.ribbon.getPage(1));
+    this.artistPage = new Artist(this, this.ribbon.getPage(1));
     this.homePage = new HomePage(this, this.ribbon.getPage(2));
     this.homePage = new HomePage(this, this.ribbon.getPage(3));
     this.homePage = new HomePage(this, this.ribbon.getPage(4));

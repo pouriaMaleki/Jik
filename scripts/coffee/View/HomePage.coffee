@@ -4,6 +4,8 @@ Item =
 	video: require './Item/VideoItem'
 	album: require './Item/AlbumItem'
 
+Scrolla = require './Scrolla'
+
 module.exports = class HomePage
 
 	constructor: (@mainView, @parentNode) ->
@@ -19,46 +21,71 @@ module.exports = class HomePage
 		@refresh = no
 		@loadMore = no
 
-		myscroll = new IScroll @parentNode.node,
+		@scroll = new Scrolla maxStretch: 1000
 
-			mouseWheel: true
-			probeType: 1
+		@scroll
+		.setLeftEdge 0
 
-		myscroll.scrollTo 0, parseInt(@pullDown.node.getBoundingClientRect.height)*(-1), 200
+		do @updateSize
 
-		myscroll.on 'scroll', =>
+		hammer = new Hammer @parentNode.node
+		hammer.get('pan').set({ direction: Hammer.DIRECTION_ALL })
 
-			if myscroll.y > 50
+		x = 0
+
+		hammer.on 'pan', (arg) =>
+
+			@scroll.drag arg.deltaY - x
+			x = arg.deltaY
+
+		hammer.on 'panend', (arg) =>
+
+			@scroll.release()
+
+			x = 0
+
+		@scroll.on 'position-change', (event) =>
+
+			@el.moveYTo @scroll.position
+
+			if @scroll.position > 100
 
 				@pullDown.innerHTML 'Release to refresh'
 
 				@refresh = yes
 
-			if myscroll.y < myscroll.maxScrollY
+			# if @scroll.position < @scroll.size
 
-				unless @loadMore
+			# 	unless @loadMore
 
-					do @mainView.model.getHomeList
+			# 		do @mainView.model.home.get
 
-					@loadMore = yes
+			# 		@loadMore = yes
 
-		myscroll.on 'scrollEnd', =>
+		@scroll.on 'end', =>
 
 			if @refresh
 
-				do @mainView.model.refreshHomeList
+				do @mainView.model.home.refresh
 
 				@pullDown.innerHTML 'Refreshing'
 
-			if myscroll.y <= myscroll.maxScrollY
+			# else if @scroll.position <= @scroll.size
 
-				unless @loadMore
+			# 	unless @loadMore
 
-					do @mainView.model.getHomeList
+			# 		do @mainView.model.home.get
 
-					@loadMore = yes
+			# 		@loadMore = yes
 
-		@mainView.model.on 'home-list-refresh', =>
+			else if @scroll.position is 0
+
+				do @hidePullup
+
+
+		do @hidePullup
+
+		@mainView.model.home.on 'home-list-refresh', =>
 
 			@refresh = no
 
@@ -68,7 +95,9 @@ module.exports = class HomePage
 
 			@items = []
 
-		@mainView.model.on 'home-list', (items) =>
+			do @updateSize
+
+		@mainView.model.home.on 'home-list', (items) =>
 
 			for item, i in items
 
@@ -78,17 +107,40 @@ module.exports = class HomePage
 
 				@items.push item
 
-				myscroll.refresh()
-
 				@pullDown
 				.innerHTML 'Pull down to refresh'
 
+			do @updateSize
+
 			if @loadMore is no
 
-				console.log 'here'
-
-				myscroll.scrollTo 0, -22, 200
+				do @hidePullup
 
 			@loadMore = no
 
 			return
+
+	updateSize: ->
+
+		@height = @el.node.getBoundingClientRect().height
+
+		# @scroll.setSizeAndSpace @height, @height
+
+	hidePullup: ->
+
+		offset = -22
+
+		setTimeout =>
+
+			@el
+			.trans 300
+			.moveYTo offset
+
+			setTimeout =>
+
+				@el.noTrans()
+				@scroll.setPosition offset
+
+			, 300
+
+		, 400

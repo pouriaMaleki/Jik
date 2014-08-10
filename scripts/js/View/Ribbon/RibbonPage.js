@@ -8,7 +8,6 @@ module.exports = RibbonPage = (function() {
     this.rootView = rootView;
     this.el = Foxie('.ribbon-page').putIn(this.rootView.inside).moveXTo(pos);
     hammer = new Hammer(this.el.node);
-    console.log(index);
     hammer.on('pan', (function(_this) {
       return function(event) {
         if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {

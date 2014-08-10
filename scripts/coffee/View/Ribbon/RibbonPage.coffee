@@ -10,8 +10,6 @@ module.exports = class RibbonPage
 
 		hammer = new Hammer @el.node
 
-		console.log index
-
 		hammer.on 'pan', (event) =>
 
 			if Math.abs(event.deltaX) > Math.abs(event.deltaY)

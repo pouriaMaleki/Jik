@@ -71,7 +71,6 @@ module.exports = Ribbon = (function() {
         var hammer;
         hammer = new Hammer(tit.el.node);
         hammer.on('tap', function(arg) {
-          console.log(num);
           return _this.rootView.model.page.activeTitle(num);
         });
       });

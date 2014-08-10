@@ -75,8 +75,6 @@ module.exports = class Ribbon
 
 			hammer.on 'tap', (arg) =>
 
-				console.log num
-
 				@rootView.model.page.activeTitle num
 
 			return

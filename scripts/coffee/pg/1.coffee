@@ -8,8 +8,6 @@ MainView = require '../View/Main'
 model = new Model
 mainView = new MainView model
 
-model.getHomeList()
-
 # Scrollable = require './View/scroll/scrollable'
 
 # @scroll = new Scrollable document.body

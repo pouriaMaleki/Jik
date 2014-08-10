@@ -1,4 +1,4 @@
-var Foxie, HomePage, Item;
+var Foxie, HomePage, Item, Scrolla;
 
 Foxie = require('foxie');
 
@@ -8,9 +8,11 @@ Item = {
   album: require('./Item/AlbumItem')
 };
 
+Scrolla = require('./Scrolla');
+
 module.exports = HomePage = (function() {
   function HomePage(mainView, parentNode) {
-    var myscroll;
+    var hammer, x;
     this.mainView = mainView;
     this.parentNode = parentNode;
     this.el = Foxie('.insider').putIn(this.parentNode);
@@ -18,40 +20,49 @@ module.exports = HomePage = (function() {
     this.items = [];
     this.refresh = false;
     this.loadMore = false;
-    myscroll = new IScroll(this.parentNode.node, {
-      mouseWheel: true,
-      probeType: 1
+    this.scroll = new Scrolla({
+      maxStretch: 1000
     });
-    myscroll.scrollTo(0, parseInt(this.pullDown.node.getBoundingClientRect.height) * (-1), 200);
-    myscroll.on('scroll', (function(_this) {
-      return function() {
-        if (myscroll.y > 50) {
+    this.scroll.setLeftEdge(0);
+    this.updateSize();
+    hammer = new Hammer(this.parentNode.node);
+    hammer.get('pan').set({
+      direction: Hammer.DIRECTION_ALL
+    });
+    x = 0;
+    hammer.on('pan', (function(_this) {
+      return function(arg) {
+        _this.scroll.drag(arg.deltaY - x);
+        return x = arg.deltaY;
+      };
+    })(this));
+    hammer.on('panend', (function(_this) {
+      return function(arg) {
+        _this.scroll.release();
+        return x = 0;
+      };
+    })(this));
+    this.scroll.on('position-change', (function(_this) {
+      return function(event) {
+        _this.el.moveYTo(_this.scroll.position);
+        if (_this.scroll.position > 100) {
           _this.pullDown.innerHTML('Release to refresh');
-          _this.refresh = true;
-        }
-        if (myscroll.y < myscroll.maxScrollY) {
-          if (!_this.loadMore) {
-            _this.mainView.model.getHomeList();
-            return _this.loadMore = true;
-          }
+          return _this.refresh = true;
         }
       };
     })(this));
-    myscroll.on('scrollEnd', (function(_this) {
+    this.scroll.on('end', (function(_this) {
       return function() {
         if (_this.refresh) {
-          _this.mainView.model.refreshHomeList();
-          _this.pullDown.innerHTML('Refreshing');
-        }
-        if (myscroll.y <= myscroll.maxScrollY) {
-          if (!_this.loadMore) {
-            _this.mainView.model.getHomeList();
-            return _this.loadMore = true;
-          }
+          _this.mainView.model.home.refresh();
+          return _this.pullDown.innerHTML('Refreshing');
+        } else if (_this.scroll.position === 0) {
+          return _this.hidePullup();
         }
       };
     })(this));
-    this.mainView.model.on('home-list-refresh', (function(_this) {
+    this.hidePullup();
+    this.mainView.model.home.on('home-list-refresh', (function(_this) {
       return function() {
         var item, _i, _len, _ref;
         _this.refresh = false;
@@ -60,27 +71,45 @@ module.exports = HomePage = (function() {
           item = _ref[_i];
           item.remove();
         }
-        return _this.items = [];
+        _this.items = [];
+        return _this.updateSize();
       };
     })(this));
-    this.mainView.model.on('home-list', (function(_this) {
+    this.mainView.model.home.on('home-list', (function(_this) {
       return function(items) {
         var i, item, _i, _len;
         for (i = _i = 0, _len = items.length; _i < _len; i = ++_i) {
           item = items[i];
           item = new Item[item.type](_this.mainView, _this.el, item).hideMe().showMe(i * 50);
           _this.items.push(item);
-          myscroll.refresh();
           _this.pullDown.innerHTML('Pull down to refresh');
         }
+        _this.updateSize();
         if (_this.loadMore === false) {
-          console.log('here');
-          myscroll.scrollTo(0, -22, 200);
+          _this.hidePullup();
         }
         _this.loadMore = false;
       };
     })(this));
   }
+
+  HomePage.prototype.updateSize = function() {
+    return this.height = this.el.node.getBoundingClientRect().height;
+  };
+
+  HomePage.prototype.hidePullup = function() {
+    var offset;
+    offset = -22;
+    return setTimeout((function(_this) {
+      return function() {
+        _this.el.trans(300).moveYTo(offset);
+        return setTimeout(function() {
+          _this.el.noTrans();
+          return _this.scroll.setPosition(offset);
+        }, 300);
+      };
+    })(this), 400);
+  };
 
   return HomePage;
 

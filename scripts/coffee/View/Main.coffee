@@ -1,5 +1,6 @@
 Foxie = require 'foxie'
 Ribbon = require './Ribbon/Ribbon'
+Artist = require './Artist'
 HomePage = require './HomePage'
 MusicPlayer = require './MusicPlayer'
 
@@ -24,7 +25,7 @@ module.exports = class Main
 		@inside.putIn @el
 
 		@homePage = new HomePage @, @ribbon.getPage(0)
-		@homePage = new HomePage @, @ribbon.getPage(1)
+		@artistPage = new Artist @, @ribbon.getPage(1)
 		@homePage = new HomePage @, @ribbon.getPage(2)
 		@homePage = new HomePage @, @ribbon.getPage(3)
 		@homePage = new HomePage @, @ribbon.getPage(4)
