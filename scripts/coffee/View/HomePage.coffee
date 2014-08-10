@@ -64,8 +64,6 @@ module.exports = class HomePage
 
 			if @scroll.position < @scroll.min
 
-				console.log 'loadMore'
-
 				unless @loadMore
 
 					do @mainView.model.home.get
@@ -81,8 +79,6 @@ module.exports = class HomePage
 				@pullDown.innerHTML 'Refreshing'
 
 			else if @scroll.position <= @scroll.min
-
-				console.log 'loadMore'
 
 				unless @loadMore
 
@@ -109,26 +105,36 @@ module.exports = class HomePage
 
 			do @updateSize
 
-		@mainView.model.home.on 'home-list', (items) =>
+		@mainView.model.home.on 'home-list', (itemsData) =>
 
-			for item, i in items
+			for itemData, i in itemsData
 
-				item = new Item[item.type] @mainView, @el, item
-				.hideMe()
-				.showMe(i * 50)
+				do (itemData, i) =>
 
-				@items.push item
+					setTimeout =>
 
-				@pullDown
-				.innerHTML 'Pull down to refresh'
+						item = new Item[itemData.type] @mainView, @el, itemData
+						.hideMe()
+						.showMe(i * 50)
 
-			do @updateSize
+						@items.push item
 
-			if @loadMore is no
+						do @updateSize
 
-				do @hidePullup
+					, 100 * i
 
-			@loadMore = no
+				setTimeout =>
+
+					@pullDown
+					.innerHTML 'Pull down to refresh'
+
+					if @loadMore is no
+
+						do @hidePullup
+
+					@loadMore = no
+
+				, 100 * i
 
 			return
 

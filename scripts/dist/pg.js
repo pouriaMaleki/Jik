@@ -11372,7 +11372,6 @@ module.exports = HomePage = (function() {
           _this.refresh = true;
         }
         if (_this.scroll.position < _this.scroll.min) {
-          console.log('loadMore');
           if (!_this.loadMore) {
             _this.mainView.model.home.get();
             return _this.loadMore = true;
@@ -11386,7 +11385,6 @@ module.exports = HomePage = (function() {
           _this.mainView.model.home.refresh();
           return _this.pullDown.innerHTML('Refreshing');
         } else if (_this.scroll.position <= _this.scroll.min) {
-          console.log('loadMore');
           if (!_this.loadMore) {
             _this.mainView.model.home.get();
             return _this.loadMore = true;
@@ -11411,19 +11409,27 @@ module.exports = HomePage = (function() {
       };
     })(this));
     this.mainView.model.home.on('home-list', (function(_this) {
-      return function(items) {
-        var i, item, _i, _len;
-        for (i = _i = 0, _len = items.length; _i < _len; i = ++_i) {
-          item = items[i];
-          item = new Item[item.type](_this.mainView, _this.el, item).hideMe().showMe(i * 50);
-          _this.items.push(item);
-          _this.pullDown.innerHTML('Pull down to refresh');
+      return function(itemsData) {
+        var i, itemData, _fn, _i, _len;
+        _fn = function(itemData, i) {
+          return setTimeout(function() {
+            var item;
+            item = new Item[itemData.type](_this.mainView, _this.el, itemData).hideMe().showMe(i * 50);
+            _this.items.push(item);
+            return _this.updateSize();
+          }, 100 * i);
+        };
+        for (i = _i = 0, _len = itemsData.length; _i < _len; i = ++_i) {
+          itemData = itemsData[i];
+          _fn(itemData, i);
+          setTimeout(function() {
+            _this.pullDown.innerHTML('Pull down to refresh');
+            if (_this.loadMore === false) {
+              _this.hidePullup();
+            }
+            return _this.loadMore = false;
+          }, 100 * i);
         }
-        _this.updateSize();
-        if (_this.loadMore === false) {
-          _this.hidePullup();
-        }
-        _this.loadMore = false;
       };
     })(this));
   }
