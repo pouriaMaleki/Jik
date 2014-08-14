@@ -1,8 +1,4 @@
-var MainView, Model, Pantomime, mainView, model, t;
-
-Pantomime = require('pantomime');
-
-t = new Pantomime.Touchy(document);
+var MainView, Model, mainView, model;
 
 Model = require('../Model/Model');
 

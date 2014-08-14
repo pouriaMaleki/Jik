@@ -23,8 +23,9 @@
   ],
   "dependencies": {
     "foxie": "~0.1.16",
-    "pantomime": "~0.0.0",
-    "utila": "~0.3.3"
+    "utila": "~0.3.3",
+    "timing-function": "*",
+    "raf-timing": "*"
   },
   "devDependencies": {
     "coffee-script": "~1.7.1",

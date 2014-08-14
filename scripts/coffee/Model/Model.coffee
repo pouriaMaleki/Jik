@@ -1,6 +1,6 @@
 _Emitter = require './_Emitter'
 MusicPlayerModel = require './MusicPlayerModel'
-PageModel = require './PageModel'
+TitleModel = require './TitleModel'
 HomeModel = require './PagesModel/HomeModel'
 ArtistModel = require './PagesModel/ArtistModel'
 AlbumModel = require './PagesModel/AlbumModel'
@@ -15,7 +15,7 @@ module.exports = class Model extends _Emitter
 
 		@musicPlayer = new MusicPlayerModel @
 
-		@page = new PageModel @
+		@page = new TitleModel @
 
 		@home = new HomeModel @
 		@artist = new ArtistModel @

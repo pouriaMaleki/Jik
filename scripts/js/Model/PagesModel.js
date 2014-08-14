@@ -17,6 +17,8 @@ module.exports = PagesModel = (function(_super) {
 
   PagesModel.prototype.refresh = function() {};
 
+  PagesModel.prototype.loadMore = function() {};
+
   return PagesModel;
 
 })(_Emitter);

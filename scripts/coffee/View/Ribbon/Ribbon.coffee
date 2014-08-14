@@ -1,6 +1,5 @@
 Foxie = require 'foxie'
 Title = require './Title'
-Pantomime = require 'pantomime'
 RibbonPage = require './RibbonPage'
 module.exports = class Ribbon
 

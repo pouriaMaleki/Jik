@@ -1,8 +1,6 @@
-var Foxie, MusicPlayer, Pantomime;
+var Foxie, MusicPlayer;
 
 Foxie = require('Foxie');
-
-Pantomime = require('pantomime');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {

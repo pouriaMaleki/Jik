@@ -4,9 +4,9 @@ Foxie = require('foxie');
 
 Ribbon = require('./Ribbon/Ribbon');
 
-Artist = require('./Artist');
+Artist = require('./Pages/Artist');
 
-HomePage = require('./HomePage');
+HomePage = require('./Pages/HomePage');
 
 MusicPlayer = require('./MusicPlayer');
 

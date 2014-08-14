@@ -1,7 +1,7 @@
 Foxie = require 'foxie'
 Ribbon = require './Ribbon/Ribbon'
-Artist = require './Artist'
-HomePage = require './HomePage'
+Artist = require './Pages/Artist'
+HomePage = require './Pages/HomePage'
 MusicPlayer = require './MusicPlayer'
 
 module.exports = class Main

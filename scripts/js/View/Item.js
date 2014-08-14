@@ -1,8 +1,6 @@
-var Foxie, Item, Pantomime;
+var Foxie, Item;
 
 Foxie = require('Foxie');
-
-Pantomime = require('pantomime');
 
 module.exports = Item = (function() {
   function Item(mainView, parentNode, data) {

@@ -1,5 +1,4 @@
 Foxie = require 'Foxie'
-Pantomime = require 'pantomime'
 
 module.exports = class MusicPlayer
 

@@ -1,10 +1,8 @@
-var Foxie, Pantomime, Ribbon, RibbonPage, Title;
+var Foxie, Ribbon, RibbonPage, Title;
 
 Foxie = require('foxie');
 
 Title = require('./Title');
-
-Pantomime = require('pantomime');
 
 RibbonPage = require('./RibbonPage');
 
