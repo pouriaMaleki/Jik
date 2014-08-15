@@ -1,6 +1,8 @@
-var Foxie, MusicPlayer;
+var Foxie, Lyric, MusicPlayer;
 
 Foxie = require('Foxie');
+
+Lyric = require('./MusicPlayer/Lyric');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
@@ -10,17 +12,20 @@ module.exports = MusicPlayer = (function() {
     this.height = window.innerHeight;
     this.showing = false;
     this.el = Foxie('.musicplayer').moveZTo(500).moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(this.mainView.el);
-    this.hideBtn = Foxie('.musicplayer-hide').putIn(this.el);
+    this.hideBtn = Foxie('.musicplayer-button.musicplayer-hide').putIn(this.el);
     this.songName = Foxie('.musicplayer-songname').putIn(this.el);
     this.artist = Foxie('.musicplayer-artist').putIn(this.el);
-    this.poster = Foxie('img.musicplayer-poster').putIn(this.el);
+    this.posterContainer = Foxie('.musicplayer-poster').putIn(this.el);
+    this.poster = Foxie('img').attr('draggable', 'false').putIn(this.posterContainer);
+    this.lyric = new Lyric(this.posterContainer, this.mainView.model.musicPlayer);
     this.buttons = Foxie('.musicplayer-buttons').putIn(this.el);
-    this.prev = Foxie('.musicplayer-prev').putIn(this.buttons);
-    this.play = Foxie('.musicplayer-play').putIn(this.buttons);
-    this.next = Foxie('.musicplayer-next').putIn(this.buttons);
+    this.prev = Foxie('.musicplayer-button.musicplayer-prev').putIn(this.buttons);
+    this.play = Foxie('.musicplayer-button.musicplayer-play').putIn(this.buttons);
+    this.next = Foxie('.musicplayer-button.musicplayer-next').putIn(this.buttons);
     window.addEventListener('resize', (function(_this) {
       return function(event) {
         _this.height = window.innerHeight;
+        _this.lyric.updateScrollSize();
         if (!_this.showing) {
           _this.forceHide();
         }
@@ -56,6 +61,12 @@ module.exports = MusicPlayer = (function() {
     this.mainView.model.musicPlayer.on('music-unpause', (function(_this) {
       return function() {
         _this.play.node.classList.remove('musicplayer-pause');
+      };
+    })(this));
+    this.mainView.model.musicPlayer.on('music-more-detail', (function(_this) {
+      return function(data) {
+        _this.lyric.text(data.lyric);
+        _this.lyric.updateScrollSize();
       };
     })(this));
   }

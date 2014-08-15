@@ -11,9 +11,15 @@ module.exports = MusicPlayerModel = (function(_super) {
     this.rootModel = rootModel;
     MusicPlayerModel.__super__.constructor.apply(this, arguments);
     this.playing = false;
+    this.lyricsShowing = false;
     this.playingId = 0;
     this.audioTag = document.createElement('audio');
     document.body.appendChild(this.audioTag);
+    setTimeout((function(_this) {
+      return function() {
+        return _this.play(JSON.parse('{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http://85.25.243.154/img/5oh2a70em-1404491150.jpeg","poster_big":"http://85.25.95.231/music/M/mostafa yeganeh/Gallery/[Medium]/bc6dsgnp-1404491150.jpg","year":"1393","url":"http://www.wikiseda.com/mostafa+yeganeh/-/Bavar+Kardani+Nist","mp3":"http://85.25.95.231/music/M/mostafa yeganeh/[one]/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http://85.25.95.231/music48/M/mostafa yeganeh/[one]/"}'));
+      };
+    })(this), 1000);
   }
 
   MusicPlayerModel.prototype.play = function(data) {
@@ -50,6 +56,16 @@ module.exports = MusicPlayerModel = (function(_super) {
         return _this._emit('music-more-detail', JSON.parse(json));
       };
     })(this), 2500);
+  };
+
+  MusicPlayerModel.prototype.toggleLyrics = function() {
+    if (this.lyricsShowing) {
+      this._emit('lyrics-hide');
+      return this.lyricsShowing = false;
+    } else {
+      this._emit('lyrics-show');
+      return this.lyricsShowing = true;
+    }
   };
 
   return MusicPlayerModel;

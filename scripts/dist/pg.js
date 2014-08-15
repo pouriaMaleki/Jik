@@ -10519,9 +10519,15 @@ module.exports = MusicPlayerModel = (function(_super) {
     this.rootModel = rootModel;
     MusicPlayerModel.__super__.constructor.apply(this, arguments);
     this.playing = false;
+    this.lyricsShowing = false;
     this.playingId = 0;
     this.audioTag = document.createElement('audio');
     document.body.appendChild(this.audioTag);
+    setTimeout((function(_this) {
+      return function() {
+        return _this.play(JSON.parse('{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http://85.25.243.154/img/5oh2a70em-1404491150.jpeg","poster_big":"http://85.25.95.231/music/M/mostafa yeganeh/Gallery/[Medium]/bc6dsgnp-1404491150.jpg","year":"1393","url":"http://www.wikiseda.com/mostafa+yeganeh/-/Bavar+Kardani+Nist","mp3":"http://85.25.95.231/music/M/mostafa yeganeh/[one]/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http://85.25.95.231/music48/M/mostafa yeganeh/[one]/"}'));
+      };
+    })(this), 1000);
   }
 
   MusicPlayerModel.prototype.play = function(data) {
@@ -10558,6 +10564,16 @@ module.exports = MusicPlayerModel = (function(_super) {
         return _this._emit('music-more-detail', JSON.parse(json));
       };
     })(this), 2500);
+  };
+
+  MusicPlayerModel.prototype.toggleLyrics = function() {
+    if (this.lyricsShowing) {
+      this._emit('lyrics-hide');
+      return this.lyricsShowing = false;
+    } else {
+      this._emit('lyrics-show');
+      return this.lyricsShowing = true;
+    }
   };
 
   return MusicPlayerModel;
@@ -10706,7 +10722,7 @@ module.exports = HomeModel = (function(_super) {
         json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"},{"id":"140809","type":"song","artist":"Masoud Emami","artist_id":"1905","songname":"Khoda Doosam Dasht","popularity":"3.6","ratecount":"9","view":"4457","time":"3:33","date":"1393-04-12","poster":"http:\/\/85.25.243.154\/img\/utxrohick-1404397432.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/Gallery\/[Medium]\/2u6wzwdn-1404397432.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Masoud+Emami\/-\/Khoda+Doosam+Dasht","mp3":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3"},{"id":"140785","type":"song","artist":"Amin Hayaei","artist_id":"12201","songname":"Owje Parvaz","popularity":"3.8","ratecount":"8","view":"2205","time":"5:22","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/gq9zswptj-1404332339.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/Gallery\/[Medium]\/qixdrptt-1404332339.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Amin+Hayaei\/-\/Owje+Parvaz","mp3":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3"},{"id":"140782","type":"song","artist":"Bakhtak Band","artist_id":"11623","songname":"Dame Sobh","popularity":"2.6","ratecount":"8","view":"2966","time":"3:27","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/1spygoohm-1404322313.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/Gallery\/[Medium]\/hxb0sre5-1404322313.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Bakhtak+Band\/-\/Dame+Sobh","mp3":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3"},{"id":"9826","type":"album","artist":"Mohsen-sharifian","artist_id":"631","album":"Dingue Marrow","trackcount":"9","popularity":"5","date":"1393-04-14","url":"http:\/\/www.wikiseda.com\/Mohsen-sharifian\/Dingue+Marrow","view":"551","poster":"http:\/\/85.25.243.154\/img\/un79cef6qp-1404554657.jpg","year":"1393"},{"id":"9821","type":"album","artist":"O-hum","artist_id":"3927","album":"Hafez In Love","trackcount":"4","popularity":"5","date":"1393-04-08","url":"http:\/\/www.wikiseda.com\/O-hum\/Hafez+In+Love","view":"1756","poster":"http:\/\/85.25.243.154\/img\/1xxwe9fwdz-1404025213.jpg","year":"1393"},{"id":"9809","type":"album","artist":"Alireza Ghorbani","artist_id":"472","album":"Raftamo Bare Safar Bastam","trackcount":"6","popularity":"4.7","date":"1393-04-02","url":"http:\/\/www.wikiseda.com\/Alireza+Ghorbani\/Raftamo+Bare+Safar+Bastam","view":"18170","poster":"http:\/\/85.25.243.154\/img\/pf2m3p18sw-1403542665.jpg","year":"1393"},{"id":"9807","type":"album","artist":"Salar Aghili","artist_id":"97","album":"Vatan","trackcount":"9","popularity":"4.8","date":"1393-03-31","url":"http:\/\/www.wikiseda.com\/Salar+Aghili\/Vatan","view":"10829","poster":"http:\/\/85.25.243.154\/img\/obldv0b5l4-1403360590.jpg","year":"1393"},{"id":"4023","type":"video","artist":"Matin do hanjare","poster":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/[Gallery]\/8c1e2f4f65d428d910ece8e1c83cbc26-3.jpg","time":"3:2","videoname":"Marg Bar Man","lowq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-l.mp4","highq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-h.mp4","popularity":"3.8","view":"2292","url":"http:\/\/www.wikiseda.com\/Matin+do+hanjare\/+video\/Marg+Bar+Man","year":"1393"},{"id":"4022","type":"video","artist":"Amir Farjam","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/[Gallery]\/5fddee48dfa042d0664b066720a71bda-3.jpg","time":"3:32","videoname":"KHodaya","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-h.mp4","popularity":"5","view":"1769","url":"http:\/\/www.wikiseda.com\/Amir+Farjam\/+video\/KHodaya","year":"1393"},{"id":"4021","type":"video","artist":"Emo Band","poster":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/[Gallery]\/6ab639b8fef2f4fe7f9841d6f8d9f70d-3.jpg","time":"4:34","videoname":"Donyamo Live","lowq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-l.mp4","highq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-h.mp4","popularity":"4.1","view":"1728","url":"http:\/\/www.wikiseda.com\/Emo+Band\/+video\/Donyamo+Live","year":"1393"},{"id":"4019","type":"video","artist":"Amir Tataloo","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/[Gallery]\/d2931b538ae36b30847c9c139610311a-3.jpg","time":"3:29","videoname":"Baa To","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-h.mp4","popularity":"4.2","view":"10730","url":"http:\/\/www.wikiseda.com\/Amir+Tataloo\/+video\/Baa+To","year":"1393"}]';
         return _this._emit('load', JSON.parse(json));
       };
-    })(this), 2500);
+    })(this), 200);
   };
 
   HomeModel.prototype.loadmore = function() {
@@ -11150,9 +11166,11 @@ module.exports = Main = (function() {
 */
 
 },{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
-var Foxie, MusicPlayer;
+var Foxie, Lyric, MusicPlayer;
 
 Foxie = require('Foxie');
+
+Lyric = require('./MusicPlayer/Lyric');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
@@ -11162,17 +11180,20 @@ module.exports = MusicPlayer = (function() {
     this.height = window.innerHeight;
     this.showing = false;
     this.el = Foxie('.musicplayer').moveZTo(500).moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(this.mainView.el);
-    this.hideBtn = Foxie('.musicplayer-hide').putIn(this.el);
+    this.hideBtn = Foxie('.musicplayer-button.musicplayer-hide').putIn(this.el);
     this.songName = Foxie('.musicplayer-songname').putIn(this.el);
     this.artist = Foxie('.musicplayer-artist').putIn(this.el);
-    this.poster = Foxie('img.musicplayer-poster').putIn(this.el);
+    this.posterContainer = Foxie('.musicplayer-poster').putIn(this.el);
+    this.poster = Foxie('img').attr('draggable', 'false').putIn(this.posterContainer);
+    this.lyric = new Lyric(this.posterContainer, this.mainView.model.musicPlayer);
     this.buttons = Foxie('.musicplayer-buttons').putIn(this.el);
-    this.prev = Foxie('.musicplayer-prev').putIn(this.buttons);
-    this.play = Foxie('.musicplayer-play').putIn(this.buttons);
-    this.next = Foxie('.musicplayer-next').putIn(this.buttons);
+    this.prev = Foxie('.musicplayer-button.musicplayer-prev').putIn(this.buttons);
+    this.play = Foxie('.musicplayer-button.musicplayer-play').putIn(this.buttons);
+    this.next = Foxie('.musicplayer-button.musicplayer-next').putIn(this.buttons);
     window.addEventListener('resize', (function(_this) {
       return function(event) {
         _this.height = window.innerHeight;
+        _this.lyric.updateScrollSize();
         if (!_this.showing) {
           _this.forceHide();
         }
@@ -11210,6 +11231,12 @@ module.exports = MusicPlayer = (function() {
         _this.play.node.classList.remove('musicplayer-pause');
       };
     })(this));
+    this.mainView.model.musicPlayer.on('music-more-detail', (function(_this) {
+      return function(data) {
+        _this.lyric.text(data.lyric);
+        _this.lyric.updateScrollSize();
+      };
+    })(this));
   }
 
   MusicPlayer.prototype.show = function(data) {
@@ -11241,7 +11268,88 @@ module.exports = MusicPlayer = (function() {
 //@ sourceMappingURL=MusicPlayer.map
 */
 
-},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js":[function(require,module,exports){
+},{"./MusicPlayer/Lyric":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer\\Lyric.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer\\Lyric.js":[function(require,module,exports){
+var Foxie, Lyric, Scrolla;
+
+Foxie = require('Foxie');
+
+Scrolla = require('../Scrolla');
+
+module.exports = Lyric = (function() {
+  function Lyric(parentNode, model) {
+    var lyricHammer, x;
+    this.parentNode = parentNode;
+    this.model = model;
+    this.el = Foxie('.musicplayer-lyric').innerHTML('Loading Lyric').setOpacity(0).trans(300).putIn(this.parentNode);
+    this.scroll = new Scrolla({
+      maxStretch: 500
+    });
+    this.updateScrollSize();
+    console.log(this.model);
+    x = 0;
+    lyricHammer = new Hammer(this.parentNode.node);
+    lyricHammer.on('tap', (function(_this) {
+      return function(arg) {
+        _this.model.toggleLyrics();
+      };
+    })(this));
+    lyricHammer.on('pan', (function(_this) {
+      return function(arg) {
+        _this.scroll.drag(arg.deltaY - x);
+        x = arg.deltaY;
+        arg.preventDefault();
+      };
+    })(this));
+    lyricHammer.on('panend', (function(_this) {
+      return function(arg) {
+        _this.scroll.release();
+        x = 0;
+      };
+    })(this));
+    this.scroll.on('position-change', (function(_this) {
+      return function(event) {
+        return _this.el.moveYTo(_this.scroll.position);
+      };
+    })(this));
+    this.model.on('lyrics-hide', (function(_this) {
+      return function() {
+        _this.hide();
+      };
+    })(this));
+    this.model.on('lyrics-show', (function(_this) {
+      return function() {
+        _this.show();
+      };
+    })(this));
+  }
+
+  Lyric.prototype.text = function(txt) {
+    return this.el.innerHTML(txt);
+  };
+
+  Lyric.prototype.updateScrollSize = function() {
+    this.posterHeight = this.parentNode.node.getBoundingClientRect().height;
+    this.lyricHeight = this.el.node.getBoundingClientRect().height;
+    return this.scroll.setSizeAndSpace(this.lyricHeight, this.posterHeight);
+  };
+
+  Lyric.prototype.hide = function() {
+    return this.el.setOpacity(0);
+  };
+
+  Lyric.prototype.show = function() {
+    return this.el.setOpacity(1);
+  };
+
+  return Lyric;
+
+})();
+
+/*
+//@ sourceMappingURL=Lyric.map
+*/
+
+},{"../Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js":[function(require,module,exports){
 var Foxie, Item, Pages, Scrolla;
 
 Foxie = require('foxie');
@@ -11536,14 +11644,21 @@ module.exports = Ribbon = (function() {
   }
 
   Ribbon.prototype.showPage = function(index) {
-    var title, _i, _len, _ref;
+    var i, title, _i, _len, _ref;
     this.rootView.inside.trans(700).moveXTo(index * (-1 * this.width));
     _ref = this.titles;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      title = _ref[_i];
-      title.inactive();
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      title = _ref[i];
+      if (i < index) {
+        title.moveTo(-200);
+      } else if (i === index + 1) {
+        title.moveTo(this.width - title.getWidth() + 10);
+      } else if (i > index + 1) {
+        title.moveTo(this.width);
+      } else {
+        title.moveTo(0);
+      }
     }
-    this.titles[index].active();
     return this.rootView.bg.moveXTo(index * -100 - 200);
   };
 
@@ -11552,18 +11667,8 @@ module.exports = Ribbon = (function() {
   };
 
   Ribbon.prototype.addTitle = function(title) {
-    var num, tit;
-    tit = new Title(this.el, title);
-    num = this.titles.length;
-    (function(_this) {
-      return (function(num) {
-        var hammer;
-        hammer = new Hammer(tit.el.node);
-        hammer.on('tap', function(arg) {
-          return _this.rootView.model.page.activeTitle(num);
-        });
-      });
-    })(this)(num);
+    var tit;
+    tit = new Title(this.el, title, this.width);
     return this.titles.push(tit);
   };
 
@@ -11627,17 +11732,26 @@ var Foxie, Title;
 Foxie = require('foxie');
 
 module.exports = Title = (function() {
-  function Title(parentNode, text) {
+  function Title(parentNode, text, width) {
     this.parentNode = parentNode;
-    this.el = Foxie('.ribbon-title-icons.ribbon-title-' + text).putIn(this.parentNode);
+    this.width = width;
+    this.el = Foxie('.ribbon-title-names').innerHTML(text).moveXTo(this.width).trans(300).putIn(this.parentNode);
   }
 
-  Title.prototype.active = function() {
-    return this.el.setOpacity(1);
+  Title.prototype.getWidth = function() {
+    if (this.myWidth != null) {
+      return this.myWidth;
+    }
+    return this.myWidth = this.el.node.getBoundingClientRect().width;
   };
 
-  Title.prototype.inactive = function() {
-    return this.el.setOpacity(.4);
+  Title.prototype.moveTo = function(x) {
+    return this.el.moveXTo(x);
+  };
+
+  Title.prototype.update = function(width) {
+    this.width = width;
+    return this.el.noTrans().moveXTo(this.width).trans(300);
   };
 
   return Title;

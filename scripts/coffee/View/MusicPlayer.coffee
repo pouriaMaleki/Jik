@@ -1,4 +1,5 @@
 Foxie = require 'Foxie'
+Lyric = require './MusicPlayer/Lyric'
 
 module.exports = class MusicPlayer
 
@@ -17,7 +18,7 @@ module.exports = class MusicPlayer
 		.perspective 4000
 		.putIn @mainView.el
 
-		@hideBtn = Foxie '.musicplayer-hide'
+		@hideBtn = Foxie '.musicplayer-button.musicplayer-hide'
 		.putIn @el
 
 		@songName = Foxie '.musicplayer-songname'
@@ -26,25 +27,33 @@ module.exports = class MusicPlayer
 		@artist = Foxie '.musicplayer-artist'
 		.putIn @el
 
-		@poster = Foxie 'img.musicplayer-poster'
+		@posterContainer = Foxie '.musicplayer-poster'
 		.putIn @el
+
+		@poster = Foxie 'img'
+		.attr 'draggable', 'false'
+		.putIn @posterContainer
+
+		@lyric = new Lyric @posterContainer, @mainView.model.musicPlayer
 
 		@buttons = Foxie '.musicplayer-buttons'
 		.putIn @el
 
-		@prev = Foxie '.musicplayer-prev'
+		@prev = Foxie '.musicplayer-button.musicplayer-prev'
 		.putIn @buttons
 
-		@play = Foxie '.musicplayer-play'
+		@play = Foxie '.musicplayer-button.musicplayer-play'
 		.putIn @buttons
 
-		@next = Foxie '.musicplayer-next'
+		@next = Foxie '.musicplayer-button.musicplayer-next'
 		.putIn @buttons
 
 
 		window.addEventListener 'resize', (event) =>
 
 			@height = window.innerHeight
+
+			do @lyric.updateScrollSize
 
 			do @forceHide unless @showing
 
@@ -84,6 +93,14 @@ module.exports = class MusicPlayer
 		@mainView.model.musicPlayer.on 'music-unpause', =>
 
 			@play.node.classList.remove 'musicplayer-pause'
+
+			return
+
+		@mainView.model.musicPlayer.on 'music-more-detail', (data) =>
+
+			@lyric.text data.lyric
+
+			do @lyric.updateScrollSize
 
 			return
 

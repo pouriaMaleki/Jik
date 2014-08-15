@@ -50,11 +50,23 @@ module.exports = class Ribbon
 		.trans 700
 		.moveXTo index * (-1 * @width)
 
-		for title in @titles
+		for title, i in @titles
 
-			do title.inactive
+			if i < index
 
-		do @titles[index].active
+				title.moveTo -200
+
+			else if i is index + 1
+
+				title.moveTo @width - title.getWidth() + 10
+
+			else if i > index + 1
+
+				title.moveTo @width
+
+			else
+
+				title.moveTo 0
 
 		@rootView.bg.moveXTo index * -100 - 200
 
@@ -64,18 +76,6 @@ module.exports = class Ribbon
 
 	addTitle: (title) ->
 
-		tit = new Title @el, title
-
-		num = @titles.length
-
-		do (num) =>
-
-			hammer = new Hammer tit.el.node
-
-			hammer.on 'tap', (arg) =>
-
-				@rootView.model.page.activeTitle num
-
-			return
+		tit = new Title @el, title, @width
 
 		@titles.push tit

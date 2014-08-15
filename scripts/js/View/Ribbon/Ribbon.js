@@ -45,14 +45,21 @@ module.exports = Ribbon = (function() {
   }
 
   Ribbon.prototype.showPage = function(index) {
-    var title, _i, _len, _ref;
+    var i, title, _i, _len, _ref;
     this.rootView.inside.trans(700).moveXTo(index * (-1 * this.width));
     _ref = this.titles;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      title = _ref[_i];
-      title.inactive();
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      title = _ref[i];
+      if (i < index) {
+        title.moveTo(-200);
+      } else if (i === index + 1) {
+        title.moveTo(this.width - title.getWidth() + 10);
+      } else if (i > index + 1) {
+        title.moveTo(this.width);
+      } else {
+        title.moveTo(0);
+      }
     }
-    this.titles[index].active();
     return this.rootView.bg.moveXTo(index * -100 - 200);
   };
 
@@ -61,18 +68,8 @@ module.exports = Ribbon = (function() {
   };
 
   Ribbon.prototype.addTitle = function(title) {
-    var num, tit;
-    tit = new Title(this.el, title);
-    num = this.titles.length;
-    (function(_this) {
-      return (function(num) {
-        var hammer;
-        hammer = new Hammer(tit.el.node);
-        hammer.on('tap', function(arg) {
-          return _this.rootView.model.page.activeTitle(num);
-        });
-      });
-    })(this)(num);
+    var tit;
+    tit = new Title(this.el, title, this.width);
     return this.titles.push(tit);
   };
 
