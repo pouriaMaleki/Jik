@@ -4,19 +4,14 @@ Foxie = require('Foxie');
 
 module.exports = Item = (function() {
   function Item(mainView, parentNode, data) {
-    var hammer;
     this.mainView = mainView;
     this.parentNode = parentNode;
-    this.el = Foxie('.item').perspective(4000).moveZTo(100).putIn(this.parentNode);
-    hammer = new Hammer(this.el.node);
-    hammer.on('tap', (function(_this) {
-      return function(arg) {
-        return _this.mainView.model.musicPlayer.play(data);
-      };
-    })(this));
+    this.el = Foxie('.item').perspective(4000);
+    this.hammer = new Hammer(this.el.node);
     this.title1 = Foxie('.item-songname').putIn(this.el);
     this.title2 = Foxie('.item-artist').innerHTML(data.artist).putIn(this.el);
     this.poster = Foxie('img.item-poster').attr('src', data.poster).putIn(this.el);
+    this.el.putIn(this.parentNode);
   }
 
   Item.prototype.hideMe = function() {

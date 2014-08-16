@@ -14,12 +14,11 @@ module.exports = Lyric = (function() {
       maxStretch: 500
     });
     this.updateScrollSize();
-    console.log(this.model);
     x = 0;
     lyricHammer = new Hammer(this.parentNode.node);
     lyricHammer.on('tap', (function(_this) {
       return function(arg) {
-        _this.model.toggleLyrics();
+        return _this.model.toggleLyrics();
       };
     })(this));
     lyricHammer.on('pan', (function(_this) {
@@ -42,12 +41,12 @@ module.exports = Lyric = (function() {
     })(this));
     this.model.on('lyrics-hide', (function(_this) {
       return function() {
-        _this.hide();
+        return _this.hide();
       };
     })(this));
     this.model.on('lyrics-show', (function(_this) {
       return function() {
-        _this.show();
+        return _this.show();
       };
     })(this));
   }

@@ -19,6 +19,11 @@ module.exports = VideoItem = (function(_super) {
     this.title2.node.classList.add('video-item-artist');
     this.title3 = Foxie('.video-item-time').innerHTML(data.time).putIn(this.el);
     this.poster.node.classList.add('video-item-poster');
+    this.hammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.musicPlayer.play(data);
+      };
+    })(this));
   }
 
   return VideoItem;

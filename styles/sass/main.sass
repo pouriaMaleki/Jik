@@ -1,21 +1,26 @@
 @font-face
 	font-family: 'HelveticaUltra'
 	src: url('../../fonts/ultrathin.woff') format('woff')
-	font-weight: normal
+	font-weight: 100
 	font-style: normal
+	font-stretch: normal
 
 @font-face
 	font-family: 'HelveticaThin'
 	src: url('../../fonts/thin.woff') format('woff')
-	font-weight: normal
+	font-weight: 200
 	font-style: normal
+	font-stretch: normal
 
 @font-face
 	font-family: 'HelveticaLight'
 	src: url('../../fonts/light.woff') format('woff')
-	font-weight: normal
+	font-weight: 300
 	font-style: normal
+	font-stretch: normal
+img
 
+	pointer-events: none
 
 html
 
@@ -29,7 +34,7 @@ body
 	width: 100%
 	margin: 0
 	padding: 0
-	font-family: 'HelveticaLight'
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif
 
 	color: white
 
@@ -38,7 +43,6 @@ body
 	-ms-user-select: none!important
 	user-select: none!important
 	cursor: default
-
 
 	// transform-style: preserve-3d
 
@@ -65,7 +69,7 @@ body
 		left: 0
 		right: -700px
 
-		background: black url(../../images/bg.jpg) 0 0 no-repeat
+		background: black url(../../images/bg.jpg) 0 0 repeat
 
 	.master-inside
 
@@ -82,7 +86,6 @@ body
 
 			height: 100%
 			width: 100%
-			z-index: 1
 
 			overflow: hidden
 
@@ -103,6 +106,8 @@ body
 
 				.pullDown
 
+					padding-left: 10px
+
 					// position: absolute
 					// top: -30px
 
@@ -118,7 +123,7 @@ body
 
 						position: absolute
 						left: 75px
-						top: 10px
+						top: 15px
 						font-size: 18px
 						white-space: nowrap
 
@@ -126,9 +131,9 @@ body
 
 						position: absolute
 						left: 75px
-						top: 40px
+						top: 45px
 						font-size: 18px
-						font-family: 'HelveticaThin'
+						font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif
 
 					.item-poster
 
@@ -154,10 +159,12 @@ body
 					.video-item-songname
 
 						left: 100px
+						top: 10px
 
 					.video-item-artist
 
 						left: 100px
+						top: 40px
 
 					.video-item-time
 
@@ -165,7 +172,7 @@ body
 						top: 70px
 						font-size: 18px
 						left: 100px
-						font-family: 'HelveticaThin'
+						font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif
 
 .musicplayer
 
@@ -176,7 +183,6 @@ body
 	height: 100%
 	width: 100%
 	text-align: center
-	z-index: 500
 
 	.musicplayer-songname
 
@@ -252,9 +258,39 @@ body
 
 			background: transparent url(../../images/pause.png) 0 0 no-repeat
 
+
 		.musicplayer-pause
 
 			background: transparent url(../../images/play.png) 0 0 no-repeat
+
+	.musicplayer-playtop
+
+		background: transparent url(../../images/pause.png) 0 0 no-repeat
+
+		position: absolute
+		top: 10px
+		right: 10px
+
+		background-size: cover
+		height: 28px
+		width: 28px
+
+	.musicplayer-pausetop
+
+		background: transparent url(../../images/play.png) 0 0 no-repeat
+
+	.musicplayer-postertop
+
+		position: absolute
+		top: 10px
+		left: 20px
+
+		height: 32px
+		width: 32px
+
+		border-radius: 50%
+		border: 1px solid rgba(255, 255, 255, .5)
+		box-sizing: padding-box
 
 	.musicplayer-hide
 
@@ -266,3 +302,50 @@ body
 		background-size: cover
 		height: 28px
 		width: 28px
+
+	.musicplayer-seekcontainer
+
+		position: absolute
+
+		left: 10px
+		right: 10px
+		bottom: 60px
+
+		height: 20px
+
+		overflow: hidden
+
+		.musicplayer-seekbar
+
+			position: absolute
+			top: 10px
+			left: 0
+			right: 0
+
+			height: 2px
+
+			background-color: #999
+
+		.musicplayer-seeker
+
+			position: absolute
+			top: 4px
+			left: 0
+			height: 10px
+			width: 10px
+
+			border-radius: 50%
+			border: 2px solid rgba(255, 255, 255, .5)
+
+			background-color: rgba(255,255,255,1)
+
+		.musicplayer-buffer
+
+			position: absolute
+			top: 10px
+			right: 0
+
+			height: 2px
+			width: 100%
+
+			background-color: #222

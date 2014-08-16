@@ -6,14 +6,9 @@ module.exports = class Item
 
 		@el = Foxie '.item'
 		.perspective 4000
-		.moveZTo 100
-		.putIn @parentNode
 
-		hammer = new Hammer @el.node
+		@hammer = new Hammer @el.node
 
-		hammer.on 'tap', (arg) =>
-
-			@mainView.model.musicPlayer.play(data)
 
 		@title1 = Foxie '.item-songname'
 		.putIn @el
@@ -25,6 +20,9 @@ module.exports = class Item
 		@poster = Foxie 'img.item-poster'
 		.attr 'src', data.poster
 		.putIn @el
+
+		@el
+		.putIn @parentNode
 
 	hideMe: ->
 

@@ -14,6 +14,11 @@ module.exports = SongItem = (function(_super) {
     this.parentNode = parentNode;
     SongItem.__super__.constructor.apply(this, arguments);
     this.title1.innerHTML(data.songname);
+    this.hammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.musicPlayer.play(data);
+      };
+    })(this));
   }
 
   return SongItem;

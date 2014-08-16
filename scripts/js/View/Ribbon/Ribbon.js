@@ -13,9 +13,9 @@ module.exports = Ribbon = (function() {
     this.t = t;
     this.width = window.innerWidth;
     this.ribbonBarSpace = 20;
-    this.el = Foxie('.ribbon').moveZTo(150).putIn(this.rootView.el);
+    this.el = Foxie('.ribbon').putIn(this.rootView.el);
     line = Foxie('.ribbon-line').putIn(this.el);
-    this.underLine = Foxie('.ribbon-underline').moveZTo(10).putIn(this.el);
+    this.underLine = Foxie('.ribbon-underline').putIn(this.el);
     this.titles = [];
     this.pages = [];
     _ref = this.t;

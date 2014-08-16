@@ -12,13 +12,11 @@ module.exports = class Main
 		.putIn document.body
 
 		@bg = Foxie '.master-bg'
-		.moveZTo 1
 		.moveXTo -200
 		.trans 300
 		.putIn @el
 
 		@inside = Foxie '.master-inside'
-		.moveZTo 100
 
 		@ribbon = new Ribbon @, ['home', 'artist', 'album', 'song', 'video']
 

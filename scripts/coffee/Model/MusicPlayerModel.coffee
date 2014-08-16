@@ -9,16 +9,24 @@ module.exports = class MusicPlayerModel extends _Emitter
 		@playing = false
 		@lyricsShowing = no
 		@playingId = 0
+		@seeking = no
 
 		@audioTag = document.createElement 'audio'
 		document.body.appendChild @audioTag
 
-		setTimeout =>
+		@audioTag.addEventListener 'timeupdate', (event) =>
 
-			@play JSON.parse '{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http://85.25.243.154/img/5oh2a70em-1404491150.jpeg","poster_big":"http://85.25.95.231/music/M/mostafa yeganeh/Gallery/[Medium]/bc6dsgnp-1404491150.jpg","year":"1393","url":"http://www.wikiseda.com/mostafa+yeganeh/-/Bavar+Kardani+Nist","mp3":"http://85.25.95.231/music/M/mostafa yeganeh/[one]/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http://85.25.95.231/music48/M/mostafa yeganeh/[one]/"}'
+			@_emit 'seeker-update', @audioTag.currentTime / @audioTag.duration
 
-		, 1000
+		@audioTag.addEventListener 'progress', (event) =>
 
+			try
+
+				@_emit 'buffer-update', @audioTag.buffered.end(@audioTag.buffered.length-1)  / @audioTag.duration
+
+	seekTo: (x) ->
+
+		@audioTag.currentTime = x * @audioTag.duration
 
 	play: (data) ->
 

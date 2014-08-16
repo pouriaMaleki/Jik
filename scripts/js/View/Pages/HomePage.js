@@ -29,7 +29,7 @@ module.exports = Home = (function(_super) {
     this.model.on('loadmore', (function(_this) {
       return function(itemsData) {
         _this.addMultiple(itemsData);
-        _this.doneLoad();
+        _this.doneLoad(true);
       };
     })(this));
     this.model.on('load', (function(_this) {

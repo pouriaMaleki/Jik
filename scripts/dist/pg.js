@@ -10521,14 +10521,26 @@ module.exports = MusicPlayerModel = (function(_super) {
     this.playing = false;
     this.lyricsShowing = false;
     this.playingId = 0;
+    this.seeking = false;
     this.audioTag = document.createElement('audio');
     document.body.appendChild(this.audioTag);
-    setTimeout((function(_this) {
-      return function() {
-        return _this.play(JSON.parse('{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http://85.25.243.154/img/5oh2a70em-1404491150.jpeg","poster_big":"http://85.25.95.231/music/M/mostafa yeganeh/Gallery/[Medium]/bc6dsgnp-1404491150.jpg","year":"1393","url":"http://www.wikiseda.com/mostafa+yeganeh/-/Bavar+Kardani+Nist","mp3":"http://85.25.95.231/music/M/mostafa yeganeh/[one]/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http://85.25.95.231/music48/M/mostafa yeganeh/[one]/"}'));
+    this.audioTag.addEventListener('timeupdate', (function(_this) {
+      return function(event) {
+        return _this._emit('seeker-update', _this.audioTag.currentTime / _this.audioTag.duration);
       };
-    })(this), 1000);
+    })(this));
+    this.audioTag.addEventListener('progress', (function(_this) {
+      return function(event) {
+        try {
+          return _this._emit('buffer-update', _this.audioTag.buffered.end(_this.audioTag.buffered.length - 1) / _this.audioTag.duration);
+        } catch (_error) {}
+      };
+    })(this));
   }
+
+  MusicPlayerModel.prototype.seekTo = function(x) {
+    return this.audioTag.currentTime = x * this.audioTag.duration;
+  };
 
   MusicPlayerModel.prototype.play = function(data) {
     this._emit('play-music', data);
@@ -11004,19 +11016,14 @@ Foxie = require('Foxie');
 
 module.exports = Item = (function() {
   function Item(mainView, parentNode, data) {
-    var hammer;
     this.mainView = mainView;
     this.parentNode = parentNode;
-    this.el = Foxie('.item').perspective(4000).moveZTo(100).putIn(this.parentNode);
-    hammer = new Hammer(this.el.node);
-    hammer.on('tap', (function(_this) {
-      return function(arg) {
-        return _this.mainView.model.musicPlayer.play(data);
-      };
-    })(this));
+    this.el = Foxie('.item').perspective(4000);
+    this.hammer = new Hammer(this.el.node);
     this.title1 = Foxie('.item-songname').putIn(this.el);
     this.title2 = Foxie('.item-artist').innerHTML(data.artist).putIn(this.el);
     this.poster = Foxie('img.item-poster').attr('src', data.poster).putIn(this.el);
+    this.el.putIn(this.parentNode);
   }
 
   Item.prototype.hideMe = function() {
@@ -11089,6 +11096,11 @@ module.exports = SongItem = (function(_super) {
     this.parentNode = parentNode;
     SongItem.__super__.constructor.apply(this, arguments);
     this.title1.innerHTML(data.songname);
+    this.hammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.musicPlayer.play(data);
+      };
+    })(this));
   }
 
   return SongItem;
@@ -11121,6 +11133,11 @@ module.exports = VideoItem = (function(_super) {
     this.title2.node.classList.add('video-item-artist');
     this.title3 = Foxie('.video-item-time').innerHTML(data.time).putIn(this.el);
     this.poster.node.classList.add('video-item-poster');
+    this.hammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.musicPlayer.play(data);
+      };
+    })(this));
   }
 
   return VideoItem;
@@ -11148,8 +11165,8 @@ module.exports = Main = (function() {
   function Main(model) {
     this.model = model;
     this.el = Foxie('.master').putIn(document.body);
-    this.bg = Foxie('.master-bg').moveZTo(1).moveXTo(-200).trans(300).putIn(this.el);
-    this.inside = Foxie('.master-inside').moveZTo(100);
+    this.bg = Foxie('.master-bg').moveXTo(-200).trans(300).putIn(this.el);
+    this.inside = Foxie('.master-inside');
     this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video']);
     this.inside.putIn(this.el);
     this.homePage = new HomePage(this, this.ribbon.getPage(0));
@@ -11166,26 +11183,52 @@ module.exports = Main = (function() {
 */
 
 },{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
-var Foxie, Lyric, MusicPlayer;
+var Foxie, Lyric, MusicPlayer, Seekbar;
 
 Foxie = require('Foxie');
 
 Lyric = require('./MusicPlayer/Lyric');
 
+Seekbar = require('./MusicPlayer/Seekbar');
+
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
-    var hideBtnHammer, playHammer;
+    var elHammer, hideBtnHammer, playHammer, playTopHammer;
     this.mainView = mainView;
     this.transTime = 700;
-    this.height = window.innerHeight;
     this.showing = false;
-    this.el = Foxie('.musicplayer').moveZTo(500).moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(this.mainView.el);
-    this.hideBtn = Foxie('.musicplayer-button.musicplayer-hide').putIn(this.el);
+    this.height = window.innerHeight;
+    this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(this.mainView.el);
+    elHammer = new Hammer(this.el.node);
+    elHammer.on('panup', (function(_this) {
+      return function(arg) {
+        if (!_this.showing) {
+          return _this.show();
+        }
+      };
+    })(this));
+    elHammer.on('pandown', (function(_this) {
+      return function(arg) {
+        return _this.hide();
+      };
+    })(this));
+    this.playTop = Foxie('.musicplayer-button.musicplayer-playtop').trans(500).putIn(this.el);
+    playTopHammer = new Hammer(this.playTop.node);
+    playTopHammer.on('tap', (function(_this) {
+      return function(arg) {
+        if (!_this.showing) {
+          return _this.mainView.model.musicPlayer.toggle();
+        }
+      };
+    })(this));
+    this.posterTop = Foxie('img.musicplayer-postertop').attr('draggable', 'false').setOpacity(0).trans(500).putIn(this.el);
+    this.hideBtn = Foxie('.musicplayer-button.musicplayer-hide').trans(500).putIn(this.el);
     this.songName = Foxie('.musicplayer-songname').putIn(this.el);
     this.artist = Foxie('.musicplayer-artist').putIn(this.el);
     this.posterContainer = Foxie('.musicplayer-poster').putIn(this.el);
     this.poster = Foxie('img').attr('draggable', 'false').putIn(this.posterContainer);
     this.lyric = new Lyric(this.posterContainer, this.mainView.model.musicPlayer);
+    this.seekbar = new Seekbar(this.el, this.mainView.model.musicPlayer);
     this.buttons = Foxie('.musicplayer-buttons').putIn(this.el);
     this.prev = Foxie('.musicplayer-button.musicplayer-prev').putIn(this.buttons);
     this.play = Foxie('.musicplayer-button.musicplayer-play').putIn(this.buttons);
@@ -11208,27 +11251,37 @@ module.exports = MusicPlayer = (function() {
     hideBtnHammer = new Hammer(this.hideBtn.node);
     hideBtnHammer.on('tap', (function(_this) {
       return function(arg) {
-        return _this.hide();
+        if (_this.showing) {
+          return _this.hide();
+        } else {
+          if (_this.mainView.model.musicPlayer.playing) {
+            return _this.show();
+          } else {
+            return _this.hide();
+          }
+        }
       };
     })(this));
     this.mainView.model.musicPlayer.on('show-player', (function(_this) {
       return function() {
-        _this.show();
+        return _this.show();
       };
     })(this));
     this.mainView.model.musicPlayer.on('play-music', (function(_this) {
       return function(data) {
-        _this.show(data);
+        return _this.show(data);
       };
     })(this));
     this.mainView.model.musicPlayer.on('music-pause', (function(_this) {
       return function() {
         _this.play.node.classList.add('musicplayer-pause');
+        _this.playTop.node.classList.add('musicplayer-pausetop');
       };
     })(this));
     this.mainView.model.musicPlayer.on('music-unpause', (function(_this) {
       return function() {
         _this.play.node.classList.remove('musicplayer-pause');
+        _this.playTop.node.classList.remove('musicplayer-pausetop');
       };
     })(this));
     this.mainView.model.musicPlayer.on('music-more-detail', (function(_this) {
@@ -11240,24 +11293,48 @@ module.exports = MusicPlayer = (function() {
   }
 
   MusicPlayer.prototype.show = function(data) {
+    if (this.mainView.model.musicPlayer.seeking) {
+      return;
+    }
     this.showing = true;
     this.el.moveYTo(0);
-    if (data === null) {
+    this.playTop.setOpacity(0);
+    this.posterTop.setOpacity(0);
+    this.hideBtn.setOpacity(1);
+    if (data == null) {
       return;
     }
     this.songName.innerHTML(data.songname);
     this.artist.innerHTML(data.artist);
-    return this.poster.attr('src', data.poster_big);
+    this.poster.attr('src', data.poster_big);
+    return this.posterTop.attr('src', data.poster);
   };
 
   MusicPlayer.prototype.hide = function() {
+    if (this.mainView.model.musicPlayer.seeking) {
+      return;
+    }
     this.showing = false;
-    return this.el.moveYTo(this.height);
+    if (this.mainView.model.musicPlayer.playing) {
+      this.el.moveYTo(this.height - 50);
+    } else {
+      this.el.moveYTo(this.height);
+    }
+    this.playTop.setOpacity(1);
+    this.posterTop.setOpacity(1);
+    return this.hideBtn.setOpacity(0);
   };
 
   MusicPlayer.prototype.forceHide = function() {
     this.showing = false;
-    return this.el.noTrans().moveYTo(this.height).trans(this.transTime);
+    if (this.mainView.model.musicPlayer.playing) {
+      this.el.noTrans().moveYTo(this.height - 50).trans(this.transTime);
+    } else {
+      this.el.noTrans().moveYTo(this.height).trans(this.transTime);
+    }
+    this.playTop.setOpacity(1);
+    this.posterTop.setOpacity(1);
+    return this.hideBtn.setOpacity(0);
   };
 
   return MusicPlayer;
@@ -11268,7 +11345,7 @@ module.exports = MusicPlayer = (function() {
 //@ sourceMappingURL=MusicPlayer.map
 */
 
-},{"./MusicPlayer/Lyric":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer\\Lyric.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer\\Lyric.js":[function(require,module,exports){
+},{"./MusicPlayer/Lyric":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer\\Lyric.js","./MusicPlayer/Seekbar":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer\\Seekbar.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer\\Lyric.js":[function(require,module,exports){
 var Foxie, Lyric, Scrolla;
 
 Foxie = require('Foxie');
@@ -11285,12 +11362,11 @@ module.exports = Lyric = (function() {
       maxStretch: 500
     });
     this.updateScrollSize();
-    console.log(this.model);
     x = 0;
     lyricHammer = new Hammer(this.parentNode.node);
     lyricHammer.on('tap', (function(_this) {
       return function(arg) {
-        _this.model.toggleLyrics();
+        return _this.model.toggleLyrics();
       };
     })(this));
     lyricHammer.on('pan', (function(_this) {
@@ -11313,12 +11389,12 @@ module.exports = Lyric = (function() {
     })(this));
     this.model.on('lyrics-hide', (function(_this) {
       return function() {
-        _this.hide();
+        return _this.hide();
       };
     })(this));
     this.model.on('lyrics-show', (function(_this) {
       return function() {
-        _this.show();
+        return _this.show();
       };
     })(this));
   }
@@ -11349,7 +11425,79 @@ module.exports = Lyric = (function() {
 //@ sourceMappingURL=Lyric.map
 */
 
-},{"../Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js":[function(require,module,exports){
+},{"../Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer\\Seekbar.js":[function(require,module,exports){
+var Foxie, Seekbar;
+
+Foxie = require('Foxie');
+
+module.exports = Seekbar = (function() {
+  function Seekbar(parentNode, model) {
+    var elHammer, seekerHammer;
+    this.parentNode = parentNode;
+    this.model = model;
+    this.el = Foxie('.musicplayer-seekcontainer').putIn(this.parentNode);
+    this.seekbar = Foxie('.musicplayer-seekbar').putIn(this.el);
+    this.buffer = Foxie('.musicplayer-buffer').putIn(this.el);
+    this.seeker = Foxie('.musicplayer-seeker').putIn(this.el);
+    this.updateSize();
+    elHammer = new Hammer(this.el.node);
+    elHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.model.seekTo(arg.srcEvent.layerX / _this.width);
+      };
+    })(this));
+    elHammer.on('pan', (function(_this) {
+      return function(arg) {
+        _this.model.seekTo(arg.deltaX / _this.width);
+        return _this.model.seeking = true;
+      };
+    })(this));
+    elHammer.on('panend', (function(_this) {
+      return function(arg) {
+        return setTimeout(function() {
+          return _this.model.seeking = false;
+        });
+      };
+    })(this), 100);
+    seekerHammer = new Hammer(this.seeker.node);
+    seekerHammer.on('pan', (function(_this) {
+      return function(arg) {
+        _this.model.seekTo(arg.deltaX / _this.width);
+        return _this.model.seeking = true;
+      };
+    })(this));
+    seekerHammer.on('panend', (function(_this) {
+      return function(arg) {
+        return setTimeout(function() {
+          return _this.model.seeking = false;
+        });
+      };
+    })(this), 100);
+    this.model.on('seeker-update', (function(_this) {
+      return function(cent) {
+        return _this.seeker.moveXTo(cent * _this.width);
+      };
+    })(this));
+    this.model.on('buffer-update', (function(_this) {
+      return function(cent) {
+        return _this.buffer.moveXTo(cent * _this.width);
+      };
+    })(this));
+  }
+
+  Seekbar.prototype.updateSize = function() {
+    return this.width = this.seekbar.node.getBoundingClientRect().width;
+  };
+
+  return Seekbar;
+
+})();
+
+/*
+//@ sourceMappingURL=Seekbar.map
+*/
+
+},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js":[function(require,module,exports){
 var Foxie, Item, Pages, Scrolla;
 
 Foxie = require('foxie');
@@ -11394,6 +11542,9 @@ module.exports = Pages = (function() {
         if (_this.scroll.position > 100) {
           _this.pullDown.innerHTML('Release to refresh');
           _this.refresh = true;
+        } else {
+          _this.pullDown.innerHTML('Pull down to refresh');
+          _this.refresh = false;
         }
         _this.scroll.drag(arg.deltaY - x);
         return x = arg.deltaY;
@@ -11426,7 +11577,7 @@ module.exports = Pages = (function() {
             _this.model.loadmore();
             return _this.loadMore = true;
           }
-        } else if (_this.scroll.position === 0) {
+        } else if (_this.scroll.position > -22) {
           return _this.hidePullup();
         }
       };
@@ -11471,14 +11622,19 @@ module.exports = Pages = (function() {
     })(this), 400);
   };
 
-  Pages.prototype.doneLoad = function() {
+  Pages.prototype.doneLoad = function(more) {
+    if (more == null) {
+      more = false;
+    }
     this.pullDown.innerHTML('Pull down to refresh');
     if (this.loadMore === false) {
       this.hidePullup();
     }
     this.loadMore = false;
     this.updateSize();
-    return this.hidePullup();
+    if (!more) {
+      return this.hidePullup();
+    }
   };
 
   Pages.prototype.doneRefresh = function() {
@@ -11526,7 +11682,7 @@ module.exports = Artist = (function(_super) {
     this.model.on('loadmore', (function(_this) {
       return function(itemsData) {
         _this.addMultiple(itemsData);
-        _this.doneLoad();
+        _this.doneLoad(true);
       };
     })(this));
     this.model.on('load', (function(_this) {
@@ -11577,7 +11733,7 @@ module.exports = Home = (function(_super) {
     this.model.on('loadmore', (function(_this) {
       return function(itemsData) {
         _this.addMultiple(itemsData);
-        _this.doneLoad();
+        _this.doneLoad(true);
       };
     })(this));
     this.model.on('load', (function(_this) {
@@ -11612,9 +11768,9 @@ module.exports = Ribbon = (function() {
     this.t = t;
     this.width = window.innerWidth;
     this.ribbonBarSpace = 20;
-    this.el = Foxie('.ribbon').moveZTo(150).putIn(this.rootView.el);
+    this.el = Foxie('.ribbon').putIn(this.rootView.el);
     line = Foxie('.ribbon-line').putIn(this.el);
-    this.underLine = Foxie('.ribbon-underline').moveZTo(10).putIn(this.el);
+    this.underLine = Foxie('.ribbon-underline').putIn(this.el);
     this.titles = [];
     this.pages = [];
     _ref = this.t;

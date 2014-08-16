@@ -42,6 +42,9 @@ module.exports = Pages = (function() {
         if (_this.scroll.position > 100) {
           _this.pullDown.innerHTML('Release to refresh');
           _this.refresh = true;
+        } else {
+          _this.pullDown.innerHTML('Pull down to refresh');
+          _this.refresh = false;
         }
         _this.scroll.drag(arg.deltaY - x);
         return x = arg.deltaY;
@@ -74,7 +77,7 @@ module.exports = Pages = (function() {
             _this.model.loadmore();
             return _this.loadMore = true;
           }
-        } else if (_this.scroll.position === 0) {
+        } else if (_this.scroll.position > -22) {
           return _this.hidePullup();
         }
       };
@@ -119,14 +122,19 @@ module.exports = Pages = (function() {
     })(this), 400);
   };
 
-  Pages.prototype.doneLoad = function() {
+  Pages.prototype.doneLoad = function(more) {
+    if (more == null) {
+      more = false;
+    }
     this.pullDown.innerHTML('Pull down to refresh');
     if (this.loadMore === false) {
       this.hidePullup();
     }
     this.loadMore = false;
     this.updateSize();
-    return this.hidePullup();
+    if (!more) {
+      return this.hidePullup();
+    }
   };
 
   Pages.prototype.doneRefresh = function() {

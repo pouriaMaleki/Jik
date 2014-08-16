@@ -22,3 +22,6 @@ module.exports = class VideoItem extends Item
 		.putIn @el
 
 		@poster.node.classList.add 'video-item-poster'
+
+		@hammer.on 'tap', (arg) => @mainView.model.musicPlayer.play(data)
+

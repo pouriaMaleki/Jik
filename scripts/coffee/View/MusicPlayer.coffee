@@ -1,24 +1,41 @@
 Foxie = require 'Foxie'
 Lyric = require './MusicPlayer/Lyric'
+Seekbar = require './MusicPlayer/Seekbar'
 
 module.exports = class MusicPlayer
 
 	constructor: (@mainView) ->
 
 		@transTime = 700
+		@showing = false
 
 		@height = window.innerHeight
 
-		@showing = false
-
 		@el = Foxie '.musicplayer'
-		.moveZTo 500
 		.moveYTo @height
 		.trans @transTime
 		.perspective 4000
 		.putIn @mainView.el
 
+		elHammer = new Hammer @el.node
+		elHammer.on 'panup', (arg) => do @show unless @showing
+		elHammer.on 'pandown', (arg) => do @hide
+
+		@playTop = Foxie '.musicplayer-button.musicplayer-playtop'
+		.trans 500
+		.putIn @el
+
+		playTopHammer = new Hammer @playTop.node
+		playTopHammer.on 'tap', (arg) => @mainView.model.musicPlayer.toggle() unless @showing
+
+		@posterTop = Foxie 'img.musicplayer-postertop'
+		.attr 'draggable', 'false'
+		.setOpacity 0
+		.trans 500
+		.putIn @el
+
 		@hideBtn = Foxie '.musicplayer-button.musicplayer-hide'
+		.trans 500
 		.putIn @el
 
 		@songName = Foxie '.musicplayer-songname'
@@ -35,6 +52,7 @@ module.exports = class MusicPlayer
 		.putIn @posterContainer
 
 		@lyric = new Lyric @posterContainer, @mainView.model.musicPlayer
+		@seekbar = new Seekbar @el, @mainView.model.musicPlayer
 
 		@buttons = Foxie '.musicplayer-buttons'
 		.putIn @el
@@ -48,7 +66,6 @@ module.exports = class MusicPlayer
 		@next = Foxie '.musicplayer-button.musicplayer-next'
 		.putIn @buttons
 
-
 		window.addEventListener 'resize', (event) =>
 
 			@height = window.innerHeight
@@ -59,40 +76,42 @@ module.exports = class MusicPlayer
 
 			return
 
-
 		playHammer = new Hammer @play.node
-
-		playHammer.on 'tap', (arg) =>
-
-			@mainView.model.musicPlayer.toggle()
+		playHammer.on 'tap', (arg) => @mainView.model.musicPlayer.toggle()
 
 		hideBtnHammer = new Hammer @hideBtn.node
-
 		hideBtnHammer.on 'tap', (arg) =>
 
-			@hide()
+			if @showing
 
-		@mainView.model.musicPlayer.on 'show-player', =>
+				do @hide
 
-			@show()
+			else
 
-			return
+				if @mainView.model.musicPlayer.playing
 
-		@mainView.model.musicPlayer.on 'play-music', (data) =>
+					do @show
 
-			@show(data)
+				else
 
-			return
+					do @hide
+
+
+		@mainView.model.musicPlayer.on 'show-player', => @show()
+
+		@mainView.model.musicPlayer.on 'play-music', (data) => @show(data)
 
 		@mainView.model.musicPlayer.on 'music-pause', =>
 
 			@play.node.classList.add 'musicplayer-pause'
+			@playTop.node.classList.add 'musicplayer-pausetop'
 
 			return
 
 		@mainView.model.musicPlayer.on 'music-unpause', =>
 
 			@play.node.classList.remove 'musicplayer-pause'
+			@playTop.node.classList.remove 'musicplayer-pausetop'
 
 			return
 
@@ -107,12 +126,23 @@ module.exports = class MusicPlayer
 
 	show: (data) ->
 
+		return if @mainView.model.musicPlayer.seeking
+
 		@showing = true
 
 		@el
 		.moveYTo 0
 
-		return if data is null
+		@playTop
+		.setOpacity 0
+
+		@posterTop
+		.setOpacity 0
+
+		@hideBtn
+		.setOpacity 1
+
+		return unless data?
 
 		@songName
 		.innerHTML data.songname
@@ -123,18 +153,56 @@ module.exports = class MusicPlayer
 		@poster
 		.attr 'src', data.poster_big
 
+		@posterTop
+		.attr 'src', data.poster
+
 	hide: ->
+
+		return if @mainView.model.musicPlayer.seeking
 
 		@showing = false
 
-		@el
-		.moveYTo @height
+		if @mainView.model.musicPlayer.playing
+
+			@el.moveYTo @height - 50
+
+		else
+
+			@el.moveYTo @height
+
+		@playTop
+		.setOpacity 1
+
+		@posterTop
+		.setOpacity 1
+
+		@hideBtn
+		.setOpacity 0
 
 	forceHide: ->
 
 		@showing = false
 
-		@el
-		.noTrans()
-		.moveYTo @height
-		.trans @transTime
+		if @mainView.model.musicPlayer.playing
+
+			@el
+			.noTrans()
+			.moveYTo @height - 50
+			.trans @transTime
+
+		else
+
+			@el
+			.noTrans()
+			.moveYTo @height
+			.trans @transTime
+
+
+		@playTop
+		.setOpacity 1
+
+		@posterTop
+		.setOpacity 1
+
+		@hideBtn
+		.setOpacity 0
