@@ -10,6 +10,8 @@ module.exports = TitleModel = (function(_super) {
   function TitleModel() {
     TitleModel.__super__.constructor.apply(this, arguments);
     this.currentActive = 0;
+    this.rightSwipe = false;
+    this.settings = false;
   }
 
   TitleModel.prototype.activeTitle = function(title) {
@@ -31,6 +33,36 @@ module.exports = TitleModel = (function(_super) {
       this.currentActive++;
     }
     return this._emit('page-active', this.currentActive);
+  };
+
+  TitleModel.prototype.showRightSwipe = function() {
+    this.rightSwipe = true;
+    return this._emit('right-swipe', this.rightSwipe);
+  };
+
+  TitleModel.prototype.hideRightSwipe = function() {
+    this.rightSwipe = false;
+    return this._emit('right-swipe', this.rightSwipe);
+  };
+
+  TitleModel.prototype.toggleRightSwipe = function() {
+    this.rightSwipe = !this.rightSwipe;
+    return this._emit('right-swipe', this.rightSwipe);
+  };
+
+  TitleModel.prototype.showSettings = function() {
+    this.settings = true;
+    return this._emit('settings', this.settings);
+  };
+
+  TitleModel.prototype.hideSettings = function() {
+    this.settings = false;
+    return this._emit('settings', this.settings);
+  };
+
+  TitleModel.prototype.toggleSettings = function() {
+    this.settings = !this.settings;
+    return this._emit('settings', this.settings);
   };
 
   return TitleModel;

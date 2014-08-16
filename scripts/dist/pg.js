@@ -10859,6 +10859,8 @@ module.exports = TitleModel = (function(_super) {
   function TitleModel() {
     TitleModel.__super__.constructor.apply(this, arguments);
     this.currentActive = 0;
+    this.rightSwipe = false;
+    this.settings = false;
   }
 
   TitleModel.prototype.activeTitle = function(title) {
@@ -10880,6 +10882,36 @@ module.exports = TitleModel = (function(_super) {
       this.currentActive++;
     }
     return this._emit('page-active', this.currentActive);
+  };
+
+  TitleModel.prototype.showRightSwipe = function() {
+    this.rightSwipe = true;
+    return this._emit('right-swipe', this.rightSwipe);
+  };
+
+  TitleModel.prototype.hideRightSwipe = function() {
+    this.rightSwipe = false;
+    return this._emit('right-swipe', this.rightSwipe);
+  };
+
+  TitleModel.prototype.toggleRightSwipe = function() {
+    this.rightSwipe = !this.rightSwipe;
+    return this._emit('right-swipe', this.rightSwipe);
+  };
+
+  TitleModel.prototype.showSettings = function() {
+    this.settings = true;
+    return this._emit('settings', this.settings);
+  };
+
+  TitleModel.prototype.hideSettings = function() {
+    this.settings = false;
+    return this._emit('settings', this.settings);
+  };
+
+  TitleModel.prototype.toggleSettings = function() {
+    this.settings = !this.settings;
+    return this._emit('settings', this.settings);
   };
 
   return TitleModel;
@@ -11159,7 +11191,7 @@ module.exports = VideoItem = (function(_super) {
 */
 
 },{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Main.js":[function(require,module,exports){
-var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe;
+var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings;
 
 Foxie = require('foxie');
 
@@ -11169,9 +11201,11 @@ Artist = require('./Pages/Artist');
 
 HomePage = require('./Pages/HomePage');
 
-MusicPlayer = require('./MusicPlayer');
+Settings = require('./Settings');
 
 RightSwipe = require('./RightSwipe');
+
+MusicPlayer = require('./MusicPlayer');
 
 module.exports = Main = (function() {
   function Main(model) {
@@ -11183,8 +11217,9 @@ module.exports = Main = (function() {
     this.inside.putIn(this.el);
     this.homePage = new HomePage(this, this.ribbon.getPage(0));
     this.artistPage = new Artist(this, this.ribbon.getPage(1));
-    this.musicPlayer = new MusicPlayer(this);
     this.rightSwipe = new RightSwipe(this);
+    this.musicPlayer = new MusicPlayer(this);
+    this.settings = new Settings(this);
   }
 
   return Main;
@@ -11195,7 +11230,7 @@ module.exports = Main = (function() {
 //@ sourceMappingURL=Main.map
 */
 
-},{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","./RightSwipe":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
+},{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","./RightSwipe":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
 var Foxie, Lyric, MusicPlayer, Seekbar;
 
 Foxie = require('Foxie');
@@ -11932,15 +11967,71 @@ module.exports = Title = (function() {
 */
 
 },{"foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js":[function(require,module,exports){
-var Foxie, RightSwipe;
+var Foxie, MenuItem, RightSwipe;
 
 Foxie = require('Foxie');
 
+MenuItem = require('./RightSwipe/MenuItem');
+
 module.exports = RightSwipe = (function() {
   function RightSwipe(mainView) {
+    var btnHammer, elHammer;
     this.mainView = mainView;
-    this.el = Foxie('.rightSwipe').trans(300).moveXTo(-200).putIn(this.mainView.el);
+    this.model = this.mainView.model.page;
     this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
+    this.el = Foxie('.rightSwipe').trans(300).moveXTo(-200).putIn(this.mainView.el);
+    btnHammer = new Hammer(this.btn.node);
+    btnHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.model.toggleRightSwipe();
+      };
+    })(this));
+    elHammer = new Hammer(this.el.node);
+    elHammer.on('panleft', (function(_this) {
+      return function(arg) {
+        return _this.model.hideRightSwipe();
+      };
+    })(this));
+    this.mainView.model.page.on('right-swipe', (function(_this) {
+      return function(flag) {
+        if (flag) {
+          return _this.show();
+        } else {
+          return _this.hide();
+        }
+      };
+    })(this));
+    this.newItem('Home', (function(_this) {
+      return function() {
+        return _this.model.activeTitle(0);
+      };
+    })(this));
+    this.newItem('Artist', (function(_this) {
+      return function() {
+        return _this.model.activeTitle(1);
+      };
+    })(this));
+    this.newItem('Album', (function(_this) {
+      return function() {
+        return _this.model.activeTitle(2);
+      };
+    })(this));
+    this.newItem('Song', (function(_this) {
+      return function() {
+        return _this.model.activeTitle(3);
+      };
+    })(this));
+    this.newItem('Video', (function(_this) {
+      return function() {
+        return _this.model.activeTitle(4);
+      };
+    })(this));
+    this.newItem('</br>');
+    this.newItem('Settings', (function(_this) {
+      return function() {
+        return _this.model.showSettings();
+      };
+    })(this));
   }
 
   RightSwipe.prototype.show = function() {
@@ -11951,12 +12042,46 @@ module.exports = RightSwipe = (function() {
     return this.el.moveXTo(-200);
   };
 
+  RightSwipe.prototype.newItem = function(data, cb) {
+    return new MenuItem(this.model, this.el, data, cb);
+  };
+
   return RightSwipe;
 
 })();
 
 /*
 //@ sourceMappingURL=RightSwipe.map
+*/
+
+},{"./RightSwipe/MenuItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js":[function(require,module,exports){
+var Foxie, MenuItem;
+
+Foxie = require('Foxie');
+
+module.exports = MenuItem = (function() {
+  function MenuItem(model, parentNode, data, cb) {
+    var elHammer;
+    this.model = model;
+    this.parentNode = parentNode;
+    this.el = Foxie('.menu-item').innerHTML(data).putIn(this.parentNode);
+    if (cb != null) {
+      elHammer = new Hammer(this.el.node);
+      elHammer.on('tap', (function(_this) {
+        return function(arg) {
+          cb(arg);
+          return _this.model.hideRightSwipe();
+        };
+      })(this));
+    }
+  }
+
+  return MenuItem;
+
+})();
+
+/*
+//@ sourceMappingURL=MenuItem.map
 */
 
 },{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js":[function(require,module,exports){
@@ -12332,7 +12457,51 @@ initBezier = function() {
 //@ sourceMappingURL=Scrolla.map
 */
 
-},{"../Model/_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js","raf-timing/scripts/js/lib/raf":"D:\\xampp\\htdocs\\jik\\node_modules\\raf-timing\\scripts\\js\\lib\\raf.js","timing-function":"D:\\xampp\\htdocs\\jik\\node_modules\\timing-function\\scripts\\js\\lib\\timingFunction.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\pg\\1.js":[function(require,module,exports){
+},{"../Model/_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js","raf-timing/scripts/js/lib/raf":"D:\\xampp\\htdocs\\jik\\node_modules\\raf-timing\\scripts\\js\\lib\\raf.js","timing-function":"D:\\xampp\\htdocs\\jik\\node_modules\\timing-function\\scripts\\js\\lib\\timingFunction.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js":[function(require,module,exports){
+var Foxie, Settings;
+
+Foxie = require('Foxie');
+
+module.exports = Settings = (function() {
+  function Settings(mainView) {
+    var elHammer;
+    this.mainView = mainView;
+    this.model = this.mainView.model.page;
+    this.el = Foxie('.settings').rotateYTo(Math.PI / 2).trans(400).putIn(this.mainView.el);
+    elHammer = new Hammer(this.el.node);
+    elHammer.on('panleft panright', (function(_this) {
+      return function(arg) {
+        return _this.model.hideSettings();
+      };
+    })(this));
+    this.mainView.model.page.on('settings', (function(_this) {
+      return function(flag) {
+        if (flag) {
+          return _this.show();
+        } else {
+          return _this.hide();
+        }
+      };
+    })(this));
+  }
+
+  Settings.prototype.show = function() {
+    return this.el.rotateYTo(0);
+  };
+
+  Settings.prototype.hide = function() {
+    return this.el.rotateYTo(Math.PI / 2);
+  };
+
+  return Settings;
+
+})();
+
+/*
+//@ sourceMappingURL=Settings.map
+*/
+
+},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\pg\\1.js":[function(require,module,exports){
 var MainView, Model, mainView, model;
 
 Model = require('../Model/Model');

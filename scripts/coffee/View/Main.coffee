@@ -2,8 +2,9 @@ Foxie = require 'foxie'
 Ribbon = require './Ribbon/Ribbon'
 Artist = require './Pages/Artist'
 HomePage = require './Pages/HomePage'
-MusicPlayer = require './MusicPlayer'
+Settings = require './Settings'
 RightSwipe = require './RightSwipe'
+MusicPlayer = require './MusicPlayer'
 
 module.exports = class Main
 
@@ -29,7 +30,9 @@ module.exports = class Main
 		# @homePage = new HomePage @, @ribbon.getPage(3)
 		# @homePage = new HomePage @, @ribbon.getPage(4)
 
+		@rightSwipe = new RightSwipe @
+
 		@musicPlayer = new MusicPlayer @
 
-		@rightSwipe = new RightSwipe @
+		@settings = new Settings @
 
