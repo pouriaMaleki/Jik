@@ -3,6 +3,7 @@ Ribbon = require './Ribbon/Ribbon'
 Artist = require './Pages/Artist'
 HomePage = require './Pages/HomePage'
 MusicPlayer = require './MusicPlayer'
+RightSwipe = require './RightSwipe'
 
 module.exports = class Main
 
@@ -29,3 +30,6 @@ module.exports = class Main
 		# @homePage = new HomePage @, @ribbon.getPage(4)
 
 		@musicPlayer = new MusicPlayer @
+
+		@rightSwipe = new RightSwipe @
+

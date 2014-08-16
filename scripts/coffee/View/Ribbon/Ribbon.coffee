@@ -56,7 +56,7 @@ module.exports = class Ribbon
 
 			else if i is index + 1
 
-				title.moveTo @width - title.getWidth() + 10
+				title.moveTo @width - title.getWidth() - 50
 
 			else if i > index + 1
 

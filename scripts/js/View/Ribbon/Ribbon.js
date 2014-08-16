@@ -53,7 +53,7 @@ module.exports = Ribbon = (function() {
       if (i < index) {
         title.moveTo(-200);
       } else if (i === index + 1) {
-        title.moveTo(this.width - title.getWidth() + 10);
+        title.moveTo(this.width - title.getWidth() - 50);
       } else if (i > index + 1) {
         title.moveTo(this.width);
       } else {

@@ -70,7 +70,7 @@ body {
 .ribbon-title-names {
   position: absolute;
   top: 20px;
-  left: 10px;
+  left: 60px;
   color: white;
   text-transform: uppercase;
 }
@@ -341,4 +341,27 @@ body {
   height: 2px;
   width: 100%;
   background-color: #222222;
+}
+
+/* line 353, ../sass/main.sass */
+.rightSwipe {
+  background-color: white;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 200px;
+}
+
+/* line 362, ../sass/main.sass */
+.rightSwipeBtn {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  height: 40px;
+  width: 40px;
+  background: transparent url(../../images/card.png) 0 0 no-repeat;
+  background-size: cover !important;
+  border-radius: 50%;
+  border: 2px solid white;
 }
