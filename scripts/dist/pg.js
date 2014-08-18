@@ -11780,6 +11780,7 @@ module.exports = Home = (function(_super) {
     })(this));
     this.model.on('loadmore', (function(_this) {
       return function(itemsData) {
+        _this.scroll.release();
         _this.addMultiple(itemsData);
         _this.doneLoad(true);
       };
@@ -11967,17 +11968,20 @@ module.exports = Title = (function() {
 */
 
 },{"foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js":[function(require,module,exports){
-var Foxie, MenuItem, RightSwipe;
+var Foxie, MenuItem, RightSwipe, Scrolla;
 
 Foxie = require('Foxie');
 
 MenuItem = require('./RightSwipe/MenuItem');
 
+Scrolla = require('./Scrolla');
+
 module.exports = RightSwipe = (function() {
   function RightSwipe(mainView) {
-    var btnHammer, elHammer;
+    var btnHammer, elHammer, y;
     this.mainView = mainView;
     this.model = this.mainView.model.page;
+    this.items = [];
     this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
     this.el = Foxie('.rightSwipe').trans(300).moveXTo(-200).putIn(this.mainView.el);
     btnHammer = new Hammer(this.btn.node);
@@ -12032,6 +12036,43 @@ module.exports = RightSwipe = (function() {
         return _this.model.showSettings();
       };
     })(this));
+    this.scroll = new Scrolla({
+      maxStretch: 500
+    });
+    this.updateScrollSize();
+    y = 0;
+    elHammer.on('panup pandown', (function(_this) {
+      return function(arg) {
+        _this.scroll.drag(arg.deltaY - y);
+        y = arg.deltaY;
+      };
+    })(this));
+    elHammer.on('panend', (function(_this) {
+      return function(arg) {
+        _this.scroll.release();
+        y = 0;
+      };
+    })(this));
+    this.scroll.on('position-change', (function(_this) {
+      return function(event) {
+        var item, _i, _len, _ref, _results;
+        if (_this.viewportHeight > _this.insideHeight) {
+          return;
+        }
+        _ref = _this.items;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          item = _ref[_i];
+          _results.push(item.el.moveYTo(_this.scroll.position));
+        }
+        return _results;
+      };
+    })(this));
+    window.addEventListener('resize', (function(_this) {
+      return function() {
+        return _this.updateScrollSize();
+      };
+    })(this));
   }
 
   RightSwipe.prototype.show = function() {
@@ -12043,7 +12084,13 @@ module.exports = RightSwipe = (function() {
   };
 
   RightSwipe.prototype.newItem = function(data, cb) {
-    return new MenuItem(this.model, this.el, data, cb);
+    return this.items.push(new MenuItem(this.model, this.el, data, cb));
+  };
+
+  RightSwipe.prototype.updateScrollSize = function() {
+    this.viewportHeight = window.innerHeight;
+    this.insideHeight = 300;
+    return this.scroll.setSizeAndSpace(this.insideHeight, this.viewportHeight);
   };
 
   return RightSwipe;
@@ -12054,7 +12101,7 @@ module.exports = RightSwipe = (function() {
 //@ sourceMappingURL=RightSwipe.map
 */
 
-},{"./RightSwipe/MenuItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js":[function(require,module,exports){
+},{"./RightSwipe/MenuItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js":[function(require,module,exports){
 var Foxie, MenuItem;
 
 Foxie = require('Foxie');

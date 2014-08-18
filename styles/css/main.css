@@ -343,7 +343,7 @@ body {
 
 /* line 351, ../sass/main.sass */
 .rightSwipe {
-  background-color: white;
+  background-color: #222222;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -353,10 +353,10 @@ body {
 }
 /* line 362, ../sass/main.sass */
 .rightSwipe .menu-item {
-  color: #222222;
-  margin: 10px 10px 10px 10px;
+  color: #eeeeee;
+  margin: 0px 0px 10px 10px;
   text-overflow: hidden;
-  font-size: 26px;
+  font-size: 20px;
 }
 
 /* line 369, ../sass/main.sass */
@@ -367,6 +367,7 @@ body {
   height: 40px;
   width: 40px;
   background: transparent url(../../images/card.png) no-repeat center;
+  background-size: cover !important;
   border-radius: 50%;
   border: 2px solid white;
 }

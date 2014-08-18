@@ -28,6 +28,7 @@ module.exports = Home = (function(_super) {
     })(this));
     this.model.on('loadmore', (function(_this) {
       return function(itemsData) {
+        _this.scroll.release();
         _this.addMultiple(itemsData);
         _this.doneLoad(true);
       };
