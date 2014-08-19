@@ -1,72 +1,46 @@
-var MusicPlayerModel, _Emitter,
+var VideoPlayer, _Emitter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 _Emitter = require('./_Emitter');
 
-module.exports = MusicPlayerModel = (function(_super) {
-  __extends(MusicPlayerModel, _super);
+module.exports = VideoPlayer = (function(_super) {
+  __extends(VideoPlayer, _super);
 
-  function MusicPlayerModel(rootModel) {
+  function VideoPlayer(rootModel) {
     this.rootModel = rootModel;
-    MusicPlayerModel.__super__.constructor.apply(this, arguments);
+    VideoPlayer.__super__.constructor.apply(this, arguments);
     this.playing = false;
     this.lyricsShowing = false;
     this.playingId = 0;
     this.seeking = false;
-    this.audioTag = document.createElement('audio');
-    document.body.appendChild(this.audioTag);
-    this.audioTag.addEventListener('timeupdate', (function(_this) {
-      return function(event) {
-        return _this._emit('seeker-update', _this.audioTag.currentTime / _this.audioTag.duration);
-      };
-    })(this));
-    this.audioTag.addEventListener('progress', (function(_this) {
-      return function(event) {
-        try {
-          return _this._emit('buffer-update', _this.audioTag.buffered.end(_this.audioTag.buffered.length - 1) / _this.audioTag.duration);
-        } catch (_error) {}
-      };
-    })(this));
   }
 
-  MusicPlayerModel.prototype.seekTo = function(x) {
-    return this.audioTag.currentTime = x * this.audioTag.duration;
-  };
-
-  MusicPlayerModel.prototype.play = function(data) {
-    this._emit('play-music', data);
+  VideoPlayer.prototype.play = function(data) {
+    this._emit('play-video', data);
     if (data.id === this.playingId) {
       return;
     }
-    if (this.playing) {
-      this.audioTag.pause();
-    }
-    if (this.rootModel.settings.quality) {
-      this.audioTag.src = data.mp3;
-      console.log('high');
-    } else {
-      this.audioTag.src = data.mp3_low;
-      console.log('low');
-    }
-    this.audioTag.play();
     this.playing = true;
     this.playingId = data.id;
     return this.getMoreDetail(data.id);
   };
 
-  MusicPlayerModel.prototype.toggle = function() {
+  VideoPlayer.prototype.pause = function() {
+    this.playing = false;
+    return this._emit('video-pause');
+  };
+
+  VideoPlayer.prototype.toggle = function() {
     if (this.playing) {
-      this.audioTag.pause();
-      this._emit('music-pause');
+      this._emit('video-pause');
     } else {
-      this.audioTag.play();
-      this._emit('music-unpause');
+      this._emit('video-unpause');
     }
     return this.playing = !this.playing;
   };
 
-  MusicPlayerModel.prototype.getMoreDetail = function(id) {
+  VideoPlayer.prototype.getMoreDetail = function(id) {
     return setTimeout((function(_this) {
       return function() {
         var json;
@@ -76,20 +50,10 @@ module.exports = MusicPlayerModel = (function(_super) {
     })(this), 2500);
   };
 
-  MusicPlayerModel.prototype.toggleLyrics = function() {
-    if (this.lyricsShowing) {
-      this._emit('lyrics-hide');
-      return this.lyricsShowing = false;
-    } else {
-      this._emit('lyrics-show');
-      return this.lyricsShowing = true;
-    }
-  };
-
-  return MusicPlayerModel;
+  return VideoPlayer;
 
 })(_Emitter);
 
 /*
-//@ sourceMappingURL=MusicPlayerModel.map
+//@ sourceMappingURL=VideoPlayer.map
 */

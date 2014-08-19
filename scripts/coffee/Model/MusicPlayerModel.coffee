@@ -38,7 +38,17 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 			@audioTag.pause()
 
-		@audioTag.src = data.mp3
+		if @rootModel.settings.quality
+
+			@audioTag.src = data.mp3
+
+			console.log 'high'
+
+		else
+
+			@audioTag.src = data.mp3_low
+
+			console.log 'low'
 
 		@audioTag.play()
 

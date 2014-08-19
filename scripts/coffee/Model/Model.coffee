@@ -1,11 +1,13 @@
-_Emitter = require './_Emitter'
 MusicPlayerModel = require './MusicPlayerModel'
-TitleModel = require './TitleModel'
-HomeModel = require './PagesModel/HomeModel'
+VideoPlayer = require './VideoPlayer'
 ArtistModel = require './PagesModel/ArtistModel'
+TitleModel = require './TitleModel'
 AlbumModel = require './PagesModel/AlbumModel'
-SongModel = require './PagesModel/SongModel'
 VideoModel = require './PagesModel/VideoModel'
+HomeModel = require './PagesModel/HomeModel'
+SongModel = require './PagesModel/SongModel'
+Settings = require './Settings'
+_Emitter = require './_Emitter'
 
 module.exports = class Model extends _Emitter
 
@@ -14,6 +16,7 @@ module.exports = class Model extends _Emitter
 		super
 
 		@musicPlayer = new MusicPlayerModel @
+		@videoPlayer = new VideoPlayer @
 
 		@page = new TitleModel @
 
@@ -22,3 +25,5 @@ module.exports = class Model extends _Emitter
 		@album = new AlbumModel @
 		@song = new SongModel @
 		@video = new VideoModel @
+
+		@settings = new Settings @

@@ -1,4 +1,4 @@
-var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings;
+var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings, VideoPlayer;
 
 Foxie = require('foxie');
 
@@ -14,6 +14,8 @@ RightSwipe = require('./RightSwipe');
 
 MusicPlayer = require('./MusicPlayer');
 
+VideoPlayer = require('./VideoPlayer');
+
 module.exports = Main = (function() {
   function Main(model) {
     this.model = model;
@@ -26,6 +28,7 @@ module.exports = Main = (function() {
     this.artistPage = new Artist(this, this.ribbon.getPage(1));
     this.rightSwipe = new RightSwipe(this);
     this.musicPlayer = new MusicPlayer(this);
+    this.videoPlayer = new VideoPlayer(this);
     this.settings = new Settings(this);
   }
 

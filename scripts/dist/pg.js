@@ -10463,25 +10463,29 @@ module.exports = array = {
 
 
 },{}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Model.js":[function(require,module,exports){
-var AlbumModel, ArtistModel, HomeModel, Model, MusicPlayerModel, SongModel, TitleModel, VideoModel, _Emitter,
+var AlbumModel, ArtistModel, HomeModel, Model, MusicPlayerModel, Settings, SongModel, TitleModel, VideoModel, VideoPlayer, _Emitter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_Emitter = require('./_Emitter');
-
 MusicPlayerModel = require('./MusicPlayerModel');
 
-TitleModel = require('./TitleModel');
-
-HomeModel = require('./PagesModel/HomeModel');
+VideoPlayer = require('./VideoPlayer');
 
 ArtistModel = require('./PagesModel/ArtistModel');
 
+TitleModel = require('./TitleModel');
+
 AlbumModel = require('./PagesModel/AlbumModel');
+
+VideoModel = require('./PagesModel/VideoModel');
+
+HomeModel = require('./PagesModel/HomeModel');
 
 SongModel = require('./PagesModel/SongModel');
 
-VideoModel = require('./PagesModel/VideoModel');
+Settings = require('./Settings');
+
+_Emitter = require('./_Emitter');
 
 module.exports = Model = (function(_super) {
   __extends(Model, _super);
@@ -10489,12 +10493,14 @@ module.exports = Model = (function(_super) {
   function Model() {
     Model.__super__.constructor.apply(this, arguments);
     this.musicPlayer = new MusicPlayerModel(this);
+    this.videoPlayer = new VideoPlayer(this);
     this.page = new TitleModel(this);
     this.home = new HomeModel(this);
     this.artist = new ArtistModel(this);
     this.album = new AlbumModel(this);
     this.song = new SongModel(this);
     this.video = new VideoModel(this);
+    this.settings = new Settings(this);
   }
 
   return Model;
@@ -10505,7 +10511,7 @@ module.exports = Model = (function(_super) {
 //@ sourceMappingURL=Model.map
 */
 
-},{"./MusicPlayerModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\MusicPlayerModel.js","./PagesModel/AlbumModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\AlbumModel.js","./PagesModel/ArtistModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\ArtistModel.js","./PagesModel/HomeModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\HomeModel.js","./PagesModel/SongModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\SongModel.js","./PagesModel/VideoModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\VideoModel.js","./TitleModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\TitleModel.js","./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\MusicPlayerModel.js":[function(require,module,exports){
+},{"./MusicPlayerModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\MusicPlayerModel.js","./PagesModel/AlbumModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\AlbumModel.js","./PagesModel/ArtistModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\ArtistModel.js","./PagesModel/HomeModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\HomeModel.js","./PagesModel/SongModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\SongModel.js","./PagesModel/VideoModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\VideoModel.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Settings.js","./TitleModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\TitleModel.js","./VideoPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\VideoPlayer.js","./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\MusicPlayerModel.js":[function(require,module,exports){
 var MusicPlayerModel, _Emitter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -10550,7 +10556,13 @@ module.exports = MusicPlayerModel = (function(_super) {
     if (this.playing) {
       this.audioTag.pause();
     }
-    this.audioTag.src = data.mp3;
+    if (this.rootModel.settings.quality) {
+      this.audioTag.src = data.mp3;
+      console.log('high');
+    } else {
+      this.audioTag.src = data.mp3_low;
+      console.log('low');
+    }
     this.audioTag.play();
     this.playing = true;
     this.playingId = data.id;
@@ -10846,7 +10858,48 @@ module.exports = VideoModel = (function(_super) {
 //@ sourceMappingURL=VideoModel.map
 */
 
-},{"../PagesModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\TitleModel.js":[function(require,module,exports){
+},{"../PagesModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Settings.js":[function(require,module,exports){
+var Settings, _Emitter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+_Emitter = require('./_Emitter');
+
+module.exports = Settings = (function(_super) {
+  __extends(Settings, _super);
+
+  function Settings(model) {
+    this.model = model;
+    Settings.__super__.constructor.apply(this, arguments);
+    this.quality = localStorage.getItem('quality');
+    if (this.quality === 'false') {
+      this.quality = false;
+    } else if (this.quality === 'true') {
+      this.quality = true;
+    } else {
+      this.quality = true;
+    }
+  }
+
+  Settings.prototype.changeQuality = function(quality) {
+    this.quality = quality;
+    return localStorage.setItem('quality', this.quality);
+  };
+
+  Settings.prototype.switchQuality = function() {
+    this.changeQuality(!this.quality);
+    return this._emit('quality', this.quality);
+  };
+
+  return Settings;
+
+})(_Emitter);
+
+/*
+//@ sourceMappingURL=Settings.map
+*/
+
+},{"./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\TitleModel.js":[function(require,module,exports){
 var TitleModel, _Emitter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -10920,6 +10973,67 @@ module.exports = TitleModel = (function(_super) {
 
 /*
 //@ sourceMappingURL=TitleModel.map
+*/
+
+},{"./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\VideoPlayer.js":[function(require,module,exports){
+var VideoPlayer, _Emitter,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+_Emitter = require('./_Emitter');
+
+module.exports = VideoPlayer = (function(_super) {
+  __extends(VideoPlayer, _super);
+
+  function VideoPlayer(rootModel) {
+    this.rootModel = rootModel;
+    VideoPlayer.__super__.constructor.apply(this, arguments);
+    this.playing = false;
+    this.lyricsShowing = false;
+    this.playingId = 0;
+    this.seeking = false;
+  }
+
+  VideoPlayer.prototype.play = function(data) {
+    this._emit('play-video', data);
+    if (data.id === this.playingId) {
+      return;
+    }
+    this.playing = true;
+    this.playingId = data.id;
+    return this.getMoreDetail(data.id);
+  };
+
+  VideoPlayer.prototype.pause = function() {
+    this.playing = false;
+    return this._emit('video-pause');
+  };
+
+  VideoPlayer.prototype.toggle = function() {
+    if (this.playing) {
+      this._emit('video-pause');
+    } else {
+      this._emit('video-unpause');
+    }
+    return this.playing = !this.playing;
+  };
+
+  VideoPlayer.prototype.getMoreDetail = function(id) {
+    return setTimeout((function(_this) {
+      return function() {
+        var json;
+        json = '{"lyric":"<p>\u0639\u0634\u0642 \u0627\u062d\u0633\u0627\u0633\u0647 \u0646\u0647 \u0645\u0639\u0627\u062f\u0644\u0647<\/p><p>\u0628\u062e\u0648\u0627\u06cc \u062d\u0644\u0634 \u06a9\u0646\u06cc \u0645\u06cc\u0634\u0647 \u0645\u0628\u0627\u062f\u0644\u0647<\/p><p>\u0627\u06cc\u0646 \u0645\u0628\u0627\u062f\u0644\u0647 \u0645\u06cc\u0634\u0647 \u0645\u062c\u0627\u062f\u0644\u0647<\/p><p>\u0647\u06cc\u0634\u06a9\u06cc \u0647\u06cc\u0686\u06cc \u0646\u06af\u0647<\/p><p>\u062d\u06a9\u0645 \u0627\u06cc\u0646\u062c\u0627 \u062f\u0644\u0647<\/p><p>\u0627\u062d\u0633\u0627\u0633\u0647 \u062d\u0633\u0647 \u0644\u0645\u0633\u0647 \u062f\u0633\u062a\u0647 \u06af\u0644\u06cc \u06a9\u0647 \u0628\u0647\u0645 \u062f\u0627\u062f\u06cc<\/p><p>\u0627\u062d\u0633\u0627\u0633\u0647 \u062d\u0633\u0647 \u0644\u0645\u0633\u0647 \u062f\u0633\u062a\u0647 \u06af\u0644\u06cc \u06a9\u0647 \u0628\u0647\u0645 \u062f\u0627\u062f\u06cc<\/p><p>\u0627\u062d\u0633\u0627\u0633\u0647 \u062d\u0633\u0647 \u0644\u0645\u0633\u0647 \u062f\u0633\u062a\u0647 \u06af\u0644\u06cc \u06a9\u0647 \u0628\u0647\u0645 \u062f\u0627\u062f\u06cc<\/p><p>\u0627\u062d\u0633\u0627\u0633\u0647 \u062d\u0633\u0647 \u0644\u0645\u0633\u0647 \u062f\u0633\u062a\u0647 \u06af\u0644\u06cc \u06a9\u0647 \u0628\u0647\u0645 \u062f\u0627\u062f\u06cc<\/p><p>\u0627\u06cc \u062f\u0644 \u0645\u0646 \u062f\u0627\u0631\u0647 \u0628\u0627 \u062f\u0644\u062a \u0628\u06cc \u062f\u0644\u0647<\/p><p>\u0628\u06cc \u0647\u0648\u0627 \u0628\u06cc \u062d\u0648\u0627\u0633 \u0628\u06cc \u062f\u0644\u06cc\u0644 \u0628\u06cc \u062f\u0644\u0647<\/p><p>\u0627\u0648\u0646 \u06a9\u0647 \u0645\u06cc\u0644\u0631\u0632\u0647 \u0648\u0627\u0633\u062a \u062d\u0633\u0627\u0628\u06cc \u062f\u0644\u0647<\/p><p>\u0647\u06cc \u062f\u0644\u0647 \u0645\u0646 \u062f\u0627\u0631\u0647 \u0628\u0627 \u062f\u0644\u062a \u0645\u06cc \u062f\u0644\u0647<\/p><p>\u0647\u06cc \u0647\u06cc \u0647\u06cc \u0631\u0648\u0627\u0646\u06cc \u062a\u0648 \u0639\u0634\u0642 \u0645\u0646\u06cc<\/p><p>\u0647\u06cc \u0631\u0648\u0627\u0646\u06cc \u06a9\u0647 \u0647\u06cc \u0642\u0648\u0644\u062a\u0648 \u0645\u06cc\u0634\u06a9\u0646\u06cc<\/p><p>\u062f\u0631\u062f\u0633\u0631 \u0633\u0627\u0632\u0647 \u0644\u062c\u0628\u0627\u0632\u0647 \u062f\u0648\u0633\u062a \u062f\u0627\u0634\u062a\u0646\u06cc<\/p><p>\u0647\u06cc \u0631\u0648\u0627\u0646\u06cc \u062a\u0648 \u0639\u0634\u0642 \u0645\u0646\u06cc<\/p><p>\u0639\u0634\u0642 \u062a\u062d\u06a9\u06cc\u0645\u0647 \u0646\u0647 \u0645\u062d\u0627\u06a9\u0645\u0647<\/p><p>\u0646\u0647 \u0645\u062d\u06a9\u0648\u0645 \u06a9\u0633\u06cc \u0646\u0647 \u0647\u06cc\u0634\u06a9\u06cc \u062d\u0627\u06a9\u0645\u0647<\/p><p>\u0639\u0634\u0642 \u062a\u0642\u062f\u06cc\u0645\u0647 \u0646\u0647 \u0645\u0628\u0627\u062f\u0644\u0647<\/p><p>\u062e\u0637 \u0645\u0645\u062a\u062f\u0650 \u0646\u0647 \u062e\u0637 \u0641\u0627\u0635\u0644\u0647<\/p><p>\u062d\u0633\u0627\u0633\u0647 \u0648\u0627\u0633\u0647 \u062d\u0633\u0647 \u0645\u062b\u0647 \u062f\u0644\u06cc \u06a9\u0647 \u0628\u0647\u0645 \u062f\u0627\u062f\u06cc<\/p><p>\u062d\u0633\u0627\u0633\u0647 \u0648\u0627\u0633\u0647 \u062d\u0633\u0647 \u0645\u062b\u0647 \u062f\u0644\u06cc \u06a9\u0647 \u0628\u0647\u0645 \u062f\u0627\u062f\u06cc<\/p><p>\u062d\u0633\u0627\u0633\u0647 \u0648\u0627\u0633\u0647 \u062d\u0633\u0647 \u0645\u062b\u0647 \u062f\u0644\u06cc \u06a9\u0647 \u0628\u0647\u0645 \u062f\u0627\u062f\u06cc<\/p><p>\u0627\u06cc \u062f\u0644 \u0645\u0646 \u062f\u0627\u0631\u0647 \u0628\u0627 \u062f\u0644\u062a \u0628\u06cc \u062f\u0644\u0647<\/p><p>\u0628\u06cc \u0647\u0648\u0627 \u0628\u06cc \u062d\u0648\u0627\u0633 \u0628\u06cc \u062f\u0644\u06cc\u0644 \u0628\u06cc \u062f\u0644\u0647<\/p><p>\u0627\u0648\u0646 \u06a9\u0647 \u0645\u06cc\u0644\u0631\u0632\u0647 \u0648\u0627\u0633\u062a \u062d\u0633\u0627\u0628\u06cc \u062f\u0644\u0647<\/p><p>\u0647\u06cc \u062f\u0644\u0647 \u0645\u0646 \u062f\u0627\u0631\u0647 \u0628\u0627 \u062f\u0644\u062a \u0645\u06cc \u062f\u0644\u0647<\/p><p>\u0647\u06cc \u0647\u06cc \u0647\u06cc \u0631\u0648\u0627\u0646\u06cc \u062a\u0648 \u0639\u0634\u0642 \u0645\u0646\u06cc<\/p><p>\u0647\u06cc \u0631\u0648\u0627\u0646\u06cc \u06a9\u0647 \u0647\u06cc \u0642\u0648\u0644\u062a\u0648 \u0645\u06cc\u0634\u06a9\u0646\u06cc<\/p><p>\u062f\u0631\u062f\u0633\u0631 \u0633\u0627\u0632\u0647 \u0644\u062c\u0628\u0627\u0632\u0647 \u062f\u0648\u0633\u062a \u062f\u0627\u0634\u062a\u0646\u06cc<\/p><p>\u0647\u06cc \u0647\u06cc \u0647\u06cc \u0631\u0648\u0627\u0646\u06cc \u062a\u0648 \u0639\u0634\u0642 \u0645\u0646\u06cc<\/p>","info":{"albumcount":"18","dlcount":"24300","view":"56038","descrip":"","tags":"\u067e\u0627\u067e ,","lyrics":"\u0641\u0631\u0634\u06cc\u062f \u0633\u0645\u0627","composer":"\u0628\u0646\u06cc\u0627\u0645\u06cc\u0646 \u0628\u0647\u0627\u062f\u0631\u06cc ","arrangement":"\u0641\u0631\u0634\u06cc\u062f \u0633\u0645\u0627 "},"summary":{"size":"7MB","dateadded":"2014-04-20","format":"mp3","permission":null},"song":[{"id":"133928","type":"song","artist":"\u0628\u0646\u06cc\u0627\u0645\u06cc\u0646 \u0628\u0647\u0627\u062f\u0631\u06cc","artist_id":"71","songname":"\u0639\u0634\u0642 \u0627\u062d\u0633\u0627\u0633\u0647","popularity":"4.4","ratecount":"127","view":"56038","time":"3:8","date":"1393-01-31","poster":"http:\/\/85.25.243.154\/img\/5pkjehomg-1397985962.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Benyamin\/Gallery\/[Medium]\/qpvfehss-1397985962.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Benyamin\/-\/Eshgh+Ehsaseh","mp3":"http:\/\/85.25.95.231\/music\/B\/Benyamin\/[one]\/Eshgh Ehsaseh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Benyamin\/[one]\/Eshgh Ehsaseh [WikiSeda].mp3"}]}';
+        return _this._emit('music-more-detail', JSON.parse(json));
+      };
+    })(this), 2500);
+  };
+
+  return VideoPlayer;
+
+})(_Emitter);
+
+/*
+//@ sourceMappingURL=VideoPlayer.map
 */
 
 },{"./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js":[function(require,module,exports){
@@ -11177,7 +11291,7 @@ module.exports = VideoItem = (function(_super) {
     this.poster.node.classList.add('video-item-poster');
     this.hammer.on('tap', (function(_this) {
       return function(arg) {
-        return _this.mainView.model.musicPlayer.play(data);
+        return _this.mainView.model.videoPlayer.play(data);
       };
     })(this));
   }
@@ -11191,7 +11305,7 @@ module.exports = VideoItem = (function(_super) {
 */
 
 },{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Main.js":[function(require,module,exports){
-var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings;
+var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings, VideoPlayer;
 
 Foxie = require('foxie');
 
@@ -11207,6 +11321,8 @@ RightSwipe = require('./RightSwipe');
 
 MusicPlayer = require('./MusicPlayer');
 
+VideoPlayer = require('./VideoPlayer');
+
 module.exports = Main = (function() {
   function Main(model) {
     this.model = model;
@@ -11219,6 +11335,7 @@ module.exports = Main = (function() {
     this.artistPage = new Artist(this, this.ribbon.getPage(1));
     this.rightSwipe = new RightSwipe(this);
     this.musicPlayer = new MusicPlayer(this);
+    this.videoPlayer = new VideoPlayer(this);
     this.settings = new Settings(this);
   }
 
@@ -11230,7 +11347,7 @@ module.exports = Main = (function() {
 //@ sourceMappingURL=Main.map
 */
 
-},{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","./RightSwipe":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
+},{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","./RightSwipe":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js","./VideoPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\VideoPlayer.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
 var Foxie, Lyric, MusicPlayer, Seekbar;
 
 Foxie = require('Foxie');
@@ -11729,6 +11846,7 @@ module.exports = Artist = (function(_super) {
     })(this));
     this.model.on('loadmore', (function(_this) {
       return function(itemsData) {
+        _this.scroll.release();
         _this.addMultiple(itemsData);
         _this.doneLoad(true);
       };
@@ -12513,12 +12631,11 @@ module.exports = Settings = (function() {
   function Settings(mainView) {
     var elHammer;
     this.mainView = mainView;
-    this.model = this.mainView.model.page;
     this.el = Foxie('.settings').rotateYTo(Math.PI / 2).trans(400).putIn(this.mainView.el);
     elHammer = new Hammer(this.el.node);
     elHammer.on('panleft panright', (function(_this) {
       return function(arg) {
-        return _this.model.hideSettings();
+        return _this.mainView.model.page.hideSettings();
       };
     })(this));
     this.mainView.model.page.on('settings', (function(_this) {
@@ -12530,6 +12647,7 @@ module.exports = Settings = (function() {
         }
       };
     })(this));
+    this.createCheckbox();
   }
 
   Settings.prototype.show = function() {
@@ -12540,12 +12658,169 @@ module.exports = Settings = (function() {
     return this.el.rotateYTo(Math.PI / 2);
   };
 
+  Settings.prototype.createCheckbox = function() {
+    var changeStatus, chk, chkHammer;
+    changeStatus = (function(_this) {
+      return function(chk) {
+        if (_this.mainView.model.settings.quality === true) {
+          return chk.setOpacity(.5);
+        } else {
+          return chk.setOpacity(1);
+        }
+      };
+    })(this);
+    chk = Foxie('.settings-checkbox').innerHTML('Use Low Quality');
+    changeStatus(chk);
+    chk.trans(400).putIn(this.el);
+    chkHammer = new Hammer(chk.node);
+    chkHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.settings.switchQuality();
+      };
+    })(this));
+    return this.mainView.model.settings.on('quality', (function(_this) {
+      return function(flag) {
+        return changeStatus(chk);
+      };
+    })(this));
+  };
+
   return Settings;
 
 })();
 
 /*
 //@ sourceMappingURL=Settings.map
+*/
+
+},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\VideoPlayer.js":[function(require,module,exports){
+var Foxie, videoPlayer;
+
+Foxie = require('Foxie');
+
+module.exports = videoPlayer = (function() {
+  function videoPlayer(mainView) {
+    var elHammer, hideHammer;
+    this.mainView = mainView;
+    this.transTime = 700;
+    this.showing = false;
+    this.height = window.innerHeight;
+    this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(this.mainView.el);
+    elHammer = new Hammer(this.el.node);
+    elHammer.on('panup', (function(_this) {
+      return function(arg) {
+        if (!_this.showing) {
+          return _this.show();
+        }
+      };
+    })(this));
+    elHammer.on('pandown', (function(_this) {
+      return function(arg) {
+        return _this.hide();
+      };
+    })(this));
+    elHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.videoPlayer.toggle();
+      };
+    })(this));
+    this.hideBtn = Foxie('.musicplayer-button.musicplayer-hide').trans(500).putIn(this.el);
+    hideHammer = new Hammer(this.hideBtn.node);
+    hideHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.hide();
+      };
+    })(this));
+    this.songName = Foxie('.musicplayer-songname').putIn(this.el);
+    this.artist = Foxie('.musicplayer-artist').putIn(this.el);
+    this.videoTag = document.createElement('video');
+    this.el.node.appendChild(this.videoTag);
+    this.mainView.model.videoPlayer.on('show-player', (function(_this) {
+      return function() {
+        return _this.show();
+      };
+    })(this));
+    this.mainView.model.videoPlayer.on('play-video', (function(_this) {
+      return function(data) {
+        _this.show(data);
+        return _this.videoTag.play();
+      };
+    })(this));
+    this.mainView.model.videoPlayer.on('video-unpause', (function(_this) {
+      return function() {
+        return _this.videoTag.play();
+      };
+    })(this));
+    this.mainView.model.videoPlayer.on('video-pause', (function(_this) {
+      return function(data) {
+        return _this.videoTag.pause();
+      };
+    })(this));
+    window.addEventListener('resize', (function(_this) {
+      return function(event) {
+        _this.height = window.innerHeight;
+        if (!_this.showing) {
+          _this.forceHide();
+        }
+        if (_this.showing) {
+          return _this.portscape();
+        }
+      };
+    })(this));
+  }
+
+  videoPlayer.prototype.show = function(data) {
+    if (this.mainView.model.videoPlayer.seeking) {
+      return;
+    }
+    this.portscape();
+    this.showing = true;
+    this.el.moveYTo(0);
+    if (data == null) {
+      return;
+    }
+    if (this.mainView.model.settings.quality) {
+      this.videoTag.src = data.highq;
+    } else {
+      this.videoTag.src = data.lowq;
+    }
+    this.songName.innerHTML(data.videoname);
+    return this.artist.innerHTML(data.artist);
+  };
+
+  videoPlayer.prototype.hide = function() {
+    if (this.mainView.model.videoPlayer.seeking) {
+      return;
+    }
+    this.showing = false;
+    this.el.moveYTo(this.height);
+    return this.mainView.model.videoPlayer.pause();
+  };
+
+  videoPlayer.prototype.forceHide = function() {
+    this.showing = false;
+    this.el.noTrans().moveYTo(this.height).trans(this.transTime);
+    return this.mainView.model.videoPlayer.pause();
+  };
+
+  videoPlayer.prototype.portscape = function() {
+    if (window.innerHeight > window.innerWidth) {
+      this.hideBtn.setOpacity(1);
+      this.songName.setOpacity(1);
+      return this.artist.setOpacity(1);
+    } else {
+      this.hideBtn.setOpacity(0);
+      this.songName.setOpacity(0);
+      return this.artist.setOpacity(0);
+    }
+  };
+
+  return videoPlayer;
+
+})();
+
+/*
+//@ sourceMappingURL=VideoPlayer.map
 */
 
 },{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\pg\\1.js":[function(require,module,exports){

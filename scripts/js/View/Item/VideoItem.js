@@ -21,7 +21,7 @@ module.exports = VideoItem = (function(_super) {
     this.poster.node.classList.add('video-item-poster');
     this.hammer.on('tap', (function(_this) {
       return function(arg) {
-        return _this.mainView.model.musicPlayer.play(data);
+        return _this.mainView.model.videoPlayer.play(data);
       };
     })(this));
   }
