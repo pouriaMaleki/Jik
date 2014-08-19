@@ -3,7 +3,7 @@ Item = require '../Item'
 
 module.exports = class VideoItem extends Item
 
-	constructor: (@mainView, @parentNode, data) ->
+	constructor: (@mainView, @parentNode, @page, data) ->
 
 		super
 

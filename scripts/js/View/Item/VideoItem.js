@@ -9,9 +9,10 @@ Item = require('../Item');
 module.exports = VideoItem = (function(_super) {
   __extends(VideoItem, _super);
 
-  function VideoItem(mainView, parentNode, data) {
+  function VideoItem(mainView, parentNode, page, data) {
     this.mainView = mainView;
     this.parentNode = parentNode;
+    this.page = page;
     VideoItem.__super__.constructor.apply(this, arguments);
     this.title1.innerHTML(data.videoname);
     this.el.node.classList.add('video-item');

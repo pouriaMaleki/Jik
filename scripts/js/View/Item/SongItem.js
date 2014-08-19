@@ -9,9 +9,10 @@ Item = require('../Item');
 module.exports = SongItem = (function(_super) {
   __extends(SongItem, _super);
 
-  function SongItem(mainView, parentNode, data) {
+  function SongItem(mainView, parentNode, page, data) {
     this.mainView = mainView;
     this.parentNode = parentNode;
+    this.page = page;
     SongItem.__super__.constructor.apply(this, arguments);
     this.title1.innerHTML(data.songname);
     this.hammer.on('tap', (function(_this) {

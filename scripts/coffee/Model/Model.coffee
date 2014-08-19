@@ -1,5 +1,6 @@
 MusicPlayerModel = require './MusicPlayerModel'
 VideoPlayer = require './VideoPlayer'
+AlbumDetail = require './AlbumDetail'
 ArtistModel = require './PagesModel/ArtistModel'
 TitleModel = require './TitleModel'
 AlbumModel = require './PagesModel/AlbumModel'
@@ -25,5 +26,7 @@ module.exports = class Model extends _Emitter
 		@album = new AlbumModel @
 		@song = new SongModel @
 		@video = new VideoModel @
+
+		@albumDetail = new AlbumDetail @
 
 		@settings = new Settings @

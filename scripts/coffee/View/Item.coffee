@@ -2,7 +2,7 @@ Foxie = require 'Foxie'
 
 module.exports = class Item
 
-	constructor: (@mainView, @parentNode, data) ->
+	constructor: (@mainView, @parentNode, @page, data) ->
 
 		@el = Foxie '.item'
 		.perspective 4000

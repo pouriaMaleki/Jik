@@ -9,12 +9,71 @@ Item = require('../Item');
 module.exports = AlbumItem = (function(_super) {
   __extends(AlbumItem, _super);
 
-  function AlbumItem(mainView, parentNode, data) {
+  function AlbumItem(mainView, parentNode, page, data) {
     this.mainView = mainView;
     this.parentNode = parentNode;
+    this.page = page;
     AlbumItem.__super__.constructor.apply(this, arguments);
+    this.detailNotLoaded = Foxie('.simple-songname').innerHTML('Loading Album').moveYTo(85).putIn(this.el);
+    this.detailsLoaded = false;
     this.title1.innerHTML(data.album);
+    this.hammer.on('tap', (function(_this) {
+      return function() {
+        if (_this.detailsLoaded === false) {
+          _this.mainView.model.albumDetail.loadDetail(data.id);
+        }
+        _this.mainView.model.albumDetail.toggleDetail(data.id);
+      };
+    })(this));
+    this.mainView.model.albumDetail.on('details', (function(_this) {
+      return function(albumDetail) {
+        var song, _i, _len, _ref;
+        if (albumDetail.id !== data.id) {
+          return;
+        }
+        _this.detailsLoaded = true;
+        _this.el.node.removeChild(_this.detailNotLoaded.node);
+        _ref = albumDetail.songs;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          song = _ref[_i];
+          _this.createSong(song);
+        }
+        if (_this.mainView.model.albumDetail.detail === data.id) {
+          _this.el.setHeight(_this.songs.length * 30 + 75);
+          _this.page.updateSize();
+        }
+      };
+    })(this));
+    this.mainView.model.albumDetail.on('detail-show', (function(_this) {
+      return function(id) {
+        if (id !== data.id) {
+          return;
+        }
+        if (_this.detailsLoaded === false) {
+          _this.el.setHeight(120);
+        } else {
+          _this.el.setHeight(_this.songs.length * 30 + 75);
+        }
+        _this.page.updateSize();
+      };
+    })(this));
+    this.mainView.model.albumDetail.on('detail-close', (function(_this) {
+      return function(id) {
+        if (id !== data.id) {
+          return;
+        }
+        _this.el.setHeight(75);
+        _this.page.updateSize();
+      };
+    })(this));
+    this.songs = [];
   }
+
+  AlbumItem.prototype.createSong = function(data) {
+    var song;
+    song = Foxie('.simple-songname').innerHTML(data).moveYTo(85).putIn(this.el);
+    return this.songs.push(song);
+  };
 
   return AlbumItem;
 

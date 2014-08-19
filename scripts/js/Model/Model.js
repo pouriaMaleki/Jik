@@ -1,10 +1,12 @@
-var AlbumModel, ArtistModel, HomeModel, Model, MusicPlayerModel, Settings, SongModel, TitleModel, VideoModel, VideoPlayer, _Emitter,
+var AlbumDetail, AlbumModel, ArtistModel, HomeModel, Model, MusicPlayerModel, Settings, SongModel, TitleModel, VideoModel, VideoPlayer, _Emitter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 MusicPlayerModel = require('./MusicPlayerModel');
 
 VideoPlayer = require('./VideoPlayer');
+
+AlbumDetail = require('./AlbumDetail');
 
 ArtistModel = require('./PagesModel/ArtistModel');
 
@@ -35,6 +37,7 @@ module.exports = Model = (function(_super) {
     this.album = new AlbumModel(this);
     this.song = new SongModel(this);
     this.video = new VideoModel(this);
+    this.albumDetail = new AlbumDetail(this);
     this.settings = new Settings(this);
   }
 

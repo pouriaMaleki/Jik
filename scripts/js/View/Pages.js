@@ -98,7 +98,7 @@ module.exports = Pages = (function() {
     var i, item, itemData, _i, _len;
     for (i = _i = 0, _len = itemDatas.length; _i < _len; i = ++_i) {
       itemData = itemDatas[i];
-      item = new Item[itemData.type](this.mainView, this.el, itemData).hideMe().showMe(i * 50);
+      item = new Item[itemData.type](this.mainView, this.el, this, itemData).hideMe().showMe(i * 50);
       this.items.push(item);
     }
   };
