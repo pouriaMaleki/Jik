@@ -3,14 +3,17 @@ var Foxie, SimpleSong;
 Foxie = require('Foxie');
 
 module.exports = SimpleSong = (function() {
-  function SimpleSong(mainView, parentNode, page, data) {
+  function SimpleSong(mainView, parentNode, data) {
     this.mainView = mainView;
     this.parentNode = parentNode;
-    this.page = page;
-    this.el = Foxie('.item').perspective(4000);
+    this.el = Foxie('.simple-songname').innerHTML(data).moveYTo(100).putIn(this.parentNode);
     this.hammer = new Hammer(this.el.node);
-    this.title1 = Foxie('.item-songname').putIn(this.el);
-    this.title2 = Foxie('.item-artist').innerHTML(data.artist).putIn(this.el);
+    this.hammer.on('tap', (function(_this) {
+      return function() {
+        return console.log('hello');
+      };
+    })(this));
+    this.icon = Foxie('.simple-icon').putIn(this.el);
     this.el.putIn(this.parentNode);
   }
 

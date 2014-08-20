@@ -1,11 +1,15 @@
 Foxie = require 'Foxie'
+SimpleSong = require '../SimpleSong'
 Item = require '../Item'
 
 module.exports = class AlbumItem extends Item
 
-	constructor: (@mainView, @parentNode, @page, data) ->
+	constructor: (@mainView, @parentNode, @page, data, @count) ->
 
 		super
+
+		Foxie '.album-icon'
+		.putIn @titlesContainer
 
 		@detailNotLoaded = Foxie '.simple-songname'
 		.innerHTML 'Loading Album'
@@ -41,7 +45,7 @@ module.exports = class AlbumItem extends Item
 
 			if @mainView.model.albumDetail.detail is data.id
 
-				@el.setHeight @songs.length * 30 + 75
+				@el.setHeight @songs.length * 50 + 75
 
 				do @page.updateSize
 
@@ -57,9 +61,11 @@ module.exports = class AlbumItem extends Item
 
 			else
 
-				@el.setHeight @songs.length * 30 + 75
+				@el.setHeight @songs.length * 50 + 75
 
 			do @page.updateSize
+
+			@page.scrollToItem @count
 
 			return
 
@@ -77,9 +83,5 @@ module.exports = class AlbumItem extends Item
 
 	createSong: (data) ->
 
-		song = Foxie '.simple-songname'
-		.innerHTML data
-		.moveYTo 85
-		.putIn @el
-
+		song = new SimpleSong @mainView, @el, data
 		@songs.push song

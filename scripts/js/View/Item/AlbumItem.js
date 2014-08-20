@@ -1,19 +1,23 @@
-var AlbumItem, Foxie, Item,
+var AlbumItem, Foxie, Item, SimpleSong,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Foxie = require('Foxie');
+
+SimpleSong = require('../SimpleSong');
 
 Item = require('../Item');
 
 module.exports = AlbumItem = (function(_super) {
   __extends(AlbumItem, _super);
 
-  function AlbumItem(mainView, parentNode, page, data) {
+  function AlbumItem(mainView, parentNode, page, data, count) {
     this.mainView = mainView;
     this.parentNode = parentNode;
     this.page = page;
+    this.count = count;
     AlbumItem.__super__.constructor.apply(this, arguments);
+    Foxie('.album-icon').putIn(this.titlesContainer);
     this.detailNotLoaded = Foxie('.simple-songname').innerHTML('Loading Album').moveYTo(85).putIn(this.el);
     this.detailsLoaded = false;
     this.title1.innerHTML(data.album);
@@ -39,7 +43,7 @@ module.exports = AlbumItem = (function(_super) {
           _this.createSong(song);
         }
         if (_this.mainView.model.albumDetail.detail === data.id) {
-          _this.el.setHeight(_this.songs.length * 30 + 75);
+          _this.el.setHeight(_this.songs.length * 50 + 75);
           _this.page.updateSize();
         }
       };
@@ -52,9 +56,10 @@ module.exports = AlbumItem = (function(_super) {
         if (_this.detailsLoaded === false) {
           _this.el.setHeight(120);
         } else {
-          _this.el.setHeight(_this.songs.length * 30 + 75);
+          _this.el.setHeight(_this.songs.length * 50 + 75);
         }
         _this.page.updateSize();
+        _this.page.scrollToItem(_this.count);
       };
     })(this));
     this.mainView.model.albumDetail.on('detail-close', (function(_this) {
@@ -71,7 +76,7 @@ module.exports = AlbumItem = (function(_super) {
 
   AlbumItem.prototype.createSong = function(data) {
     var song;
-    song = Foxie('.simple-songname').innerHTML(data).moveYTo(85).putIn(this.el);
+    song = new SimpleSong(this.mainView, this.el, data);
     return this.songs.push(song);
   };
 

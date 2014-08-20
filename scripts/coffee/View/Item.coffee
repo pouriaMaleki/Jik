@@ -2,24 +2,26 @@ Foxie = require 'Foxie'
 
 module.exports = class Item
 
-	constructor: (@mainView, @parentNode, @page, data) ->
+	constructor: (@mainView, @parentNode, @page, data, @count) ->
 
 		@el = Foxie '.item'
 		.perspective 4000
 
-		@hammer = new Hammer @el.node
+		@titlesContainer = Foxie '.titles-container'
+		.putIn @el
 
+		@hammer = new Hammer @titlesContainer.node
 
 		@title1 = Foxie '.item-songname'
-		.putIn @el
+		.putIn @titlesContainer
 
 		@title2 = Foxie '.item-artist'
 		.innerHTML data.artist
-		.putIn @el
+		.putIn @titlesContainer
 
 		@poster = Foxie 'img.item-poster'
 		.attr 'src', data.poster
-		.putIn @el
+		.putIn @titlesContainer
 
 		@el
 		.putIn @parentNode

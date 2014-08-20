@@ -58,6 +58,13 @@ module.exports = Scrolla = (function(_super) {
     return this;
   };
 
+  Scrolla.prototype.forceSetPosition = function(p) {
+    this.position = +p;
+    this._puller = this.position;
+    this._emit('position-change');
+    return this;
+  };
+
   Scrolla.prototype.setLeftEdge = function(left) {
     this.max = left;
     return this;

@@ -14,11 +14,16 @@ module.exports = AlbumDetail = (function(_super) {
   }
 
   AlbumDetail.prototype.toggleDetail = function(id) {
+    var temp;
     if (this.detail) {
       this._emit('detail-close', this.detail);
+      temp = this.detail;
       this.detail = false;
     }
     if (id == null) {
+      return;
+    }
+    if (id === temp) {
       return;
     }
     this.detail = id;

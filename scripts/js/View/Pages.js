@@ -20,6 +20,7 @@ module.exports = Pages = (function() {
     this.pullDown = Foxie('.pullDown').putIn(this.el).innerHTML('Loading');
     this.refresh = false;
     this.loadMore = true;
+    this.cancelAutoScroll = false;
     this.viewPort = window.innerHeight;
     document.addEventListener('resize', (function(_this) {
       return function() {
@@ -47,7 +48,8 @@ module.exports = Pages = (function() {
           _this.refresh = false;
         }
         _this.scroll.drag(arg.deltaY - x);
-        return x = arg.deltaY;
+        x = arg.deltaY;
+        return _this.cancelAutoScroll = true;
       };
     })(this));
     hammer.on('panend', (function(_this) {
@@ -71,15 +73,16 @@ module.exports = Pages = (function() {
       return function() {
         if (_this.refresh) {
           _this.model.refresh();
-          return _this.pullDown.innerHTML('Refreshing');
+          _this.pullDown.innerHTML('Refreshing');
         } else if (_this.scroll.position <= _this.scroll.min) {
           if (!_this.loadMore) {
             _this.model.loadmore();
-            return _this.loadMore = true;
+            _this.loadMore = true;
           }
         } else if (_this.scroll.position > -22) {
-          return _this.hidePullup();
+          _this.hidePullup();
         }
+        return _this.cancelAutoScroll = false;
       };
     })(this));
   }
@@ -98,7 +101,7 @@ module.exports = Pages = (function() {
     var i, item, itemData, _i, _len;
     for (i = _i = 0, _len = itemDatas.length; _i < _len; i = ++_i) {
       itemData = itemDatas[i];
-      item = new Item[itemData.type](this.mainView, this.el, this, itemData).hideMe().showMe(i * 50);
+      item = new Item[itemData.type](this.mainView, this.el, this, itemData, this.items.length).hideMe().showMe(i * 50);
       this.items.push(item);
     }
   };
@@ -108,16 +111,27 @@ module.exports = Pages = (function() {
     return this.scroll.setSizeAndSpace(this.height, this.viewPort);
   };
 
-  Pages.prototype.hidePullup = function() {
-    var offset;
-    offset = -22;
+  Pages.prototype.scrollTo = function(offset) {
+    this.el.trans(300).moveYTo(offset);
     return setTimeout((function(_this) {
       return function() {
-        _this.el.trans(300).moveYTo(offset);
-        return setTimeout(function() {
-          _this.el.noTrans();
-          return _this.scroll.setPosition(offset);
-        }, 300);
+        _this.el.noTrans();
+        return _this.scroll.forceSetPosition(offset);
+      };
+    })(this), 300);
+  };
+
+  Pages.prototype.scrollToItem = function(index) {
+    return this.scrollTo(index * -78);
+  };
+
+  Pages.prototype.hidePullup = function() {
+    return setTimeout((function(_this) {
+      return function() {
+        if (_this.cancelAutoScroll === true) {
+          return;
+        }
+        return _this.scrollTo(-22);
       };
     })(this), 400);
   };
