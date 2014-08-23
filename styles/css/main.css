@@ -69,10 +69,30 @@ body {
 /* line 20, ../sass/_ribbon.sass */
 .ribbon-title-names {
   position: absolute;
-  top: 20px;
+  top: 15px;
   left: 60px;
   color: white;
   text-transform: uppercase;
+}
+
+/* line 32, ../sass/_ribbon.sass */
+.ribbon-title-name {
+  font-weight: bold;
+}
+
+/* line 36, ../sass/_ribbon.sass */
+.ribbon-title-subnameSelector {
+  position: absolute;
+  top: 18px;
+  left: 0px;
+  color: white;
+  text-transform: uppercase;
+  width: 400px;
+}
+/* line 48, ../sass/_ribbon.sass */
+.ribbon-title-subnameSelector .ribbon-title-subnameSelected {
+  display: inline-block;
+  margin-right: 10px;
 }
 
 /* line 51, ../sass/main.sass */

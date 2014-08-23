@@ -34,6 +34,12 @@ module.exports = class Ribbon
 
 			@width = window.innerWidth
 
+			for title in @titles
+
+				title.width = @width
+
+			@showPage @rootView.model.page.currentActive
+
 			for page, i in @pages
 
 				page.moveTo i * @width
@@ -52,19 +58,19 @@ module.exports = class Ribbon
 
 			if i < index
 
-				title.moveTo -200
+				do title.hideToLeft
 
 			else if i is index + 1
 
-				title.moveTo @width - title.getWidth() - 50
+				do title.nextIam
 
 			else if i > index + 1
 
-				title.moveTo @width
+				do title.hideToRight
 
 			else
 
-				title.moveTo 0
+				do title.show
 
 		@rootView.bg.moveXTo index * -100 - 200
 
@@ -72,8 +78,12 @@ module.exports = class Ribbon
 
 		@pages[index].el
 
+	getSubnameSelector: (index) ->
+
+		@titles[index].getSubnameSelector()
+
 	addTitle: (title) ->
 
-		tit = new Title @el, title, @width
+		tit = new Title @rootView, @el, title, @width
 
 		@titles.push tit

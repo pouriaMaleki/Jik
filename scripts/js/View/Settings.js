@@ -6,7 +6,7 @@ module.exports = Settings = (function() {
   function Settings(mainView) {
     var elHammer;
     this.mainView = mainView;
-    this.el = Foxie('.settings').rotateYTo(Math.PI / 2).trans(400).putIn(this.mainView.el);
+    this.el = Foxie('.settings').scaleXTo(0).trans(400).putIn(this.mainView.el);
     elHammer = new Hammer(this.el.node);
     elHammer.on('panleft panright', (function(_this) {
       return function(arg) {
@@ -26,11 +26,11 @@ module.exports = Settings = (function() {
   }
 
   Settings.prototype.show = function() {
-    return this.el.rotateYTo(0);
+    return this.el.scaleXTo(1);
   };
 
   Settings.prototype.hide = function() {
-    return this.el.rotateYTo(Math.PI / 2);
+    return this.el.scaleXTo(0);
   };
 
   Settings.prototype.createCheckbox = function() {

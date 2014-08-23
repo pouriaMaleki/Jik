@@ -1,10 +1,16 @@
-var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings, VideoPlayer;
+var Album, Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings, Song, Video, VideoPlayer;
 
 Foxie = require('foxie');
 
 Ribbon = require('./Ribbon/Ribbon');
 
 Artist = require('./Pages/Artist');
+
+Video = require('./Pages/Video');
+
+Album = require('./Pages/Album');
+
+Song = require('./Pages/Song');
 
 HomePage = require('./Pages/HomePage');
 
@@ -24,8 +30,11 @@ module.exports = Main = (function() {
     this.inside = Foxie('.master-inside');
     this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video']);
     this.inside.putIn(this.el);
-    this.homePage = new HomePage(this, this.ribbon.getPage(0));
-    this.artistPage = new Artist(this, this.ribbon.getPage(1));
+    this.homePage = new HomePage(this, this.ribbon.getPage(0), this.ribbon.getSubnameSelector(0));
+    this.artistPage = new Artist(this, this.ribbon.getPage(1), this.ribbon.getSubnameSelector(1));
+    this.AlbumPage = new Album(this, this.ribbon.getPage(2), this.ribbon.getSubnameSelector(2));
+    this.songPage = new Song(this, this.ribbon.getPage(3), this.ribbon.getSubnameSelector(3));
+    this.videoPage = new Video(this, this.ribbon.getPage(4), this.ribbon.getSubnameSelector(4));
     this.rightSwipe = new RightSwipe(this);
     this.musicPlayer = new MusicPlayer(this);
     this.videoPlayer = new VideoPlayer(this);

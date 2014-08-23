@@ -10,6 +10,7 @@ module.exports = AlbumModel = (function(_super) {
   function AlbumModel(model) {
     this.model = model;
     AlbumModel.__super__.constructor.apply(this, arguments);
+    this.option = 0;
   }
 
   AlbumModel.prototype.get = function() {};
@@ -17,6 +18,12 @@ module.exports = AlbumModel = (function(_super) {
   AlbumModel.prototype.refresh = function() {
     this._emit('refresh');
     return this.get();
+  };
+
+  AlbumModel.prototype.setOption = function(option) {
+    this.option = option;
+    this._emit('option', this.option);
+    return this.refresh();
   };
 
   return AlbumModel;

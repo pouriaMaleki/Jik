@@ -10,6 +10,7 @@ module.exports = ArtistModel = (function(_super) {
   function ArtistModel(model) {
     this.model = model;
     ArtistModel.__super__.constructor.apply(this, arguments);
+    this.option = 0;
   }
 
   ArtistModel.prototype.get = function() {
@@ -33,6 +34,12 @@ module.exports = ArtistModel = (function(_super) {
   ArtistModel.prototype.refresh = function() {
     this._emit('refresh');
     return this.get();
+  };
+
+  ArtistModel.prototype.setOption = function(option) {
+    this.option = option;
+    this._emit('option', this.option);
+    return this.refresh();
   };
 
   return ArtistModel;

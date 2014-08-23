@@ -1,4 +1,4 @@
-var Foxie, Item, Pages, Scrolla;
+var Foxie, Item, Pages, Scrolla, SubnameSelector;
 
 Foxie = require('foxie');
 
@@ -9,6 +9,8 @@ Item = {
 };
 
 Scrolla = require('./Scrolla');
+
+SubnameSelector = require('./Ribbon/SubnameSelector');
 
 module.exports = Pages = (function() {
   function Pages(mainView, parentNode) {

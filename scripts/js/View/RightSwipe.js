@@ -13,7 +13,7 @@ module.exports = RightSwipe = (function() {
     this.model = this.mainView.model.page;
     this.items = [];
     this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
-    this.el = Foxie('.rightSwipe').trans(300).moveXTo(-200).putIn(this.mainView.el);
+    this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(this.mainView.el);
     btnHammer = new Hammer(this.btn.node);
     btnHammer.on('tap', (function(_this) {
       return function(arg) {

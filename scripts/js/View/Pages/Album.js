@@ -1,4 +1,4 @@
-var Foxie, Home, Item, Pages,
+var Album, Foxie, Item, Pages,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -12,15 +12,15 @@ Item = {
 
 Pages = require('../Pages');
 
-module.exports = Home = (function(_super) {
-  __extends(Home, _super);
+module.exports = Album = (function(_super) {
+  __extends(Album, _super);
 
-  function Home(mainView, parentNode, selector) {
+  function Album(mainView, parentNode, selector) {
     this.mainView = mainView;
     this.parentNode = parentNode;
     this.selector = selector;
-    Home.__super__.constructor.apply(this, arguments);
-    this.model = this.mainView.model.home;
+    Album.__super__.constructor.apply(this, arguments);
+    this.model = this.mainView.model.album;
     this.selector.setModel(this.model);
     this.selector.create('top');
     this.selector.create('new');
@@ -46,10 +46,10 @@ module.exports = Home = (function(_super) {
     })(this));
   }
 
-  return Home;
+  return Album;
 
 })(Pages);
 
 /*
-//@ sourceMappingURL=HomePage.map
+//@ sourceMappingURL=Album.map
 */

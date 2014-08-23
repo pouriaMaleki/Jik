@@ -10,7 +10,11 @@ module.exports = PagesModel = (function(_super) {
   function PagesModel(model) {
     this.model = model;
     PagesModel.__super__.constructor.apply(this, arguments);
-    this.get();
+    setTimeout((function(_this) {
+      return function() {
+        return _this._emit('option', _this.option);
+      };
+    })(this), 500);
   }
 
   PagesModel.prototype.get = function() {};
@@ -18,6 +22,11 @@ module.exports = PagesModel = (function(_super) {
   PagesModel.prototype.refresh = function() {};
 
   PagesModel.prototype.loadMore = function() {};
+
+  PagesModel.prototype.setOption = function(option) {
+    this.option = option;
+    return this._emit('option', this.option);
+  };
 
   return PagesModel;
 

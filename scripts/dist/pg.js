@@ -10678,7 +10678,11 @@ module.exports = PagesModel = (function(_super) {
   function PagesModel(model) {
     this.model = model;
     PagesModel.__super__.constructor.apply(this, arguments);
-    this.get();
+    setTimeout((function(_this) {
+      return function() {
+        return _this._emit('option', _this.option);
+      };
+    })(this), 500);
   }
 
   PagesModel.prototype.get = function() {};
@@ -10686,6 +10690,11 @@ module.exports = PagesModel = (function(_super) {
   PagesModel.prototype.refresh = function() {};
 
   PagesModel.prototype.loadMore = function() {};
+
+  PagesModel.prototype.setOption = function(option) {
+    this.option = option;
+    return this._emit('option', this.option);
+  };
 
   return PagesModel;
 
@@ -10708,6 +10717,7 @@ module.exports = AlbumModel = (function(_super) {
   function AlbumModel(model) {
     this.model = model;
     AlbumModel.__super__.constructor.apply(this, arguments);
+    this.option = 0;
   }
 
   AlbumModel.prototype.get = function() {};
@@ -10715,6 +10725,12 @@ module.exports = AlbumModel = (function(_super) {
   AlbumModel.prototype.refresh = function() {
     this._emit('refresh');
     return this.get();
+  };
+
+  AlbumModel.prototype.setOption = function(option) {
+    this.option = option;
+    this._emit('option', this.option);
+    return this.refresh();
   };
 
   return AlbumModel;
@@ -10738,6 +10754,7 @@ module.exports = ArtistModel = (function(_super) {
   function ArtistModel(model) {
     this.model = model;
     ArtistModel.__super__.constructor.apply(this, arguments);
+    this.option = 0;
   }
 
   ArtistModel.prototype.get = function() {
@@ -10763,6 +10780,12 @@ module.exports = ArtistModel = (function(_super) {
     return this.get();
   };
 
+  ArtistModel.prototype.setOption = function(option) {
+    this.option = option;
+    this._emit('option', this.option);
+    return this.refresh();
+  };
+
   return ArtistModel;
 
 })(PagesModel);
@@ -10784,31 +10807,66 @@ module.exports = HomeModel = (function(_super) {
   function HomeModel(model) {
     this.model = model;
     HomeModel.__super__.constructor.apply(this, arguments);
+    this.option = 0;
+    this.loading = false;
   }
 
   HomeModel.prototype.get = function() {
-    return setTimeout((function(_this) {
-      return function() {
-        var json;
-        json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"},{"id":"140809","type":"song","artist":"Masoud Emami","artist_id":"1905","songname":"Khoda Doosam Dasht","popularity":"3.6","ratecount":"9","view":"4457","time":"3:33","date":"1393-04-12","poster":"http:\/\/85.25.243.154\/img\/utxrohick-1404397432.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/Gallery\/[Medium]\/2u6wzwdn-1404397432.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Masoud+Emami\/-\/Khoda+Doosam+Dasht","mp3":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3"},{"id":"140785","type":"song","artist":"Amin Hayaei","artist_id":"12201","songname":"Owje Parvaz","popularity":"3.8","ratecount":"8","view":"2205","time":"5:22","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/gq9zswptj-1404332339.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/Gallery\/[Medium]\/qixdrptt-1404332339.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Amin+Hayaei\/-\/Owje+Parvaz","mp3":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3"},{"id":"140782","type":"song","artist":"Bakhtak Band","artist_id":"11623","songname":"Dame Sobh","popularity":"2.6","ratecount":"8","view":"2966","time":"3:27","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/1spygoohm-1404322313.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/Gallery\/[Medium]\/hxb0sre5-1404322313.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Bakhtak+Band\/-\/Dame+Sobh","mp3":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3"},{"id":"9826","type":"album","artist":"Mohsen-sharifian","artist_id":"631","album":"Dingue Marrow","trackcount":"9","popularity":"5","date":"1393-04-14","url":"http:\/\/www.wikiseda.com\/Mohsen-sharifian\/Dingue+Marrow","view":"551","poster":"http:\/\/85.25.243.154\/img\/un79cef6qp-1404554657.jpg","year":"1393"},{"id":"9821","type":"album","artist":"O-hum","artist_id":"3927","album":"Hafez In Love","trackcount":"4","popularity":"5","date":"1393-04-08","url":"http:\/\/www.wikiseda.com\/O-hum\/Hafez+In+Love","view":"1756","poster":"http:\/\/85.25.243.154\/img\/1xxwe9fwdz-1404025213.jpg","year":"1393"},{"id":"9809","type":"album","artist":"Alireza Ghorbani","artist_id":"472","album":"Raftamo Bare Safar Bastam","trackcount":"6","popularity":"4.7","date":"1393-04-02","url":"http:\/\/www.wikiseda.com\/Alireza+Ghorbani\/Raftamo+Bare+Safar+Bastam","view":"18170","poster":"http:\/\/85.25.243.154\/img\/pf2m3p18sw-1403542665.jpg","year":"1393"},{"id":"9807","type":"album","artist":"Salar Aghili","artist_id":"97","album":"Vatan","trackcount":"9","popularity":"4.8","date":"1393-03-31","url":"http:\/\/www.wikiseda.com\/Salar+Aghili\/Vatan","view":"10829","poster":"http:\/\/85.25.243.154\/img\/obldv0b5l4-1403360590.jpg","year":"1393"},{"id":"4023","type":"video","artist":"Matin do hanjare","poster":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/[Gallery]\/8c1e2f4f65d428d910ece8e1c83cbc26-3.jpg","time":"3:2","videoname":"Marg Bar Man","lowq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-l.mp4","highq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-h.mp4","popularity":"3.8","view":"2292","url":"http:\/\/www.wikiseda.com\/Matin+do+hanjare\/+video\/Marg+Bar+Man","year":"1393"},{"id":"4022","type":"video","artist":"Amir Farjam","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/[Gallery]\/5fddee48dfa042d0664b066720a71bda-3.jpg","time":"3:32","videoname":"KHodaya","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-h.mp4","popularity":"5","view":"1769","url":"http:\/\/www.wikiseda.com\/Amir+Farjam\/+video\/KHodaya","year":"1393"},{"id":"4021","type":"video","artist":"Emo Band","poster":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/[Gallery]\/6ab639b8fef2f4fe7f9841d6f8d9f70d-3.jpg","time":"4:34","videoname":"Donyamo Live","lowq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-l.mp4","highq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-h.mp4","popularity":"4.1","view":"1728","url":"http:\/\/www.wikiseda.com\/Emo+Band\/+video\/Donyamo+Live","year":"1393"},{"id":"4019","type":"video","artist":"Amir Tataloo","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/[Gallery]\/d2931b538ae36b30847c9c139610311a-3.jpg","time":"3:29","videoname":"Baa To","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-h.mp4","popularity":"4.2","view":"10730","url":"http:\/\/www.wikiseda.com\/Amir+Tataloo\/+video\/Baa+To","year":"1393"}]';
-        return _this._emit('load', JSON.parse(json));
-      };
-    })(this), 200);
+    if (this.loading === true) {
+      return;
+    }
+    this.loading = true;
+    if (this.option === 0) {
+      return setTimeout((function(_this) {
+        return function() {
+          var json;
+          json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"},{"id":"140809","type":"song","artist":"Masoud Emami","artist_id":"1905","songname":"Khoda Doosam Dasht","popularity":"3.6","ratecount":"9","view":"4457","time":"3:33","date":"1393-04-12","poster":"http:\/\/85.25.243.154\/img\/utxrohick-1404397432.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/Gallery\/[Medium]\/2u6wzwdn-1404397432.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Masoud+Emami\/-\/Khoda+Doosam+Dasht","mp3":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3"},{"id":"140785","type":"song","artist":"Amin Hayaei","artist_id":"12201","songname":"Owje Parvaz","popularity":"3.8","ratecount":"8","view":"2205","time":"5:22","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/gq9zswptj-1404332339.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/Gallery\/[Medium]\/qixdrptt-1404332339.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Amin+Hayaei\/-\/Owje+Parvaz","mp3":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3"},{"id":"140782","type":"song","artist":"Bakhtak Band","artist_id":"11623","songname":"Dame Sobh","popularity":"2.6","ratecount":"8","view":"2966","time":"3:27","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/1spygoohm-1404322313.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/Gallery\/[Medium]\/hxb0sre5-1404322313.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Bakhtak+Band\/-\/Dame+Sobh","mp3":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3"},{"id":"9826","type":"album","artist":"Mohsen-sharifian","artist_id":"631","album":"Dingue Marrow","trackcount":"9","popularity":"5","date":"1393-04-14","url":"http:\/\/www.wikiseda.com\/Mohsen-sharifian\/Dingue+Marrow","view":"551","poster":"http:\/\/85.25.243.154\/img\/un79cef6qp-1404554657.jpg","year":"1393"},{"id":"9821","type":"album","artist":"O-hum","artist_id":"3927","album":"Hafez In Love","trackcount":"4","popularity":"5","date":"1393-04-08","url":"http:\/\/www.wikiseda.com\/O-hum\/Hafez+In+Love","view":"1756","poster":"http:\/\/85.25.243.154\/img\/1xxwe9fwdz-1404025213.jpg","year":"1393"},{"id":"9809","type":"album","artist":"Alireza Ghorbani","artist_id":"472","album":"Raftamo Bare Safar Bastam","trackcount":"6","popularity":"4.7","date":"1393-04-02","url":"http:\/\/www.wikiseda.com\/Alireza+Ghorbani\/Raftamo+Bare+Safar+Bastam","view":"18170","poster":"http:\/\/85.25.243.154\/img\/pf2m3p18sw-1403542665.jpg","year":"1393"},{"id":"9807","type":"album","artist":"Salar Aghili","artist_id":"97","album":"Vatan","trackcount":"9","popularity":"4.8","date":"1393-03-31","url":"http:\/\/www.wikiseda.com\/Salar+Aghili\/Vatan","view":"10829","poster":"http:\/\/85.25.243.154\/img\/obldv0b5l4-1403360590.jpg","year":"1393"},{"id":"4023","type":"video","artist":"Matin do hanjare","poster":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/[Gallery]\/8c1e2f4f65d428d910ece8e1c83cbc26-3.jpg","time":"3:2","videoname":"Marg Bar Man","lowq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-l.mp4","highq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-h.mp4","popularity":"3.8","view":"2292","url":"http:\/\/www.wikiseda.com\/Matin+do+hanjare\/+video\/Marg+Bar+Man","year":"1393"},{"id":"4022","type":"video","artist":"Amir Farjam","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/[Gallery]\/5fddee48dfa042d0664b066720a71bda-3.jpg","time":"3:32","videoname":"KHodaya","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-h.mp4","popularity":"5","view":"1769","url":"http:\/\/www.wikiseda.com\/Amir+Farjam\/+video\/KHodaya","year":"1393"},{"id":"4021","type":"video","artist":"Emo Band","poster":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/[Gallery]\/6ab639b8fef2f4fe7f9841d6f8d9f70d-3.jpg","time":"4:34","videoname":"Donyamo Live","lowq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-l.mp4","highq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-h.mp4","popularity":"4.1","view":"1728","url":"http:\/\/www.wikiseda.com\/Emo+Band\/+video\/Donyamo+Live","year":"1393"},{"id":"4019","type":"video","artist":"Amir Tataloo","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/[Gallery]\/d2931b538ae36b30847c9c139610311a-3.jpg","time":"3:29","videoname":"Baa To","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-h.mp4","popularity":"4.2","view":"10730","url":"http:\/\/www.wikiseda.com\/Amir+Tataloo\/+video\/Baa+To","year":"1393"}]';
+          _this._emit('load', JSON.parse(json));
+          return _this.loading = false;
+        };
+      })(this), 200);
+    } else {
+      return setTimeout((function(_this) {
+        return function() {
+          var json;
+          json = '[{"id":"140785","type":"song","artist":"Amin Hayaei","artist_id":"12201","songname":"Owje Parvaz","popularity":"3.8","ratecount":"8","view":"2205","time":"5:22","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/gq9zswptj-1404332339.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/Gallery\/[Medium]\/qixdrptt-1404332339.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Amin+Hayaei\/-\/Owje+Parvaz","mp3":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3"},{"id":"140782","type":"song","artist":"Bakhtak Band","artist_id":"11623","songname":"Dame Sobh","popularity":"2.6","ratecount":"8","view":"2966","time":"3:27","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/1spygoohm-1404322313.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/Gallery\/[Medium]\/hxb0sre5-1404322313.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Bakhtak+Band\/-\/Dame+Sobh","mp3":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3"},{"id":"9826","type":"album","artist":"Mohsen-sharifian","artist_id":"631","album":"Dingue Marrow","trackcount":"9","popularity":"5","date":"1393-04-14","url":"http:\/\/www.wikiseda.com\/Mohsen-sharifian\/Dingue+Marrow","view":"551","poster":"http:\/\/85.25.243.154\/img\/un79cef6qp-1404554657.jpg","year":"1393"},{"id":"9821","type":"album","artist":"O-hum","artist_id":"3927","album":"Hafez In Love","trackcount":"4","popularity":"5","date":"1393-04-08","url":"http:\/\/www.wikiseda.com\/O-hum\/Hafez+In+Love","view":"1756","poster":"http:\/\/85.25.243.154\/img\/1xxwe9fwdz-1404025213.jpg","year":"1393"},{"id":"9809","type":"album","artist":"Alireza Ghorbani","artist_id":"472","album":"Raftamo Bare Safar Bastam","trackcount":"6","popularity":"4.7","date":"1393-04-02","url":"http:\/\/www.wikiseda.com\/Alireza+Ghorbani\/Raftamo+Bare+Safar+Bastam","view":"18170","poster":"http:\/\/85.25.243.154\/img\/pf2m3p18sw-1403542665.jpg","year":"1393"},{"id":"9807","type":"album","artist":"Salar Aghili","artist_id":"97","album":"Vatan","trackcount":"9","popularity":"4.8","date":"1393-03-31","url":"http:\/\/www.wikiseda.com\/Salar+Aghili\/Vatan","view":"10829","poster":"http:\/\/85.25.243.154\/img\/obldv0b5l4-1403360590.jpg","year":"1393"},{"id":"4023","type":"video","artist":"Matin do hanjare","poster":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/[Gallery]\/8c1e2f4f65d428d910ece8e1c83cbc26-3.jpg","time":"3:2","videoname":"Marg Bar Man","lowq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-l.mp4","highq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-h.mp4","popularity":"3.8","view":"2292","url":"http:\/\/www.wikiseda.com\/Matin+do+hanjare\/+video\/Marg+Bar+Man","year":"1393"},{"id":"4022","type":"video","artist":"Amir Farjam","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/[Gallery]\/5fddee48dfa042d0664b066720a71bda-3.jpg","time":"3:32","videoname":"KHodaya","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-h.mp4","popularity":"5","view":"1769","url":"http:\/\/www.wikiseda.com\/Amir+Farjam\/+video\/KHodaya","year":"1393"},{"id":"4021","type":"video","artist":"Emo Band","poster":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/[Gallery]\/6ab639b8fef2f4fe7f9841d6f8d9f70d-3.jpg","time":"4:34","videoname":"Donyamo Live","lowq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-l.mp4","highq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-h.mp4","popularity":"4.1","view":"1728","url":"http:\/\/www.wikiseda.com\/Emo+Band\/+video\/Donyamo+Live","year":"1393"},{"id":"4019","type":"video","artist":"Amir Tataloo","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/[Gallery]\/d2931b538ae36b30847c9c139610311a-3.jpg","time":"3:29","videoname":"Baa To","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-h.mp4","popularity":"4.2","view":"10730","url":"http:\/\/www.wikiseda.com\/Amir+Tataloo\/+video\/Baa+To","year":"1393"}]';
+          _this._emit('load', JSON.parse(json));
+          return _this.loading = false;
+        };
+      })(this), 200);
+    }
   };
 
   HomeModel.prototype.loadmore = function() {
+    if (this.loading === true) {
+      return;
+    }
+    this.loading = true;
     return setTimeout((function(_this) {
       return function() {
         var json;
         json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"}]';
-        return _this._emit('loadmore', JSON.parse(json));
+        _this._emit('loadmore', JSON.parse(json));
+        return _this.loading = false;
       };
     })(this), 1000);
   };
 
   HomeModel.prototype.refresh = function() {
+    if (this.loading === true) {
+      return;
+    }
     this._emit('refresh');
     return this.get();
+  };
+
+  HomeModel.prototype.setOption = function(option) {
+    this.option = option;
+    if (this.loading === true) {
+      return;
+    }
+    this._emit('option', this.option);
+    return this.refresh();
   };
 
   return HomeModel;
@@ -10833,6 +10891,7 @@ module.exports = SongModel = (function(_super) {
     this.model = model;
     SongModel.__super__.constructor.apply(this, arguments);
     this.loading = false;
+    this.option = 0;
   }
 
   SongModel.prototype.get = function() {
@@ -10859,6 +10918,12 @@ module.exports = SongModel = (function(_super) {
     return this.get();
   };
 
+  SongModel.prototype.setOption = function(option) {
+    this.option = option;
+    this._emit('option', this.option);
+    return this.refresh();
+  };
+
   return SongModel;
 
 })(PagesModel);
@@ -10880,6 +10945,7 @@ module.exports = VideoModel = (function(_super) {
   function VideoModel(model) {
     this.model = model;
     VideoModel.__super__.constructor.apply(this, arguments);
+    this.option = 0;
   }
 
   VideoModel.prototype.get = function() {
@@ -10895,6 +10961,12 @@ module.exports = VideoModel = (function(_super) {
   VideoModel.prototype.refresh = function() {
     this._emit('video-list-refresh');
     return this.get();
+  };
+
+  VideoModel.prototype.setOption = function(option) {
+    this.option = option;
+    this._emit('option', this.option);
+    return this.refresh();
   };
 
   return VideoModel;
@@ -11421,13 +11493,19 @@ module.exports = VideoItem = (function(_super) {
 */
 
 },{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Main.js":[function(require,module,exports){
-var Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings, VideoPlayer;
+var Album, Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings, Song, Video, VideoPlayer;
 
 Foxie = require('foxie');
 
 Ribbon = require('./Ribbon/Ribbon');
 
 Artist = require('./Pages/Artist');
+
+Video = require('./Pages/Video');
+
+Album = require('./Pages/Album');
+
+Song = require('./Pages/Song');
 
 HomePage = require('./Pages/HomePage');
 
@@ -11447,8 +11525,11 @@ module.exports = Main = (function() {
     this.inside = Foxie('.master-inside');
     this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video']);
     this.inside.putIn(this.el);
-    this.homePage = new HomePage(this, this.ribbon.getPage(0));
-    this.artistPage = new Artist(this, this.ribbon.getPage(1));
+    this.homePage = new HomePage(this, this.ribbon.getPage(0), this.ribbon.getSubnameSelector(0));
+    this.artistPage = new Artist(this, this.ribbon.getPage(1), this.ribbon.getSubnameSelector(1));
+    this.AlbumPage = new Album(this, this.ribbon.getPage(2), this.ribbon.getSubnameSelector(2));
+    this.songPage = new Song(this, this.ribbon.getPage(3), this.ribbon.getSubnameSelector(3));
+    this.videoPage = new Video(this, this.ribbon.getPage(4), this.ribbon.getSubnameSelector(4));
     this.rightSwipe = new RightSwipe(this);
     this.musicPlayer = new MusicPlayer(this);
     this.videoPlayer = new VideoPlayer(this);
@@ -11463,7 +11544,7 @@ module.exports = Main = (function() {
 //@ sourceMappingURL=Main.map
 */
 
-},{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","./RightSwipe":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js","./VideoPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\VideoPlayer.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
+},{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Album":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Album.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Pages/Song":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Song.js","./Pages/Video":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Video.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","./RightSwipe":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js","./VideoPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\VideoPlayer.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
 var Foxie, Lyric, MusicPlayer, Seekbar;
 
 Foxie = require('Foxie');
@@ -11779,7 +11860,7 @@ module.exports = Seekbar = (function() {
 */
 
 },{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js":[function(require,module,exports){
-var Foxie, Item, Pages, Scrolla;
+var Foxie, Item, Pages, Scrolla, SubnameSelector;
 
 Foxie = require('foxie');
 
@@ -11790,6 +11871,8 @@ Item = {
 };
 
 Scrolla = require('./Scrolla');
+
+SubnameSelector = require('./Ribbon/SubnameSelector');
 
 module.exports = Pages = (function() {
   function Pages(mainView, parentNode) {
@@ -11945,7 +12028,64 @@ module.exports = Pages = (function() {
 //@ sourceMappingURL=Pages.map
 */
 
-},{"./Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","./Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","./Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js":[function(require,module,exports){
+},{"./Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","./Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","./Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","./Ribbon/SubnameSelector":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\SubnameSelector.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Album.js":[function(require,module,exports){
+var Album, Foxie, Item, Pages,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Foxie = require('foxie');
+
+Item = {
+  song: require('../Item/SongItem'),
+  video: require('../Item/VideoItem'),
+  album: require('../Item/AlbumItem')
+};
+
+Pages = require('../Pages');
+
+module.exports = Album = (function(_super) {
+  __extends(Album, _super);
+
+  function Album(mainView, parentNode, selector) {
+    this.mainView = mainView;
+    this.parentNode = parentNode;
+    this.selector = selector;
+    Album.__super__.constructor.apply(this, arguments);
+    this.model = this.mainView.model.album;
+    this.selector.setModel(this.model);
+    this.selector.create('top');
+    this.selector.create('new');
+    this.selector.create('featured');
+    this.model.on('refresh', (function(_this) {
+      return function() {
+        _this.removeAll();
+        _this.doneRefresh();
+      };
+    })(this));
+    this.model.on('loadmore', (function(_this) {
+      return function(itemsData) {
+        _this.scroll.release();
+        _this.addMultiple(itemsData);
+        _this.doneLoad(true);
+      };
+    })(this));
+    this.model.on('load', (function(_this) {
+      return function(itemsData) {
+        _this.addMultiple(itemsData);
+        _this.doneLoad();
+      };
+    })(this));
+  }
+
+  return Album;
+
+})(Pages);
+
+/*
+//@ sourceMappingURL=Album.map
+*/
+
+},{"../Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","../Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","../Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","../Pages":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js":[function(require,module,exports){
 var Artist, Foxie, Item, Pages,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -11963,11 +12103,15 @@ Pages = require('../Pages');
 module.exports = Artist = (function(_super) {
   __extends(Artist, _super);
 
-  function Artist(mainView, parentNode) {
+  function Artist(mainView, parentNode, selector) {
     this.mainView = mainView;
     this.parentNode = parentNode;
+    this.selector = selector;
     Artist.__super__.constructor.apply(this, arguments);
     this.model = this.mainView.model.artist;
+    this.selector.setModel(this.model);
+    this.selector.create('Top');
+    this.selector.create('Sorted');
     this.model.on('refresh', (function(_this) {
       return function() {
         _this.removeAll();
@@ -12015,11 +12159,16 @@ Pages = require('../Pages');
 module.exports = Home = (function(_super) {
   __extends(Home, _super);
 
-  function Home(mainView, parentNode) {
+  function Home(mainView, parentNode, selector) {
     this.mainView = mainView;
     this.parentNode = parentNode;
+    this.selector = selector;
     Home.__super__.constructor.apply(this, arguments);
     this.model = this.mainView.model.home;
+    this.selector.setModel(this.model);
+    this.selector.create('top');
+    this.selector.create('new');
+    this.selector.create('featured');
     this.model.on('refresh', (function(_this) {
       return function() {
         _this.removeAll();
@@ -12047,6 +12196,120 @@ module.exports = Home = (function(_super) {
 
 /*
 //@ sourceMappingURL=HomePage.map
+*/
+
+},{"../Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","../Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","../Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","../Pages":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Song.js":[function(require,module,exports){
+var Foxie, Item, Pages, Song,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Foxie = require('foxie');
+
+Item = {
+  song: require('../Item/SongItem'),
+  video: require('../Item/VideoItem'),
+  album: require('../Item/AlbumItem')
+};
+
+Pages = require('../Pages');
+
+module.exports = Song = (function(_super) {
+  __extends(Song, _super);
+
+  function Song(mainView, parentNode, selector) {
+    this.mainView = mainView;
+    this.parentNode = parentNode;
+    this.selector = selector;
+    Song.__super__.constructor.apply(this, arguments);
+    this.model = this.mainView.model.song;
+    this.selector.setModel(this.model);
+    this.selector.create('top');
+    this.selector.create('new');
+    this.selector.create('featured');
+    this.model.on('refresh', (function(_this) {
+      return function() {
+        _this.removeAll();
+        _this.doneRefresh();
+      };
+    })(this));
+    this.model.on('loadmore', (function(_this) {
+      return function(itemsData) {
+        _this.scroll.release();
+        _this.addMultiple(itemsData);
+        _this.doneLoad(true);
+      };
+    })(this));
+    this.model.on('load', (function(_this) {
+      return function(itemsData) {
+        _this.addMultiple(itemsData);
+        _this.doneLoad();
+      };
+    })(this));
+  }
+
+  return Song;
+
+})(Pages);
+
+/*
+//@ sourceMappingURL=Song.map
+*/
+
+},{"../Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","../Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","../Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","../Pages":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Video.js":[function(require,module,exports){
+var Foxie, Item, Pages, Video,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Foxie = require('foxie');
+
+Item = {
+  song: require('../Item/SongItem'),
+  video: require('../Item/VideoItem'),
+  album: require('../Item/AlbumItem')
+};
+
+Pages = require('../Pages');
+
+module.exports = Video = (function(_super) {
+  __extends(Video, _super);
+
+  function Video(mainView, parentNode, selector) {
+    this.mainView = mainView;
+    this.parentNode = parentNode;
+    this.selector = selector;
+    Video.__super__.constructor.apply(this, arguments);
+    this.model = this.mainView.model.video;
+    this.selector.setModel(this.model);
+    this.selector.create('top');
+    this.selector.create('new');
+    this.selector.create('featured');
+    this.model.on('refresh', (function(_this) {
+      return function() {
+        _this.removeAll();
+        _this.doneRefresh();
+      };
+    })(this));
+    this.model.on('loadmore', (function(_this) {
+      return function(itemsData) {
+        _this.scroll.release();
+        _this.addMultiple(itemsData);
+        _this.doneLoad(true);
+      };
+    })(this));
+    this.model.on('load', (function(_this) {
+      return function(itemsData) {
+        _this.addMultiple(itemsData);
+        _this.doneLoad();
+      };
+    })(this));
+  }
+
+  return Video;
+
+})(Pages);
+
+/*
+//@ sourceMappingURL=Video.map
 */
 
 },{"../Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","../Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","../Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","../Pages":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js":[function(require,module,exports){
@@ -12083,11 +12346,17 @@ module.exports = Ribbon = (function() {
     })(this));
     window.addEventListener('resize', (function(_this) {
       return function() {
-        var page, _j, _len1, _ref1;
+        var page, _j, _k, _len1, _len2, _ref1, _ref2;
         _this.width = window.innerWidth;
-        _ref1 = _this.pages;
-        for (i = _j = 0, _len1 = _ref1.length; _j < _len1; i = ++_j) {
-          page = _ref1[i];
+        _ref1 = _this.titles;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          title = _ref1[_j];
+          title.width = _this.width;
+        }
+        _this.showPage(_this.rootView.model.page.currentActive);
+        _ref2 = _this.pages;
+        for (i = _k = 0, _len2 = _ref2.length; _k < _len2; i = ++_k) {
+          page = _ref2[i];
           page.moveTo(i * _this.width);
         }
         return _this.rootView.model.page.activeTitle();
@@ -12103,13 +12372,13 @@ module.exports = Ribbon = (function() {
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       title = _ref[i];
       if (i < index) {
-        title.moveTo(-200);
+        title.hideToLeft();
       } else if (i === index + 1) {
-        title.moveTo(this.width - title.getWidth() - 50);
+        title.nextIam();
       } else if (i > index + 1) {
-        title.moveTo(this.width);
+        title.hideToRight();
       } else {
-        title.moveTo(0);
+        title.show();
       }
     }
     return this.rootView.bg.moveXTo(index * -100 - 200);
@@ -12119,9 +12388,13 @@ module.exports = Ribbon = (function() {
     return this.pages[index].el;
   };
 
+  Ribbon.prototype.getSubnameSelector = function(index) {
+    return this.titles[index].getSubnameSelector();
+  };
+
   Ribbon.prototype.addTitle = function(title) {
     var tit;
-    tit = new Title(this.el, title, this.width);
+    tit = new Title(this.rootView, this.el, title, this.width);
     return this.titles.push(tit);
   };
 
@@ -12179,17 +12452,94 @@ module.exports = RibbonPage = (function() {
 //@ sourceMappingURL=RibbonPage.map
 */
 
-},{"foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Title.js":[function(require,module,exports){
-var Foxie, Title;
+},{"foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\SubnameSelector.js":[function(require,module,exports){
+var Foxie, SubnameSelector;
 
 Foxie = require('foxie');
 
+module.exports = SubnameSelector = (function() {
+  function SubnameSelector(mainView, parentNode) {
+    this.mainView = mainView;
+    this.parentNode = parentNode;
+    this.el = Foxie('.ribbon-title-subnameSelector').trans(300).putIn(this.parentNode);
+    this.subnames = [];
+    this.hide();
+  }
+
+  SubnameSelector.prototype.activate = function(id) {
+    var index, subname, _i, _len, _ref, _results;
+    _ref = this.subnames;
+    _results = [];
+    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+      subname = _ref[index];
+      if (id === index) {
+        _results.push(subname.setOpacity(1));
+      } else {
+        _results.push(subname.setOpacity(.5));
+      }
+    }
+    return _results;
+  };
+
+  SubnameSelector.prototype.setModel = function(model) {
+    this.model = model;
+    return this.model.on('option', (function(_this) {
+      return function(id) {
+        return _this.activate(id);
+      };
+    })(this));
+  };
+
+  SubnameSelector.prototype.create = function(text) {
+    var id, subHammer, subname;
+    subname = Foxie('.ribbon-title-subnameSelected').innerHTML(text).trans(300).putIn(this.el);
+    id = this.subnames.length;
+    this.subnames.push(subname);
+    subHammer = new Hammer(subname.node);
+    return subHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.model.setOption(id);
+      };
+    })(this));
+  };
+
+  SubnameSelector.prototype.hide = function() {
+    return this.el.scaleXTo(0);
+  };
+
+  SubnameSelector.prototype.show = function() {
+    return this.el.scaleXTo(1);
+  };
+
+  return SubnameSelector;
+
+})();
+
+/*
+//@ sourceMappingURL=SubnameSelector.map
+*/
+
+},{"foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Title.js":[function(require,module,exports){
+var Foxie, SubnameSelector, Title;
+
+Foxie = require('foxie');
+
+SubnameSelector = require('./SubnameSelector');
+
 module.exports = Title = (function() {
-  function Title(parentNode, text, width) {
+  function Title(mainView, parentNode, text, width) {
+    this.mainView = mainView;
     this.parentNode = parentNode;
     this.width = width;
-    this.el = Foxie('.ribbon-title-names').innerHTML(text).moveXTo(this.width).trans(300).putIn(this.parentNode);
+    this.el = Foxie('.ribbon-title-names').moveXTo(this.width).trans(300);
+    this.name = Foxie('.ribbon-title-name').innerHTML(text).putIn(this.el);
+    this.selector = new SubnameSelector(this.mainView, this.el);
+    this.el.putIn(this.parentNode);
   }
+
+  Title.prototype.getSubnameSelector = function() {
+    return this.selector;
+  };
 
   Title.prototype.getWidth = function() {
     if (this.myWidth != null) {
@@ -12207,6 +12557,26 @@ module.exports = Title = (function() {
     return this.el.noTrans().moveXTo(this.width).trans(300);
   };
 
+  Title.prototype.show = function() {
+    this.el.moveXTo(0);
+    return this.selector.show();
+  };
+
+  Title.prototype.nextIam = function() {
+    this.el.moveXTo(this.width - this.getWidth() - 50);
+    return this.selector.hide();
+  };
+
+  Title.prototype.hideToLeft = function() {
+    this.el.moveXTo(-200);
+    return this.selector.hide();
+  };
+
+  Title.prototype.hideToRight = function() {
+    this.el.moveXTo(this.width);
+    return this.selector.hide();
+  };
+
   return Title;
 
 })();
@@ -12215,7 +12585,7 @@ module.exports = Title = (function() {
 //@ sourceMappingURL=Title.map
 */
 
-},{"foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js":[function(require,module,exports){
+},{"./SubnameSelector":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\SubnameSelector.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js":[function(require,module,exports){
 var Foxie, MenuItem, RightSwipe, Scrolla;
 
 Foxie = require('Foxie');
@@ -12231,7 +12601,7 @@ module.exports = RightSwipe = (function() {
     this.model = this.mainView.model.page;
     this.items = [];
     this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
-    this.el = Foxie('.rightSwipe').trans(300).moveXTo(-200).putIn(this.mainView.el);
+    this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(this.mainView.el);
     btnHammer = new Hammer(this.btn.node);
     btnHammer.on('tap', (function(_this) {
       return function(arg) {
@@ -12768,7 +13138,7 @@ module.exports = Settings = (function() {
   function Settings(mainView) {
     var elHammer;
     this.mainView = mainView;
-    this.el = Foxie('.settings').rotateYTo(Math.PI / 2).trans(400).putIn(this.mainView.el);
+    this.el = Foxie('.settings').scaleXTo(0).trans(400).putIn(this.mainView.el);
     elHammer = new Hammer(this.el.node);
     elHammer.on('panleft panright', (function(_this) {
       return function(arg) {
@@ -12788,11 +13158,11 @@ module.exports = Settings = (function() {
   }
 
   Settings.prototype.show = function() {
-    return this.el.rotateYTo(0);
+    return this.el.scaleXTo(1);
   };
 
   Settings.prototype.hide = function() {
-    return this.el.rotateYTo(Math.PI / 2);
+    return this.el.scaleXTo(0);
   };
 
   Settings.prototype.createCheckbox = function() {

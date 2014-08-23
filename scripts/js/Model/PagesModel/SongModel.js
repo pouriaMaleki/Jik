@@ -11,6 +11,7 @@ module.exports = SongModel = (function(_super) {
     this.model = model;
     SongModel.__super__.constructor.apply(this, arguments);
     this.loading = false;
+    this.option = 0;
   }
 
   SongModel.prototype.get = function() {
@@ -35,6 +36,12 @@ module.exports = SongModel = (function(_super) {
     this.loading = true;
     this._emit('song-list-refresh');
     return this.get();
+  };
+
+  SongModel.prototype.setOption = function(option) {
+    this.option = option;
+    this._emit('option', this.option);
+    return this.refresh();
   };
 
   return SongModel;

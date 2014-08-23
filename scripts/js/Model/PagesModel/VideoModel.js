@@ -10,6 +10,7 @@ module.exports = VideoModel = (function(_super) {
   function VideoModel(model) {
     this.model = model;
     VideoModel.__super__.constructor.apply(this, arguments);
+    this.option = 0;
   }
 
   VideoModel.prototype.get = function() {
@@ -25,6 +26,12 @@ module.exports = VideoModel = (function(_super) {
   VideoModel.prototype.refresh = function() {
     this._emit('video-list-refresh');
     return this.get();
+  };
+
+  VideoModel.prototype.setOption = function(option) {
+    this.option = option;
+    this._emit('option', this.option);
+    return this.refresh();
   };
 
   return VideoModel;

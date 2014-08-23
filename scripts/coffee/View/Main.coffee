@@ -1,6 +1,9 @@
 Foxie = require 'foxie'
 Ribbon = require './Ribbon/Ribbon'
 Artist = require './Pages/Artist'
+Video = require './Pages/Video'
+Album = require './Pages/Album'
+Song = require './Pages/Song'
 HomePage = require './Pages/HomePage'
 Settings = require './Settings'
 RightSwipe = require './RightSwipe'
@@ -25,11 +28,11 @@ module.exports = class Main
 
 		@inside.putIn @el
 
-		@homePage = new HomePage @, @ribbon.getPage(0)
-		@artistPage = new Artist @, @ribbon.getPage(1)
-		# @homePage = new HomePage @, @ribbon.getPage(2)
-		# @homePage = new HomePage @, @ribbon.getPage(3)
-		# @homePage = new HomePage @, @ribbon.getPage(4)
+		@homePage = new HomePage @, @ribbon.getPage(0), @ribbon.getSubnameSelector(0)
+		@artistPage = new Artist @, @ribbon.getPage(1), @ribbon.getSubnameSelector(1)
+		@AlbumPage = new Album @, @ribbon.getPage(2), @ribbon.getSubnameSelector(2)
+		@songPage = new Song @, @ribbon.getPage(3), @ribbon.getSubnameSelector(3)
+		@videoPage = new Video @, @ribbon.getPage(4), @ribbon.getSubnameSelector(4)
 
 		@rightSwipe = new RightSwipe @
 

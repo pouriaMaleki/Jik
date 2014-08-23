@@ -15,11 +15,15 @@ Pages = require('../Pages');
 module.exports = Artist = (function(_super) {
   __extends(Artist, _super);
 
-  function Artist(mainView, parentNode) {
+  function Artist(mainView, parentNode, selector) {
     this.mainView = mainView;
     this.parentNode = parentNode;
+    this.selector = selector;
     Artist.__super__.constructor.apply(this, arguments);
     this.model = this.mainView.model.artist;
+    this.selector.setModel(this.model);
+    this.selector.create('Top');
+    this.selector.create('Sorted');
     this.model.on('refresh', (function(_this) {
       return function() {
         _this.removeAll();
