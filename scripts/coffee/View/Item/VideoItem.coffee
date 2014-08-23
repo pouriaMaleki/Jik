@@ -10,6 +10,9 @@ module.exports = class VideoItem extends Item
 		@title1
 		.innerHTML data.videoname
 
+		@title2
+		.innerHTML data.artist
+
 		@el.node.classList.add 'video-item'
 
 		@title1.node.classList.add 'video-item-songname'

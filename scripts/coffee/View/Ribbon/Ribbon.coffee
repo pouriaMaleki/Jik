@@ -3,7 +3,7 @@ Title = require './Title'
 RibbonPage = require './RibbonPage'
 module.exports = class Ribbon
 
-	constructor: (@rootView, @t) ->
+	constructor: (@rootView, @t, @models) ->
 
 		@width = window.innerWidth
 		@ribbonBarSpace = 20
@@ -19,6 +19,7 @@ module.exports = class Ribbon
 
 		@titles = []
 		@pages = []
+		@visitedPageFirstTime = []
 
 		for title, i in @t
 
@@ -26,9 +27,9 @@ module.exports = class Ribbon
 
 			@pages.push new RibbonPage @rootView, (i * @width), i
 
-		@rootView.model.page.on 'page-active', (num) =>
+			@visitedPageFirstTime.push false
 
-			@showPage num
+		@rootView.model.page.on 'page-active', (num) => @showPage num
 
 		window.addEventListener 'resize', =>
 
@@ -49,6 +50,12 @@ module.exports = class Ribbon
 		do @rootView.model.page.activeTitle
 
 	showPage: (index) ->
+
+		if @visitedPageFirstTime[index] is false
+
+			do @models[index].get
+
+		@visitedPageFirstTime[index] = true
 
 		@rootView.inside
 		.trans 700

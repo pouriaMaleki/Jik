@@ -15,6 +15,7 @@ module.exports = VideoItem = (function(_super) {
     this.page = page;
     VideoItem.__super__.constructor.apply(this, arguments);
     this.title1.innerHTML(data.videoname);
+    this.title2.innerHTML(data.artist);
     this.el.node.classList.add('video-item');
     this.title1.node.classList.add('video-item-songname');
     this.title2.node.classList.add('video-item-artist');

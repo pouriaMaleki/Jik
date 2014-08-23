@@ -24,7 +24,7 @@ module.exports = class Main
 
 		@inside = Foxie '.master-inside'
 
-		@ribbon = new Ribbon @, ['home', 'artist', 'album', 'song', 'video']
+		@ribbon = new Ribbon @, ['home', 'artist', 'album', 'song', 'video'], [@model.home, @model.artist, @model.album, @model.song, @model.video]
 
 		@inside.putIn @el
 

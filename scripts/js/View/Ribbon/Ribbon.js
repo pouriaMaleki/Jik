@@ -7,10 +7,11 @@ Title = require('./Title');
 RibbonPage = require('./RibbonPage');
 
 module.exports = Ribbon = (function() {
-  function Ribbon(rootView, t) {
+  function Ribbon(rootView, t, models) {
     var i, line, title, _i, _len, _ref;
     this.rootView = rootView;
     this.t = t;
+    this.models = models;
     this.width = window.innerWidth;
     this.ribbonBarSpace = 20;
     this.el = Foxie('.ribbon').putIn(this.rootView.el);
@@ -18,11 +19,13 @@ module.exports = Ribbon = (function() {
     this.underLine = Foxie('.ribbon-underline').putIn(this.el);
     this.titles = [];
     this.pages = [];
+    this.visitedPageFirstTime = [];
     _ref = this.t;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       title = _ref[i];
       this.addTitle(title);
       this.pages.push(new RibbonPage(this.rootView, i * this.width, i));
+      this.visitedPageFirstTime.push(false);
     }
     this.rootView.model.page.on('page-active', (function(_this) {
       return function(num) {
@@ -52,6 +55,10 @@ module.exports = Ribbon = (function() {
 
   Ribbon.prototype.showPage = function(index) {
     var i, title, _i, _len, _ref;
+    if (this.visitedPageFirstTime[index] === false) {
+      this.models[index].get();
+    }
+    this.visitedPageFirstTime[index] = true;
     this.rootView.inside.trans(700).moveXTo(index * (-1 * this.width));
     _ref = this.titles;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {

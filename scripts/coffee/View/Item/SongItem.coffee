@@ -10,4 +10,7 @@ module.exports = class SongItem extends Item
 		@title1
 		.innerHTML data.songname
 
+		@title2
+		.innerHTML data.artist
+
 		@hammer.on 'tap', (arg) => @mainView.model.musicPlayer.play(data)

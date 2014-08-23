@@ -15,6 +15,7 @@ module.exports = SongItem = (function(_super) {
     this.page = page;
     SongItem.__super__.constructor.apply(this, arguments);
     this.title1.innerHTML(data.songname);
+    this.title2.innerHTML(data.artist);
     this.hammer.on('tap', (function(_this) {
       return function(arg) {
         return _this.mainView.model.musicPlayer.play(data);

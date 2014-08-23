@@ -28,7 +28,7 @@ module.exports = Main = (function() {
     this.el = Foxie('.master').putIn(document.body);
     this.bg = Foxie('.master-bg').moveXTo(-200).trans(300).putIn(this.el);
     this.inside = Foxie('.master-inside');
-    this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video']);
+    this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video'], [this.model.home, this.model.artist, this.model.album, this.model.song, this.model.video]);
     this.inside.putIn(this.el);
     this.homePage = new HomePage(this, this.ribbon.getPage(0), this.ribbon.getSubnameSelector(0));
     this.artistPage = new Artist(this, this.ribbon.getPage(1), this.ribbon.getSubnameSelector(1));

@@ -21,6 +21,9 @@ module.exports = class AlbumItem extends Item
 		@title1
 		.innerHTML data.album
 
+		@title2
+		.innerHTML data.artist
+
 		@hammer.on 'tap', =>
 
 			if @detailsLoaded is no

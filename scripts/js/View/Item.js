@@ -12,7 +12,7 @@ module.exports = Item = (function() {
     this.titlesContainer = Foxie('.titles-container').putIn(this.el);
     this.hammer = new Hammer(this.titlesContainer.node);
     this.title1 = Foxie('.item-songname').putIn(this.titlesContainer);
-    this.title2 = Foxie('.item-artist').innerHTML(data.artist).putIn(this.titlesContainer);
+    this.title2 = Foxie('.item-artist').putIn(this.titlesContainer);
     this.poster = Foxie('img.item-poster').attr('src', data.poster).putIn(this.titlesContainer);
     this.el.putIn(this.parentNode);
   }

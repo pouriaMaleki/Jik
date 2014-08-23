@@ -21,6 +21,7 @@ module.exports = AlbumItem = (function(_super) {
     this.detailNotLoaded = Foxie('.simple-songname').innerHTML('Loading Album').moveYTo(85).putIn(this.el);
     this.detailsLoaded = false;
     this.title1.innerHTML(data.album);
+    this.title2.innerHTML(data.artist);
     this.hammer.on('tap', (function(_this) {
       return function() {
         if (_this.detailsLoaded === false) {

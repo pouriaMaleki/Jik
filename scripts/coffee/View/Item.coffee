@@ -16,7 +16,6 @@ module.exports = class Item
 		.putIn @titlesContainer
 
 		@title2 = Foxie '.item-artist'
-		.innerHTML data.artist
 		.putIn @titlesContainer
 
 		@poster = Foxie 'img.item-poster'
