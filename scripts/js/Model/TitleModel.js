@@ -12,6 +12,7 @@ module.exports = TitleModel = (function(_super) {
     this.currentActive = 0;
     this.rightSwipe = false;
     this.settings = false;
+    this.playlists = false;
   }
 
   TitleModel.prototype.activeTitle = function(title) {

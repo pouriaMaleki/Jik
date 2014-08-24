@@ -10607,6 +10607,7 @@ module.exports = MusicPlayerModel = (function(_super) {
 
   MusicPlayerModel.prototype.play = function(data) {
     this._emit('play-music', data);
+    this.rootModel.videoPlayer.pause();
     if (data.id === this.playingId) {
       return;
     }
@@ -10615,15 +10616,21 @@ module.exports = MusicPlayerModel = (function(_super) {
     }
     if (this.rootModel.settings.quality) {
       this.audioTag.src = data.mp3;
-      console.log('high');
     } else {
       this.audioTag.src = data.mp3_low;
-      console.log('low');
     }
     this.audioTag.play();
     this.playing = true;
     this.playingId = data.id;
     return this.getMoreDetail(data.id);
+  };
+
+  MusicPlayerModel.prototype.pause = function() {
+    if (this.playing) {
+      this.audioTag.pause();
+      this._emit('music-pause');
+    }
+    return this.playing = false;
   };
 
   MusicPlayerModel.prototype.toggle = function() {
@@ -11175,6 +11182,7 @@ module.exports = TitleModel = (function(_super) {
     this.currentActive = 0;
     this.rightSwipe = false;
     this.settings = false;
+    this.playlists = false;
   }
 
   TitleModel.prototype.activeTitle = function(title) {
@@ -11257,6 +11265,7 @@ module.exports = VideoPlayer = (function(_super) {
 
   VideoPlayer.prototype.play = function(data) {
     this._emit('play-video', data);
+    this.rootModel.musicPlayer.pause();
     if (data.id === this.playingId) {
       return;
     }
@@ -12754,6 +12763,7 @@ module.exports = RightSwipe = (function() {
     this.items = [];
     this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
     this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(this.mainView.el);
+    this.page1 = Foxie('.rightSwipePage').trans(300).putIn(this.el);
     btnHammer = new Hammer(this.btn.node);
     btnHammer.on('tap', (function(_this) {
       return function(arg) {
@@ -12854,7 +12864,7 @@ module.exports = RightSwipe = (function() {
   };
 
   RightSwipe.prototype.newItem = function(data, cb) {
-    return this.items.push(new MenuItem(this.model, this.el, data, cb));
+    return this.items.push(new MenuItem(this.model, this.page1, data, cb));
   };
 
   RightSwipe.prototype.updateScrollSize = function() {

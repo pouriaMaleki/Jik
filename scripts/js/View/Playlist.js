@@ -1,4 +1,4 @@
-var Foxie, MenuItem, RightSwipe, Scrolla;
+var Foxie, MenuItem, Playlist, Scrolla;
 
 Foxie = require('Foxie');
 
@@ -6,28 +6,28 @@ MenuItem = require('./RightSwipe/MenuItem');
 
 Scrolla = require('./Scrolla');
 
-module.exports = RightSwipe = (function() {
-  function RightSwipe(mainView) {
+module.exports = Playlist = (function() {
+  function Playlist(mainView) {
     var btnHammer, elHammer, y;
     this.mainView = mainView;
     this.model = this.mainView.model.page;
     this.items = [];
-    this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
-    this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(this.mainView.el);
-    this.page1 = Foxie('.rightSwipePage').trans(300).putIn(this.el);
+    this.btn = Foxie('.playlist-btn').putIn(this.mainView.el);
+    this.width = window.innerWidth;
+    this.el = Foxie('.playlist').moveXTo(this.width).trans(300).putIn(this.mainView.el);
     btnHammer = new Hammer(this.btn.node);
     btnHammer.on('tap', (function(_this) {
       return function(arg) {
-        return _this.model.toggleRightSwipe();
+        return _this.model.togglePlaylists();
       };
     })(this));
     elHammer = new Hammer(this.el.node);
-    elHammer.on('panleft', (function(_this) {
+    elHammer.on('panright', (function(_this) {
       return function(arg) {
-        return _this.model.hideRightSwipe();
+        return _this.model.hidePlaylists();
       };
     })(this));
-    this.mainView.model.page.on('right-swipe', (function(_this) {
+    this.mainView.model.page.on('playlists', (function(_this) {
       return function(flag) {
         if (flag) {
           return _this.show();
@@ -101,33 +101,45 @@ module.exports = RightSwipe = (function() {
     })(this));
     window.addEventListener('resize', (function(_this) {
       return function() {
-        return _this.updateScrollSize();
+        _this.updateScrollSize();
+        return _this.updatePosition();
       };
     })(this));
   }
 
-  RightSwipe.prototype.show = function() {
-    return this.el.moveXTo(0);
+  Playlist.prototype.updatePosition = function() {
+    this.width = window.innerWidth;
+    if (this.model.playlists === true) {
+      return this.show();
+    } else {
+      return this.hide();
+    }
   };
 
-  RightSwipe.prototype.hide = function() {
-    return this.el.moveXTo(-200);
+  Playlist.prototype.show = function() {
+    alert('yes' + this.width);
+    return this.el.moveXTo(this.width - 200);
   };
 
-  RightSwipe.prototype.newItem = function(data, cb) {
-    return this.items.push(new MenuItem(this.model, this.page1, data, cb));
+  Playlist.prototype.hide = function() {
+    alert('no');
+    return this.el.moveXTo(this.width);
   };
 
-  RightSwipe.prototype.updateScrollSize = function() {
+  Playlist.prototype.newItem = function(data, cb) {
+    return this.items.push(new MenuItem(this.model, this.el, data, cb));
+  };
+
+  Playlist.prototype.updateScrollSize = function() {
     this.viewportHeight = window.innerHeight;
     this.insideHeight = 300;
     return this.scroll.setSizeAndSpace(this.insideHeight, this.viewportHeight);
   };
 
-  return RightSwipe;
+  return Playlist;
 
 })();
 
 /*
-//@ sourceMappingURL=RightSwipe.map
+//@ sourceMappingURL=Playlist.map
 */

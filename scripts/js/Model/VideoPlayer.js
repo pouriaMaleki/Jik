@@ -18,6 +18,7 @@ module.exports = VideoPlayer = (function(_super) {
 
   VideoPlayer.prototype.play = function(data) {
     this._emit('play-video', data);
+    this.rootModel.musicPlayer.pause();
     if (data.id === this.playingId) {
       return;
     }

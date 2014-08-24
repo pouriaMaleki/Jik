@@ -32,6 +32,8 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 		@_emit 'play-music', data
 
+		@rootModel.videoPlayer.pause()
+
 		return if data.id is @playingId
 
 		if @playing
@@ -42,13 +44,9 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 			@audioTag.src = data.mp3
 
-			console.log 'high'
-
 		else
 
 			@audioTag.src = data.mp3_low
-
-			console.log 'low'
 
 		@audioTag.play()
 
@@ -57,6 +55,16 @@ module.exports = class MusicPlayerModel extends _Emitter
 		@playingId = data.id
 
 		@getMoreDetail(data.id)
+
+	pause: ->
+
+		if @playing
+
+			@audioTag.pause()
+
+			@_emit 'music-pause'
+
+		@playing = false
 
 	toggle: ->
 

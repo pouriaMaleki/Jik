@@ -36,6 +36,7 @@ module.exports = MusicPlayerModel = (function(_super) {
 
   MusicPlayerModel.prototype.play = function(data) {
     this._emit('play-music', data);
+    this.rootModel.videoPlayer.pause();
     if (data.id === this.playingId) {
       return;
     }
@@ -44,15 +45,21 @@ module.exports = MusicPlayerModel = (function(_super) {
     }
     if (this.rootModel.settings.quality) {
       this.audioTag.src = data.mp3;
-      console.log('high');
     } else {
       this.audioTag.src = data.mp3_low;
-      console.log('low');
     }
     this.audioTag.play();
     this.playing = true;
     this.playingId = data.id;
     return this.getMoreDetail(data.id);
+  };
+
+  MusicPlayerModel.prototype.pause = function() {
+    if (this.playing) {
+      this.audioTag.pause();
+      this._emit('music-pause');
+    }
+    return this.playing = false;
   };
 
   MusicPlayerModel.prototype.toggle = function() {
