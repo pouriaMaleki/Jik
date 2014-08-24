@@ -402,18 +402,29 @@ body {
   bottom: 0;
   left: 0;
   width: 200px;
-  padding-top: 50px;
   background: black url(../../images/bg_dark.png) 0 0 repeat;
 }
-/* line 403, ../sass/main.sass */
-.rightSwipe .menu-item {
+/* line 401, ../sass/main.sass */
+.rightSwipe .rightSwipePages {
+  position: absolute;
+  top: 50px;
+  left: 0;
+}
+/* line 407, ../sass/main.sass */
+.rightSwipe .rightSwipePages .rightSwipePage {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* line 414, ../sass/main.sass */
+.rightSwipe .rightSwipePages .rightSwipePage .menu-item {
   color: #eeeeee;
   margin: 0px 0px 10px 10px;
   text-overflow: hidden;
   font-size: 20px;
 }
 
-/* line 410, ../sass/main.sass */
+/* line 421, ../sass/main.sass */
 .rightSwipeBtn {
   position: absolute;
   left: 10px;
@@ -426,7 +437,7 @@ body {
   border: 2px solid white;
 }
 
-/* line 425, ../sass/main.sass */
+/* line 436, ../sass/main.sass */
 .settings {
   top: 0;
   left: 0;
@@ -436,7 +447,7 @@ body {
   background: black url(../../images/bg.gif) 0 0 repeat;
   padding-top: 40px;
 }
-/* line 436, ../sass/main.sass */
+/* line 447, ../sass/main.sass */
 .settings .settings-checkbox {
   margin-left: 10px;
   margin-bottom: 10px;

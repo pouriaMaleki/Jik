@@ -14,7 +14,9 @@ module.exports = RightSwipe = (function() {
     this.items = [];
     this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
     this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(this.mainView.el);
-    this.page1 = Foxie('.rightSwipePage').trans(300).putIn(this.el);
+    this.pages = Foxie('.rightSwipePages').trans(300).putIn(this.el);
+    this.page1 = Foxie('.rightSwipePage').putIn(this.pages);
+    this.page2 = Foxie('.rightSwipePage').moveXTo(200).putIn(this.pages);
     btnHammer = new Hammer(this.btn.node);
     btnHammer.on('tap', (function(_this) {
       return function(arg) {
@@ -25,6 +27,11 @@ module.exports = RightSwipe = (function() {
     elHammer.on('panleft', (function(_this) {
       return function(arg) {
         return _this.model.hideRightSwipe();
+      };
+    })(this));
+    elHammer.on('panright', (function(_this) {
+      return function(arg) {
+        return _this.showPage(0);
       };
     })(this));
     this.mainView.model.page.on('right-swipe', (function(_this) {
@@ -67,6 +74,11 @@ module.exports = RightSwipe = (function() {
         return _this.model.showSettings();
       };
     })(this));
+    this.newItem('Playlists', ((function(_this) {
+      return function() {
+        return _this.showPage(1);
+      };
+    })(this)), true);
     this.scroll = new Scrolla({
       maxStretch: 500
     });
@@ -106,6 +118,10 @@ module.exports = RightSwipe = (function() {
     })(this));
   }
 
+  RightSwipe.prototype.showPage = function(id) {
+    return this.pages.moveXTo(-200 * id);
+  };
+
   RightSwipe.prototype.show = function() {
     return this.el.moveXTo(0);
   };
@@ -114,13 +130,13 @@ module.exports = RightSwipe = (function() {
     return this.el.moveXTo(-200);
   };
 
-  RightSwipe.prototype.newItem = function(data, cb) {
-    return this.items.push(new MenuItem(this.model, this.page1, data, cb));
+  RightSwipe.prototype.newItem = function(data, cb, stay) {
+    return this.items.push(new MenuItem(this.model, this.page1, data, cb, stay));
   };
 
   RightSwipe.prototype.updateScrollSize = function() {
     this.viewportHeight = window.innerHeight;
-    this.insideHeight = 300;
+    this.insideHeight = 360;
     return this.scroll.setSizeAndSpace(this.insideHeight, this.viewportHeight);
   };
 
