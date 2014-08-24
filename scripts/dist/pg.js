@@ -12823,7 +12823,26 @@ module.exports = RightSwipe = (function() {
         return _this.model.showSettings();
       };
     })(this));
+    this.newItem('</br>');
     this.newItem('Playlists', ((function(_this) {
+      return function() {};
+    })(this)), true);
+    this.newItem('<h4>Now Playing<h4>', ((function(_this) {
+      return function() {
+        return _this.showPage(1);
+      };
+    })(this)), true);
+    this.newItem('<h4>Favorites<h4>', ((function(_this) {
+      return function() {
+        return _this.showPage(1);
+      };
+    })(this)), true);
+    this.newItem('<h4>Default<h4>', ((function(_this) {
+      return function() {
+        return _this.showPage(1);
+      };
+    })(this)), true);
+    this.newItem('<h4>+<h4>', ((function(_this) {
       return function() {
         return _this.showPage(1);
       };
