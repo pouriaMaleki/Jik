@@ -15,7 +15,7 @@ module.exports = MenuItem = (function() {
       elHammer = new Hammer(this.el.node);
       elHammer.on('tap', (function(_this) {
         return function(arg) {
-          cb(arg);
+          cb(arg, _this);
           if (stay === false) {
             return _this.model.hideRightSwipe();
           }
@@ -23,6 +23,10 @@ module.exports = MenuItem = (function() {
       })(this));
     }
   }
+
+  MenuItem.prototype.updateText = function(text) {
+    return this.el.innerHTML(text);
+  };
 
   return MenuItem;
 

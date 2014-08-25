@@ -1,6 +1,8 @@
-var Foxie, MenuItem, RightSwipe, Scrolla;
+var Foxie, MenuItem, Playlists, RightSwipe, Scrolla;
 
 Foxie = require('Foxie');
+
+Playlists = require('./RightSwipe/Playlists');
 
 MenuItem = require('./RightSwipe/MenuItem');
 
@@ -78,26 +80,7 @@ module.exports = RightSwipe = (function() {
     this.newItem('Playlists', ((function(_this) {
       return function() {};
     })(this)), true);
-    this.newItem('<h4>Now Playing<h4>', ((function(_this) {
-      return function() {
-        return _this.showPage(1);
-      };
-    })(this)), true);
-    this.newItem('<h4>Favorites<h4>', ((function(_this) {
-      return function() {
-        return _this.showPage(1);
-      };
-    })(this)), true);
-    this.newItem('<h4>Default<h4>', ((function(_this) {
-      return function() {
-        return _this.showPage(1);
-      };
-    })(this)), true);
-    this.newItem('<h4>+<h4>', ((function(_this) {
-      return function() {
-        return _this.showPage(1);
-      };
-    })(this)), true);
+    this.playlists = new Playlists(this.mainView, this);
     this.scroll = new Scrolla({
       maxStretch: 500
     });

@@ -12747,9 +12747,11 @@ module.exports = Title = (function() {
 */
 
 },{"./SubnameSelector":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\SubnameSelector.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js":[function(require,module,exports){
-var Foxie, MenuItem, RightSwipe, Scrolla;
+var Foxie, MenuItem, Playlists, RightSwipe, Scrolla;
 
 Foxie = require('Foxie');
+
+Playlists = require('./RightSwipe/Playlists');
 
 MenuItem = require('./RightSwipe/MenuItem');
 
@@ -12827,26 +12829,7 @@ module.exports = RightSwipe = (function() {
     this.newItem('Playlists', ((function(_this) {
       return function() {};
     })(this)), true);
-    this.newItem('<h4>Now Playing<h4>', ((function(_this) {
-      return function() {
-        return _this.showPage(1);
-      };
-    })(this)), true);
-    this.newItem('<h4>Favorites<h4>', ((function(_this) {
-      return function() {
-        return _this.showPage(1);
-      };
-    })(this)), true);
-    this.newItem('<h4>Default<h4>', ((function(_this) {
-      return function() {
-        return _this.showPage(1);
-      };
-    })(this)), true);
-    this.newItem('<h4>+<h4>', ((function(_this) {
-      return function() {
-        return _this.showPage(1);
-      };
-    })(this)), true);
+    this.playlists = new Playlists(this.mainView, this);
     this.scroll = new Scrolla({
       maxStretch: 500
     });
@@ -12916,7 +12899,7 @@ module.exports = RightSwipe = (function() {
 //@ sourceMappingURL=RightSwipe.map
 */
 
-},{"./RightSwipe/MenuItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js":[function(require,module,exports){
+},{"./RightSwipe/MenuItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js","./RightSwipe/Playlists":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\Playlists.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js":[function(require,module,exports){
 var Foxie, MenuItem;
 
 Foxie = require('Foxie');
@@ -12934,7 +12917,7 @@ module.exports = MenuItem = (function() {
       elHammer = new Hammer(this.el.node);
       elHammer.on('tap', (function(_this) {
         return function(arg) {
-          cb(arg);
+          cb(arg, _this);
           if (stay === false) {
             return _this.model.hideRightSwipe();
           }
@@ -12942,6 +12925,10 @@ module.exports = MenuItem = (function() {
       })(this));
     }
   }
+
+  MenuItem.prototype.updateText = function(text) {
+    return this.el.innerHTML(text);
+  };
 
   return MenuItem;
 
@@ -12951,7 +12938,60 @@ module.exports = MenuItem = (function() {
 //@ sourceMappingURL=MenuItem.map
 */
 
-},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js":[function(require,module,exports){
+},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\Playlists.js":[function(require,module,exports){
+var Playlists;
+
+module.exports = Playlists = (function() {
+  function Playlists(mainView, rightSwipe) {
+    this.mainView = mainView;
+    this.rightSwipe = rightSwipe;
+    this.newPlaylist('Now Playing', (function(_this) {
+      return function() {
+        return _this.rightSwipe.showPage(1);
+      };
+    })(this));
+    this.newPlaylist('Favorites', (function(_this) {
+      return function() {
+        return _this.rightSwipe.showPage(1);
+      };
+    })(this));
+    this.newPlaylist('Default', (function(_this) {
+      return function() {
+        return _this.rightSwipe.showPage(1);
+      };
+    })(this));
+    this.newPlaylist('+', (function(_this) {
+      return function(arg, item) {
+        _this.update(item, '');
+        item.el.attr('contenteditable', 'true');
+        item.el.node.focus();
+        return item.el.node.addEventListener('keydown', function(event) {
+          if (event.keyCode === 13) {
+            item.el.attr('contenteditable', 'false');
+            return _this.update(item, item.el.node.innerText);
+          }
+        });
+      };
+    })(this));
+  }
+
+  Playlists.prototype.newPlaylist = function(text, cb) {
+    return this.rightSwipe.newItem('<h4>' + text + '</h4>', cb, true);
+  };
+
+  Playlists.prototype.update = function(item, text) {
+    return item.updateText('<h4>' + text + '</h4>');
+  };
+
+  return Playlists;
+
+})();
+
+/*
+//@ sourceMappingURL=Playlists.map
+*/
+
+},{}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js":[function(require,module,exports){
 var Easing, Emitter, Scrolla, UnitBezier, bezier, cache, cancelAnimationFrame, initBezier, raf, requestAnimationFrame, unit,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,

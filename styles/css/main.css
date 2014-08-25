@@ -430,11 +430,12 @@ body {
   margin-top: 1px;
   margin-left: 10px;
   margin-bottom: 1px;
+  height: 18px;
   font-weight: normal;
   font-size: 18px;
 }
 
-/* line 432, ../sass/main.sass */
+/* line 434, ../sass/main.sass */
 .rightSwipeBtn {
   position: absolute;
   left: 10px;
@@ -447,7 +448,7 @@ body {
   border: 2px solid white;
 }
 
-/* line 447, ../sass/main.sass */
+/* line 449, ../sass/main.sass */
 .settings {
   top: 0;
   left: 0;
@@ -457,7 +458,7 @@ body {
   background: black url(../../images/bg.gif) 0 0 repeat;
   padding-top: 40px;
 }
-/* line 458, ../sass/main.sass */
+/* line 460, ../sass/main.sass */
 .settings .settings-checkbox {
   margin-left: 10px;
   margin-bottom: 10px;
