@@ -2,6 +2,7 @@ var Playlists;
 
 module.exports = Playlists = (function() {
   function Playlists(mainView, rightSwipe) {
+    var item;
     this.mainView = mainView;
     this.rightSwipe = rightSwipe;
     this.newPlaylist('Now Playing', (function(_this) {
@@ -19,17 +20,24 @@ module.exports = Playlists = (function() {
         return _this.rightSwipe.showPage(1);
       };
     })(this));
-    this.newPlaylist('+', (function(_this) {
+    item = this.newPlaylist('+', (function(_this) {
       return function(arg, item) {
         _this.update(item, '');
         item.el.attr('contenteditable', 'true');
-        item.el.node.focus();
-        return item.el.node.addEventListener('keydown', function(event) {
-          if (event.keyCode === 13) {
-            item.el.attr('contenteditable', 'false');
-            return _this.update(item, item.el.node.innerText);
-          }
-        });
+        return item.el.node.focus();
+      };
+    })(this));
+    item.el.node.addEventListener('keydown', (function(_this) {
+      return function(event) {
+        if (event.keyCode === 13) {
+          item.el.attr('contenteditable', 'false');
+          _this.newPlaylist(item.el.node.innerText, function() {
+            return _this.rightSwipe.showPage(1);
+          });
+          _this.update(item, '+');
+          _this.rightSwipe.page1.node.removeChild(item.el.node);
+          return _this.rightSwipe.page1.node.appendChild(item.el.node);
+        }
       };
     })(this));
   }

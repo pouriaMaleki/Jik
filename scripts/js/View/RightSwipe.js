@@ -133,7 +133,14 @@ module.exports = RightSwipe = (function() {
   };
 
   RightSwipe.prototype.newItem = function(data, cb, stay) {
-    return this.items.push(new MenuItem(this.model, this.page1, data, cb, stay));
+    var item;
+    item = new MenuItem(this.model, this.page1, data, cb, stay);
+    this.items.push(item);
+    return item;
+  };
+
+  RightSwipe.prototype.addItem = function(item) {
+    return this.items.push(item);
   };
 
   RightSwipe.prototype.updateScrollSize = function() {
