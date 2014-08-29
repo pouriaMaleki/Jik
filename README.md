@@ -1,4 +1,5 @@
 Jik
+===
 
 Listen and Download Persian Music Via Phone
 
@@ -30,4 +31,4 @@ Development Guide:
 		5, run `npm install` in `[clonedFolder]`
 		6, install ruby
 		7, run `gem install compass`
-		8, in `[ClonedFolder]` run `sh run.bat`
+		8, in `[ClonedFolder]` run `sh run.sh`
