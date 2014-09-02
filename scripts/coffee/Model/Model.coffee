@@ -30,3 +30,5 @@ module.exports = class Model extends _Emitter
 		@albumDetail = new AlbumDetail @
 
 		@settings = new Settings @
+
+

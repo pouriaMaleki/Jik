@@ -22,6 +22,9 @@ module.exports = class Main
 		.trans 300
 		.putIn @el
 
+		hammer = new Hammer @el.node
+		hammer.on 'tap pan swipe', (arg) => @model.page.hideRightSwipe()
+
 		@inside = Foxie '.master-inside'
 
 		@ribbon = new Ribbon @, ['home', 'artist', 'album', 'song', 'video'], [@model.home, @model.artist, @model.album, @model.song, @model.video]

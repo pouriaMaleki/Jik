@@ -15,7 +15,9 @@ module.exports = Lyric = (function() {
     });
     this.updateScrollSize();
     x = 0;
-    lyricHammer = new Hammer(this.parentNode.node);
+    lyricHammer = new Hammer(this.parentNode.node, {
+      prevent_default: true
+    });
     lyricHammer.on('tap', (function(_this) {
       return function(arg) {
         return _this.model.toggleLyrics();
@@ -25,13 +27,14 @@ module.exports = Lyric = (function() {
       return function(arg) {
         _this.scroll.drag(arg.deltaY - x);
         x = arg.deltaY;
-        arg.preventDefault();
+        return false;
       };
     })(this));
     lyricHammer.on('panend', (function(_this) {
       return function(arg) {
         _this.scroll.release();
         x = 0;
+        return false;
       };
     })(this));
     this.scroll.on('position-change', (function(_this) {

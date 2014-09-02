@@ -17,9 +17,24 @@ module.exports = class MusicPlayer
 		.perspective 4000
 		.putIn @mainView.el
 
+		lock = false
+
 		elHammer = new Hammer @el.node
 		elHammer.on 'panup', (arg) => do @show unless @showing
-		elHammer.on 'pandown', (arg) => do @hide
+		elHammer.on 'pandown', (arg) =>
+
+			if arg.srcEvent.target isnt @el.node
+
+				lock = true
+				return
+
+			return if lock
+
+			do @hide
+
+		elHammer.on 'panend', (arg) =>
+
+			lock = false
 
 		@playTop = Foxie '.musicplayer-button.musicplayer-playtop'
 		.trans 500

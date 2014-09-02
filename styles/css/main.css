@@ -22,11 +22,6 @@
   font-stretch: normal;
 }
 
-/* line 21, ../sass/main.sass */
-img {
-  pointer-events: none;
-}
-
 /* line 25, ../sass/main.sass */
 html {
   width: 100%;
@@ -272,7 +267,7 @@ body {
 /* line 249, ../sass/main.sass */
 .musicplayer .musicplayer-poster img {
   max-width: 100%;
-  height: 100%;
+  max-height: 100%;
 }
 /* line 255, ../sass/main.sass */
 .musicplayer .musicplayer-poster .musicplayer-lyric {
@@ -419,23 +414,25 @@ body {
 /* line 413, ../sass/main.sass */
 .rightSwipe .rightSwipePages .rightSwipePage .menu-item {
   color: #eeeeee;
-  margin: 0px 0px 10px 10px;
+  padding: 0px 0px 10px 10px;
   text-overflow: hidden;
   font-size: 20px;
 }
 /* line 420, ../sass/main.sass */
 .rightSwipe .rightSwipePages .rightSwipePage .menu-item h4 {
+  text-overflow: hidden;
   white-space: nowrap;
-  overflow: hidden;
-  margin-top: 1px;
-  margin-left: 10px;
-  margin-bottom: 1px;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-bottom: 5px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   height: 18px;
   font-weight: normal;
   font-size: 18px;
 }
 
-/* line 434, ../sass/main.sass */
+/* line 439, ../sass/main.sass */
 .rightSwipeBtn {
   position: absolute;
   left: 10px;
@@ -447,8 +444,18 @@ body {
   border-radius: 50%;
   border: 2px solid white;
 }
+/* line 454, ../sass/main.sass */
+.rightSwipeBtn:after {
+  display: block;
+  content: " ";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+}
 
-/* line 449, ../sass/main.sass */
+/* line 464, ../sass/main.sass */
 .settings {
   top: 0;
   left: 0;
@@ -458,7 +465,7 @@ body {
   background: black url(../../images/bg.gif) 0 0 repeat;
   padding-top: 40px;
 }
-/* line 460, ../sass/main.sass */
+/* line 475, ../sass/main.sass */
 .settings .settings-checkbox {
   margin-left: 10px;
   margin-bottom: 10px;

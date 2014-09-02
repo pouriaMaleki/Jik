@@ -24,9 +24,16 @@ VideoPlayer = require('./VideoPlayer');
 
 module.exports = Main = (function() {
   function Main(model) {
+    var hammer;
     this.model = model;
     this.el = Foxie('.master').putIn(document.body);
     this.bg = Foxie('.master-bg').moveXTo(-200).trans(300).putIn(this.el);
+    hammer = new Hammer(this.el.node);
+    hammer.on('tap pan swipe', (function(_this) {
+      return function(arg) {
+        return _this.model.page.hideRightSwipe();
+      };
+    })(this));
     this.inside = Foxie('.master-inside');
     this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video'], [this.model.home, this.model.artist, this.model.album, this.model.song, this.model.video]);
     this.inside.putIn(this.el);

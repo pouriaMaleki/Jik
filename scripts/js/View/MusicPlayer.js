@@ -8,12 +8,13 @@ Seekbar = require('./MusicPlayer/Seekbar');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
-    var elHammer, hideBtnHammer, playHammer, playTopHammer;
+    var elHammer, hideBtnHammer, lock, playHammer, playTopHammer;
     this.mainView = mainView;
     this.transTime = 700;
     this.showing = false;
     this.height = window.innerHeight;
     this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(this.mainView.el);
+    lock = false;
     elHammer = new Hammer(this.el.node);
     elHammer.on('panup', (function(_this) {
       return function(arg) {
@@ -24,7 +25,19 @@ module.exports = MusicPlayer = (function() {
     })(this));
     elHammer.on('pandown', (function(_this) {
       return function(arg) {
+        if (arg.srcEvent.target !== _this.el.node) {
+          lock = true;
+          return;
+        }
+        if (lock) {
+          return;
+        }
         return _this.hide();
+      };
+    })(this));
+    elHammer.on('panend', (function(_this) {
+      return function(arg) {
+        return lock = false;
       };
     })(this));
     this.playTop = Foxie('.musicplayer-button.musicplayer-playtop').trans(500).putIn(this.el);

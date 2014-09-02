@@ -15,7 +15,7 @@ module.exports = RightSwipe = (function() {
     this.model = this.mainView.model.page;
     this.items = [];
     this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
-    this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(this.mainView.el);
+    this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(document.body);
     this.pages = Foxie('.rightSwipePages').trans(300).putIn(this.el);
     this.page1 = Foxie('.rightSwipePage').putIn(this.pages);
     this.page2 = Foxie('.rightSwipePage').moveXTo(200).putIn(this.pages);
@@ -145,8 +145,29 @@ module.exports = RightSwipe = (function() {
 
   RightSwipe.prototype.updateScrollSize = function() {
     this.viewportHeight = window.innerHeight;
-    this.insideHeight = 360;
+    this.insideHeight = this.page1.node.getBoundingClientRect().height + 200;
     return this.scroll.setSizeAndSpace(this.insideHeight, this.viewportHeight);
+  };
+
+  RightSwipe.prototype.scrollUpToEdit = function() {
+    return this.scroll.forceSetPosition(-this.page1.node.getBoundingClientRect().height + 100);
+  };
+
+  RightSwipe.prototype.scrollDownToEnd = function() {
+    return this.scroll.forceSetPosition(-this.page1.node.getBoundingClientRect().height + this.viewportHeight - 200);
+  };
+
+  RightSwipe.prototype.removeItem = function(item) {
+    return this.page1.node.removeChild(item.el.node);
+  };
+
+  RightSwipe.prototype.appendItem = function(item) {
+    return this.page1.node.appendChild(item.el.node);
+  };
+
+  RightSwipe.prototype.moveItemToEnd = function(item) {
+    this.removeItem(item);
+    return this.appendItem(item);
   };
 
   return RightSwipe;

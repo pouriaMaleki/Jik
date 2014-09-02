@@ -11673,9 +11673,16 @@ VideoPlayer = require('./VideoPlayer');
 
 module.exports = Main = (function() {
   function Main(model) {
+    var hammer;
     this.model = model;
     this.el = Foxie('.master').putIn(document.body);
     this.bg = Foxie('.master-bg').moveXTo(-200).trans(300).putIn(this.el);
+    hammer = new Hammer(this.el.node);
+    hammer.on('tap pan swipe', (function(_this) {
+      return function(arg) {
+        return _this.model.page.hideRightSwipe();
+      };
+    })(this));
     this.inside = Foxie('.master-inside');
     this.ribbon = new Ribbon(this, ['home', 'artist', 'album', 'song', 'video'], [this.model.home, this.model.artist, this.model.album, this.model.song, this.model.video]);
     this.inside.putIn(this.el);
@@ -11709,12 +11716,13 @@ Seekbar = require('./MusicPlayer/Seekbar');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
-    var elHammer, hideBtnHammer, playHammer, playTopHammer;
+    var elHammer, hideBtnHammer, lock, playHammer, playTopHammer;
     this.mainView = mainView;
     this.transTime = 700;
     this.showing = false;
     this.height = window.innerHeight;
     this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(this.mainView.el);
+    lock = false;
     elHammer = new Hammer(this.el.node);
     elHammer.on('panup', (function(_this) {
       return function(arg) {
@@ -11725,7 +11733,19 @@ module.exports = MusicPlayer = (function() {
     })(this));
     elHammer.on('pandown', (function(_this) {
       return function(arg) {
+        if (arg.srcEvent.target !== _this.el.node) {
+          lock = true;
+          return;
+        }
+        if (lock) {
+          return;
+        }
         return _this.hide();
+      };
+    })(this));
+    elHammer.on('panend', (function(_this) {
+      return function(arg) {
+        return lock = false;
       };
     })(this));
     this.playTop = Foxie('.musicplayer-button.musicplayer-playtop').trans(500).putIn(this.el);
@@ -11879,7 +11899,9 @@ module.exports = Lyric = (function() {
     });
     this.updateScrollSize();
     x = 0;
-    lyricHammer = new Hammer(this.parentNode.node);
+    lyricHammer = new Hammer(this.parentNode.node, {
+      prevent_default: true
+    });
     lyricHammer.on('tap', (function(_this) {
       return function(arg) {
         return _this.model.toggleLyrics();
@@ -11889,13 +11911,14 @@ module.exports = Lyric = (function() {
       return function(arg) {
         _this.scroll.drag(arg.deltaY - x);
         x = arg.deltaY;
-        arg.preventDefault();
+        return false;
       };
     })(this));
     lyricHammer.on('panend', (function(_this) {
       return function(arg) {
         _this.scroll.release();
         x = 0;
+        return false;
       };
     })(this));
     this.scroll.on('position-change', (function(_this) {
@@ -12764,7 +12787,7 @@ module.exports = RightSwipe = (function() {
     this.model = this.mainView.model.page;
     this.items = [];
     this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
-    this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(this.mainView.el);
+    this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(document.body);
     this.pages = Foxie('.rightSwipePages').trans(300).putIn(this.el);
     this.page1 = Foxie('.rightSwipePage').putIn(this.pages);
     this.page2 = Foxie('.rightSwipePage').moveXTo(200).putIn(this.pages);
@@ -12894,8 +12917,29 @@ module.exports = RightSwipe = (function() {
 
   RightSwipe.prototype.updateScrollSize = function() {
     this.viewportHeight = window.innerHeight;
-    this.insideHeight = 360;
+    this.insideHeight = this.page1.node.getBoundingClientRect().height + 200;
     return this.scroll.setSizeAndSpace(this.insideHeight, this.viewportHeight);
+  };
+
+  RightSwipe.prototype.scrollUpToEdit = function() {
+    return this.scroll.forceSetPosition(-this.page1.node.getBoundingClientRect().height + 100);
+  };
+
+  RightSwipe.prototype.scrollDownToEnd = function() {
+    return this.scroll.forceSetPosition(-this.page1.node.getBoundingClientRect().height + this.viewportHeight - 200);
+  };
+
+  RightSwipe.prototype.removeItem = function(item) {
+    return this.page1.node.removeChild(item.el.node);
+  };
+
+  RightSwipe.prototype.appendItem = function(item) {
+    return this.page1.node.appendChild(item.el.node);
+  };
+
+  RightSwipe.prototype.moveItemToEnd = function(item) {
+    this.removeItem(item);
+    return this.appendItem(item);
   };
 
   return RightSwipe;
@@ -12950,47 +12994,74 @@ var Playlists;
 
 module.exports = Playlists = (function() {
   function Playlists(mainView, rightSwipe) {
-    var item;
+    var plus;
     this.mainView = mainView;
     this.rightSwipe = rightSwipe;
-    this.newPlaylist('Now Playing', (function(_this) {
-      return function() {
-        return _this.rightSwipe.showPage(1);
-      };
-    })(this));
-    this.newPlaylist('Favorites', (function(_this) {
-      return function() {
-        return _this.rightSwipe.showPage(1);
-      };
-    })(this));
-    this.newPlaylist('Default', (function(_this) {
-      return function() {
-        return _this.rightSwipe.showPage(1);
-      };
-    })(this));
-    item = this.newPlaylist('+', (function(_this) {
+    this.createNewPlaylist('Now Playing');
+    this.createNewPlaylist('Favorites');
+    plus = this.prepareNewPlaylist('+', (function(_this) {
       return function(arg, item) {
-        _this.update(item, '');
-        item.el.attr('contenteditable', 'true');
-        return item.el.node.focus();
+        return _this.startMakingNew(item);
       };
     })(this));
-    item.el.node.addEventListener('keydown', (function(_this) {
+    plus.el.node.addEventListener('keydown', (function(_this) {
       return function(event) {
         if (event.keyCode === 13) {
-          item.el.attr('contenteditable', 'false');
-          _this.newPlaylist(item.el.node.innerText, function() {
-            return _this.rightSwipe.showPage(1);
-          });
-          _this.update(item, '+');
-          _this.rightSwipe.page1.node.removeChild(item.el.node);
-          return _this.rightSwipe.page1.node.appendChild(item.el.node);
+          _this.endMakingNew(plus);
+        }
+        if (event.keyCode === 27) {
+          return plus.el.attr('contenteditable', 'false');
         }
       };
     })(this));
+    plus.el.node.addEventListener('blur', (function(_this) {
+      return function() {
+        if (plus.el.node.innerHTML === '<h4></h4>' || plus.el.node.innerHTML === '' || plus.el.node.innerHTML === '<h4> </h4>' || plus.el.node.innerHTML === ' ' || plus.el.node.innerHTML === '<h4>+</h4>' || plus.el.node.innerHTML === '+') {
+          return _this.cancelMakingNew(plus);
+        } else {
+          return _this.endMakingNew(plus);
+        }
+      };
+    })(this));
+    this.createNewPlaylist('Default');
+    this.rightSwipe.moveItemToEnd(plus);
   }
 
-  Playlists.prototype.newPlaylist = function(text, cb) {
+  Playlists.prototype.createNewPlaylist = function(text) {
+    return this.prepareNewPlaylist(text, (function(_this) {
+      return function() {
+        return _this.rightSwipe.showPage(1);
+      };
+    })(this));
+  };
+
+  Playlists.prototype.cancelMakingNew = function(plus) {
+    this.update(plus, '+');
+    plus.el.attr('contenteditable', 'false');
+    return this.rightSwipe.scroll.forceSetPosition(-this.rightSwipe.page1.node.getBoundingClientRect().height + this.rightSwipe.viewportHeight - 200);
+  };
+
+  Playlists.prototype.endMakingNew = function(plus) {
+    plus.el.attr('contenteditable', 'false');
+    this.createNewPlaylist(plus.el.node.innerText);
+    this.update(plus, '+');
+    this.rightSwipe.moveItemToEnd(plus);
+    this.rightSwipe.updateScrollSize();
+    return this.rightSwipe.scrollDownToEnd();
+  };
+
+  Playlists.prototype.startMakingNew = function(item) {
+    this.rightSwipe.scrollUpToEdit();
+    this.update(item, '');
+    item.el.attr('contenteditable', 'true');
+    return setTimeout(((function(_this) {
+      return function() {
+        return item.el.node.focus();
+      };
+    })(this)), 100);
+  };
+
+  Playlists.prototype.prepareNewPlaylist = function(text, cb) {
     return this.rightSwipe.newItem('<h4>' + text + '</h4>', cb, true);
   };
 
