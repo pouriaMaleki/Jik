@@ -8,6 +8,7 @@ VideoModel = require './PagesModel/VideoModel'
 HomeModel = require './PagesModel/HomeModel'
 SongModel = require './PagesModel/SongModel'
 Settings = require './Settings'
+Playlists = require './Playlists'
 _Emitter = require './_Emitter'
 
 module.exports = class Model extends _Emitter
@@ -30,5 +31,7 @@ module.exports = class Model extends _Emitter
 		@albumDetail = new AlbumDetail @
 
 		@settings = new Settings @
+
+		@playlists = new Playlists @
 
 

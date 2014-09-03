@@ -14,7 +14,7 @@ module.exports = RightSwipe = (function() {
     this.mainView = mainView;
     this.model = this.mainView.model.page;
     this.items = [];
-    this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
+    this.btn = Foxie('.rightSwipeBtn').putIn(document.body);
     this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(document.body);
     this.pages = Foxie('.rightSwipePages').trans(300).putIn(this.el);
     this.page1 = Foxie('.rightSwipePage').putIn(this.pages);
@@ -33,7 +33,8 @@ module.exports = RightSwipe = (function() {
     })(this));
     elHammer.on('panright', (function(_this) {
       return function(arg) {
-        return _this.showPage(0);
+        _this.showPage(0);
+        return _this.playlists.hide();
       };
     })(this));
     this.mainView.model.page.on('right-swipe', (function(_this) {

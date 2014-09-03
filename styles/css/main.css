@@ -397,28 +397,35 @@ body {
   bottom: 0;
   left: 0;
   width: 200px;
+  overflow: hidden;
   background: #111111 url(../../images/bg_dark.png) 0 0 repeat;
 }
-/* line 400, ../sass/main.sass */
+/* line 402, ../sass/main.sass */
 .rightSwipe .rightSwipePages {
   position: absolute;
   top: 50px;
   left: 0;
 }
-/* line 406, ../sass/main.sass */
+/* line 408, ../sass/main.sass */
 .rightSwipe .rightSwipePages .rightSwipePage {
   position: absolute;
   top: 0;
   left: 0;
 }
-/* line 413, ../sass/main.sass */
+/* line 415, ../sass/main.sass */
+.rightSwipe .rightSwipePages .rightSwipePage .playlist {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* line 421, ../sass/main.sass */
 .rightSwipe .rightSwipePages .rightSwipePage .menu-item {
   color: #eeeeee;
   padding: 0px 0px 10px 10px;
   text-overflow: hidden;
   font-size: 20px;
 }
-/* line 420, ../sass/main.sass */
+/* line 428, ../sass/main.sass */
 .rightSwipe .rightSwipePages .rightSwipePage .menu-item h4 {
   text-overflow: hidden;
   white-space: nowrap;
@@ -432,7 +439,7 @@ body {
   font-size: 18px;
 }
 
-/* line 439, ../sass/main.sass */
+/* line 447, ../sass/main.sass */
 .rightSwipeBtn {
   position: absolute;
   left: 10px;
@@ -444,7 +451,7 @@ body {
   border-radius: 50%;
   border: 2px solid white;
 }
-/* line 454, ../sass/main.sass */
+/* line 462, ../sass/main.sass */
 .rightSwipeBtn:after {
   display: block;
   content: " ";
@@ -455,7 +462,7 @@ body {
   bottom: -10px;
 }
 
-/* line 464, ../sass/main.sass */
+/* line 472, ../sass/main.sass */
 .settings {
   top: 0;
   left: 0;
@@ -465,7 +472,7 @@ body {
   background: black url(../../images/bg.gif) 0 0 repeat;
   padding-top: 40px;
 }
-/* line 475, ../sass/main.sass */
+/* line 483, ../sass/main.sass */
 .settings .settings-checkbox {
   margin-left: 10px;
   margin-bottom: 10px;

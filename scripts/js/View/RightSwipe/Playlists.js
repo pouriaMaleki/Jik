@@ -1,12 +1,15 @@
-var Playlists;
+var Foxie, Playlist, Playlists;
+
+Foxie = require('foxie');
+
+Playlist = require('./Playlist');
 
 module.exports = Playlists = (function() {
   function Playlists(mainView, rightSwipe) {
     var plus;
     this.mainView = mainView;
     this.rightSwipe = rightSwipe;
-    this.createNewPlaylist('Now Playing');
-    this.createNewPlaylist('Favorites');
+    this.playlists = {};
     plus = this.prepareNewPlaylist('+', (function(_this) {
       return function(arg, item) {
         return _this.startMakingNew(item);
@@ -31,16 +34,40 @@ module.exports = Playlists = (function() {
         }
       };
     })(this));
-    this.createNewPlaylist('Default');
-    this.rightSwipe.moveItemToEnd(plus);
-  }
-
-  Playlists.prototype.createNewPlaylist = function(text) {
-    return this.prepareNewPlaylist(text, (function(_this) {
-      return function() {
-        return _this.rightSwipe.showPage(1);
+    this.mainView.model.playlists.on('playlist-add', (function(_this) {
+      return function(data) {
+        _this.createNewPlaylist(data.text);
+        return _this.rightSwipe.moveItemToEnd(plus);
       };
     })(this));
+    this.mainView.model.playlists.readPlaylists();
+  }
+
+  Playlists.prototype.prepareNewPlaylist = function(text, cb) {
+    return this.rightSwipe.newItem('<h4>' + text + '</h4>', cb, true);
+  };
+
+  Playlists.prototype.createNewPlaylist = function(text) {
+    var el;
+    el = new Playlist(this.rightSwipe.page2);
+    this.playlists[text] = el;
+    return this.prepareNewPlaylist(text, (function(_this) {
+      return function() {
+        _this.rightSwipe.showPage(1);
+        return el.show();
+      };
+    })(this));
+  };
+
+  Playlists.prototype.hide = function() {
+    var key, val, _ref, _results;
+    _ref = this.playlists;
+    _results = [];
+    for (key in _ref) {
+      val = _ref[key];
+      _results.push(val.hide());
+    }
+    return _results;
   };
 
   Playlists.prototype.cancelMakingNew = function(plus) {
@@ -50,8 +77,11 @@ module.exports = Playlists = (function() {
   };
 
   Playlists.prototype.endMakingNew = function(plus) {
+    var name;
     plus.el.attr('contenteditable', 'false');
-    this.createNewPlaylist(plus.el.node.innerText);
+    name = plus.el.node.innerText;
+    this.createNewPlaylist(name);
+    this.mainView.model.playlists.createNewPlaylist(name);
     this.update(plus, '+');
     this.rightSwipe.moveItemToEnd(plus);
     this.rightSwipe.updateScrollSize();
@@ -67,10 +97,6 @@ module.exports = Playlists = (function() {
         return item.el.node.focus();
       };
     })(this)), 100);
-  };
-
-  Playlists.prototype.prepareNewPlaylist = function(text, cb) {
-    return this.rightSwipe.newItem('<h4>' + text + '</h4>', cb, true);
   };
 
   Playlists.prototype.update = function(item, text) {

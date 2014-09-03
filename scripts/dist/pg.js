@@ -10517,7 +10517,7 @@ module.exports = AlbumDetail = (function(_super) {
 */
 
 },{"./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Model.js":[function(require,module,exports){
-var AlbumDetail, AlbumModel, ArtistModel, HomeModel, Model, MusicPlayerModel, Settings, SongModel, TitleModel, VideoModel, VideoPlayer, _Emitter,
+var AlbumDetail, AlbumModel, ArtistModel, HomeModel, Model, MusicPlayerModel, Playlists, Settings, SongModel, TitleModel, VideoModel, VideoPlayer, _Emitter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -10541,6 +10541,8 @@ SongModel = require('./PagesModel/SongModel');
 
 Settings = require('./Settings');
 
+Playlists = require('./Playlists');
+
 _Emitter = require('./_Emitter');
 
 module.exports = Model = (function(_super) {
@@ -10558,6 +10560,7 @@ module.exports = Model = (function(_super) {
     this.video = new VideoModel(this);
     this.albumDetail = new AlbumDetail(this);
     this.settings = new Settings(this);
+    this.playlists = new Playlists(this);
   }
 
   return Model;
@@ -10568,7 +10571,7 @@ module.exports = Model = (function(_super) {
 //@ sourceMappingURL=Model.map
 */
 
-},{"./AlbumDetail":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\AlbumDetail.js","./MusicPlayerModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\MusicPlayerModel.js","./PagesModel/AlbumModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\AlbumModel.js","./PagesModel/ArtistModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\ArtistModel.js","./PagesModel/HomeModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\HomeModel.js","./PagesModel/SongModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\SongModel.js","./PagesModel/VideoModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\VideoModel.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Settings.js","./TitleModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\TitleModel.js","./VideoPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\VideoPlayer.js","./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\MusicPlayerModel.js":[function(require,module,exports){
+},{"./AlbumDetail":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\AlbumDetail.js","./MusicPlayerModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\MusicPlayerModel.js","./PagesModel/AlbumModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\AlbumModel.js","./PagesModel/ArtistModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\ArtistModel.js","./PagesModel/HomeModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\HomeModel.js","./PagesModel/SongModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\SongModel.js","./PagesModel/VideoModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel\\VideoModel.js","./Playlists":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Playlists.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Settings.js","./TitleModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\TitleModel.js","./VideoPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\VideoPlayer.js","./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\MusicPlayerModel.js":[function(require,module,exports){
 var MusicPlayerModel, _Emitter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -11126,7 +11129,48 @@ module.exports = VideoModel = (function(_super) {
 //@ sourceMappingURL=VideoModel.map
 */
 
-},{"../PagesModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Settings.js":[function(require,module,exports){
+},{"../PagesModel":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\PagesModel.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Playlists.js":[function(require,module,exports){
+var Playlists, _Emitter,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+_Emitter = require('./_Emitter');
+
+module.exports = Playlists = (function(_super) {
+  __extends(Playlists, _super);
+
+  function Playlists(model) {
+    this.model = model;
+    this.createNewPlaylist = __bind(this.createNewPlaylist, this);
+    Playlists.__super__.constructor.apply(this, arguments);
+  }
+
+  Playlists.prototype.readPlaylists = function() {
+    this._emit('playlist-add', {
+      text: 'Now Playing'
+    });
+    this._emit('playlist-add', {
+      text: 'Favorites'
+    });
+    return this._emit('playlist-add', {
+      text: 'Default'
+    });
+  };
+
+  Playlists.prototype.createNewPlaylist = function(name) {
+    return console.log(name);
+  };
+
+  return Playlists;
+
+})(_Emitter);
+
+/*
+//@ sourceMappingURL=Playlists.map
+*/
+
+},{"./_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\Settings.js":[function(require,module,exports){
 var Settings, _Emitter,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -12786,7 +12830,7 @@ module.exports = RightSwipe = (function() {
     this.mainView = mainView;
     this.model = this.mainView.model.page;
     this.items = [];
-    this.btn = Foxie('.rightSwipeBtn').putIn(this.mainView.el);
+    this.btn = Foxie('.rightSwipeBtn').putIn(document.body);
     this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(document.body);
     this.pages = Foxie('.rightSwipePages').trans(300).putIn(this.el);
     this.page1 = Foxie('.rightSwipePage').putIn(this.pages);
@@ -12805,7 +12849,8 @@ module.exports = RightSwipe = (function() {
     })(this));
     elHammer.on('panright', (function(_this) {
       return function(arg) {
-        return _this.showPage(0);
+        _this.showPage(0);
+        return _this.playlists.hide();
       };
     })(this));
     this.mainView.model.page.on('right-swipe', (function(_this) {
@@ -12989,16 +13034,57 @@ module.exports = MenuItem = (function() {
 //@ sourceMappingURL=MenuItem.map
 */
 
-},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\Playlists.js":[function(require,module,exports){
-var Playlists;
+},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\Playlist.js":[function(require,module,exports){
+var Foxie, MenuItem, Playlist;
+
+Foxie = require('foxie');
+
+MenuItem = require('./MenuItem');
+
+module.exports = Playlist = (function() {
+  function Playlist(parentNode) {
+    this.parentNode = parentNode;
+    this.el = Foxie('.playlist').trans(300).scaleXTo(0).putIn(this.parentNode);
+    this.addSong();
+    this.addSong();
+    this.addSong();
+  }
+
+  Playlist.prototype.show = function() {
+    return this.el.scaleXTo(1);
+  };
+
+  Playlist.prototype.hide = function() {
+    return this.el.scaleXTo(0);
+  };
+
+  Playlist.prototype.addSong = function() {
+    return new MenuItem(this.model, this.el, 'data', ((function(_this) {
+      return function() {};
+    })(this)), true);
+  };
+
+  return Playlist;
+
+})();
+
+/*
+//@ sourceMappingURL=Playlist.map
+*/
+
+},{"./MenuItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\MenuItem.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\Playlists.js":[function(require,module,exports){
+var Foxie, Playlist, Playlists;
+
+Foxie = require('foxie');
+
+Playlist = require('./Playlist');
 
 module.exports = Playlists = (function() {
   function Playlists(mainView, rightSwipe) {
     var plus;
     this.mainView = mainView;
     this.rightSwipe = rightSwipe;
-    this.createNewPlaylist('Now Playing');
-    this.createNewPlaylist('Favorites');
+    this.playlists = {};
     plus = this.prepareNewPlaylist('+', (function(_this) {
       return function(arg, item) {
         return _this.startMakingNew(item);
@@ -13023,16 +13109,40 @@ module.exports = Playlists = (function() {
         }
       };
     })(this));
-    this.createNewPlaylist('Default');
-    this.rightSwipe.moveItemToEnd(plus);
-  }
-
-  Playlists.prototype.createNewPlaylist = function(text) {
-    return this.prepareNewPlaylist(text, (function(_this) {
-      return function() {
-        return _this.rightSwipe.showPage(1);
+    this.mainView.model.playlists.on('playlist-add', (function(_this) {
+      return function(data) {
+        _this.createNewPlaylist(data.text);
+        return _this.rightSwipe.moveItemToEnd(plus);
       };
     })(this));
+    this.mainView.model.playlists.readPlaylists();
+  }
+
+  Playlists.prototype.prepareNewPlaylist = function(text, cb) {
+    return this.rightSwipe.newItem('<h4>' + text + '</h4>', cb, true);
+  };
+
+  Playlists.prototype.createNewPlaylist = function(text) {
+    var el;
+    el = new Playlist(this.rightSwipe.page2);
+    this.playlists[text] = el;
+    return this.prepareNewPlaylist(text, (function(_this) {
+      return function() {
+        _this.rightSwipe.showPage(1);
+        return el.show();
+      };
+    })(this));
+  };
+
+  Playlists.prototype.hide = function() {
+    var key, val, _ref, _results;
+    _ref = this.playlists;
+    _results = [];
+    for (key in _ref) {
+      val = _ref[key];
+      _results.push(val.hide());
+    }
+    return _results;
   };
 
   Playlists.prototype.cancelMakingNew = function(plus) {
@@ -13042,8 +13152,11 @@ module.exports = Playlists = (function() {
   };
 
   Playlists.prototype.endMakingNew = function(plus) {
+    var name;
     plus.el.attr('contenteditable', 'false');
-    this.createNewPlaylist(plus.el.node.innerText);
+    name = plus.el.node.innerText;
+    this.createNewPlaylist(name);
+    this.mainView.model.playlists.createNewPlaylist(name);
     this.update(plus, '+');
     this.rightSwipe.moveItemToEnd(plus);
     this.rightSwipe.updateScrollSize();
@@ -13061,10 +13174,6 @@ module.exports = Playlists = (function() {
     })(this)), 100);
   };
 
-  Playlists.prototype.prepareNewPlaylist = function(text, cb) {
-    return this.rightSwipe.newItem('<h4>' + text + '</h4>', cb, true);
-  };
-
   Playlists.prototype.update = function(item, text) {
     return item.updateText('<h4>' + text + '</h4>');
   };
@@ -13077,7 +13186,7 @@ module.exports = Playlists = (function() {
 //@ sourceMappingURL=Playlists.map
 */
 
-},{}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js":[function(require,module,exports){
+},{"./Playlist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe\\Playlist.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js":[function(require,module,exports){
 var Easing, Emitter, Scrolla, UnitBezier, bezier, cache, cancelAnimationFrame, initBezier, raf, requestAnimationFrame, unit,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
