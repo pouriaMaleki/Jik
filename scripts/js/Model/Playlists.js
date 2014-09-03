@@ -25,7 +25,7 @@ module.exports = Playlists = (function(_super) {
   };
 
   Playlists.prototype.createNewPlaylist = function(name) {
-    return console.log(name);
+    return this._emit('playlist-add', new Playlist(this.model, name, []));
   };
 
   return Playlists;

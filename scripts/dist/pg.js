@@ -11199,7 +11199,7 @@ module.exports = Playlists = (function(_super) {
   };
 
   Playlists.prototype.createNewPlaylist = function(name) {
-    return console.log(name);
+    return this._emit('playlist-add', new Playlist(this.model, name, []));
   };
 
   return Playlists;
@@ -13139,10 +13139,7 @@ module.exports = Playlists = (function() {
     })(this));
     plus.el.node.addEventListener('keydown', (function(_this) {
       return function(event) {
-        if (event.keyCode === 13) {
-          _this.endMakingNew(plus);
-        }
-        if (event.keyCode === 27) {
+        if (event.keyCode === 13 || event.keyCode === 27) {
           return plus.el.attr('contenteditable', 'false');
         }
       };
@@ -13202,7 +13199,6 @@ module.exports = Playlists = (function() {
     var name;
     plus.el.attr('contenteditable', 'false');
     name = plus.el.node.innerText;
-    this.createNewPlaylist(name);
     this.mainView.model.playlists.createNewPlaylist(name);
     this.update(plus, '+');
     this.rightSwipe.moveItemToEnd(plus);
