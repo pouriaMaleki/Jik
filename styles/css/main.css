@@ -444,6 +444,7 @@ body {
   position: absolute;
   left: 10px;
   top: 10px;
+  z-index: 0;
   height: 40px;
   width: 40px;
   background: transparent url(../../images/card.png) no-repeat center;
@@ -451,7 +452,7 @@ body {
   border-radius: 50%;
   border: 2px solid white;
 }
-/* line 462, ../sass/main.sass */
+/* line 463, ../sass/main.sass */
 .rightSwipeBtn:after {
   display: block;
   content: " ";
@@ -462,7 +463,7 @@ body {
   bottom: -10px;
 }
 
-/* line 472, ../sass/main.sass */
+/* line 473, ../sass/main.sass */
 .settings {
   top: 0;
   left: 0;
@@ -472,7 +473,7 @@ body {
   background: black url(../../images/bg.gif) 0 0 repeat;
   padding-top: 40px;
 }
-/* line 483, ../sass/main.sass */
+/* line 484, ../sass/main.sass */
 .settings .settings-checkbox {
   margin-left: 10px;
   margin-bottom: 10px;

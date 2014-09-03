@@ -35,8 +35,8 @@ module.exports = Playlists = (function() {
       };
     })(this));
     this.mainView.model.playlists.on('playlist-add', (function(_this) {
-      return function(data) {
-        _this.createNewPlaylist(data.text);
+      return function(playlistModel) {
+        _this.createNewPlaylist(playlistModel);
         return _this.rightSwipe.moveItemToEnd(plus);
       };
     })(this));
@@ -47,11 +47,11 @@ module.exports = Playlists = (function() {
     return this.rightSwipe.newItem('<h4>' + text + '</h4>', cb, true);
   };
 
-  Playlists.prototype.createNewPlaylist = function(text) {
+  Playlists.prototype.createNewPlaylist = function(playlistModel) {
     var el;
-    el = new Playlist(this.rightSwipe.page2);
-    this.playlists[text] = el;
-    return this.prepareNewPlaylist(text, (function(_this) {
+    el = new Playlist(this.rightSwipe.page2, this.mainView, playlistModel);
+    this.playlists[playlistModel.name] = el;
+    return this.prepareNewPlaylist(playlistModel.name, (function(_this) {
       return function() {
         _this.rightSwipe.showPage(1);
         return el.show();

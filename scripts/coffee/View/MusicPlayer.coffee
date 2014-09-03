@@ -15,7 +15,7 @@ module.exports = class MusicPlayer
 		.moveYTo @height
 		.trans @transTime
 		.perspective 4000
-		.putIn @mainView.el
+		.putIn document.body
 
 		lock = false
 

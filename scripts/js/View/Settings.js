@@ -6,7 +6,7 @@ module.exports = Settings = (function() {
   function Settings(mainView) {
     var elHammer;
     this.mainView = mainView;
-    this.el = Foxie('.settings').scaleXTo(0).trans(400).putIn(this.mainView.el);
+    this.el = Foxie('.settings').scaleXTo(0).trans(400).putIn(document.body);
     elHammer = new Hammer(this.el.node);
     elHammer.on('panleft panright', (function(_this) {
       return function(arg) {
