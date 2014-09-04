@@ -72,6 +72,9 @@ module.exports = class MusicPlayer
 		@buttons = Foxie '.musicplayer-buttons'
 		.putIn @el
 
+		@add = Foxie '.musicplayer-button.musicplayer-add'
+		.putIn @buttons
+
 		@prev = Foxie '.musicplayer-button.musicplayer-prev'
 		.putIn @buttons
 
@@ -79,6 +82,9 @@ module.exports = class MusicPlayer
 		.putIn @buttons
 
 		@next = Foxie '.musicplayer-button.musicplayer-next'
+		.putIn @buttons
+
+		@fav = Foxie '.musicplayer-button.musicplayer-fav'
 		.putIn @buttons
 
 		window.addEventListener 'resize', (event) =>
@@ -93,6 +99,9 @@ module.exports = class MusicPlayer
 
 		playHammer = new Hammer @play.node
 		playHammer.on 'tap', (arg) => @mainView.model.musicPlayer.toggle()
+
+		favHammer = new Hammer @fav.node
+		favHammer.on 'tap', (arg) => @mainView.model.musicPlayer.fav()
 
 		hideBtnHammer = new Hammer @hideBtn.node
 		hideBtnHammer.on 'tap', (arg) =>
@@ -138,6 +147,15 @@ module.exports = class MusicPlayer
 
 			return
 
+		@mainView.model.musicPlayer.on 'song-fav', (data) =>
+
+			@fav.node.classList.remove 'musicplayer-fav'
+			@fav.node.classList.add 'musicplayer-faved'
+
+		@mainView.model.musicPlayer.on 'song-unfav', (data) =>
+
+			@fav.node.classList.remove 'musicplayer-faved'
+			@fav.node.classList.add 'musicplayer-fav'
 
 	show: (data) ->
 

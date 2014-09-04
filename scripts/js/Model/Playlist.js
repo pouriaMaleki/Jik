@@ -28,7 +28,39 @@ module.exports = Playlist = (function(_super) {
   };
 
   Playlist.prototype.addSong = function(song) {
-    return this._emit('add-song', song);
+    if (this.find(song.id !== false)) {
+      return;
+    }
+    this.data.push(song);
+    this._emit('add-song', song);
+    return this._emit('add-success', song);
+  };
+
+  Playlist.prototype.removeSong = function(song) {
+    var index, result, s, _i, _len, _ref;
+    result = null;
+    _ref = this.data;
+    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+      s = _ref[index];
+      if (s.id === song.id) {
+        result = index;
+        break;
+      }
+    }
+    this.data.splice(result, 1);
+    return this._emit('remove-song', song);
+  };
+
+  Playlist.prototype.find = function(id) {
+    var song, _i, _len, _ref;
+    _ref = this.data;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      song = _ref[_i];
+      if (song.id === id) {
+        return song;
+      }
+    }
+    return false;
   };
 
   return Playlist;

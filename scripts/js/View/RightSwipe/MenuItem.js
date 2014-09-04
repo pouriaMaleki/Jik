@@ -28,6 +28,10 @@ module.exports = MenuItem = (function() {
     return this.el.innerHTML(text);
   };
 
+  MenuItem.prototype.removeMe = function() {
+    return this.el.remove();
+  };
+
   return MenuItem;
 
 })();

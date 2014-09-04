@@ -8,7 +8,7 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 		@playing = false
 		@lyricsShowing = no
-		@playingId = 0
+		@playingData = {}
 		@seeking = no
 
 		@audioTag = document.createElement 'audio'
@@ -28,13 +28,29 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 		@audioTag.currentTime = x * @audioTag.duration
 
+	fav: ->
+
+		song = @rootModel.playlists.fav.find @playingData.id
+
+		if song isnt false
+
+			@rootModel.playlists.fav.removeSong @playingData
+
+			@_emit 'song-unfav', true
+
+		else
+
+			@rootModel.playlists.fav.addSong @playingData
+
+			@_emit 'song-fav', true
+
 	play: (data) ->
 
 		@_emit 'play-music', data
 
 		@rootModel.videoPlayer.pause()
 
-		return if data.id is @playingId
+		return if data.id is @playingData.id
 
 		if @playing
 
@@ -48,11 +64,21 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 			@audioTag.src = data.mp3_low
 
+		song = @rootModel.playlists.fav.find data.id
+
+		if song isnt false
+
+			@_emit 'song-fav', true
+
+		else
+
+			@_emit 'song-unfav', true
+
 		@audioTag.play()
 
 		@playing = true
 
-		@playingId = data.id
+		@playingData = data
 
 		@getMoreDetail(data.id)
 

@@ -12,7 +12,7 @@ module.exports = MusicPlayerModel = (function(_super) {
     MusicPlayerModel.__super__.constructor.apply(this, arguments);
     this.playing = false;
     this.lyricsShowing = false;
-    this.playingId = 0;
+    this.playingData = {};
     this.seeking = false;
     this.audioTag = document.createElement('audio');
     document.body.appendChild(this.audioTag);
@@ -34,10 +34,23 @@ module.exports = MusicPlayerModel = (function(_super) {
     return this.audioTag.currentTime = x * this.audioTag.duration;
   };
 
+  MusicPlayerModel.prototype.fav = function() {
+    var song;
+    song = this.rootModel.playlists.fav.find(this.playingData.id);
+    if (song !== false) {
+      this.rootModel.playlists.fav.removeSong(this.playingData);
+      return this._emit('song-unfav', true);
+    } else {
+      this.rootModel.playlists.fav.addSong(this.playingData);
+      return this._emit('song-fav', true);
+    }
+  };
+
   MusicPlayerModel.prototype.play = function(data) {
+    var song;
     this._emit('play-music', data);
     this.rootModel.videoPlayer.pause();
-    if (data.id === this.playingId) {
+    if (data.id === this.playingData.id) {
       return;
     }
     if (this.playing) {
@@ -48,9 +61,15 @@ module.exports = MusicPlayerModel = (function(_super) {
     } else {
       this.audioTag.src = data.mp3_low;
     }
+    song = this.rootModel.playlists.fav.find(data.id);
+    if (song !== false) {
+      this._emit('song-fav', true);
+    } else {
+      this._emit('song-unfav', true);
+    }
     this.audioTag.play();
     this.playing = true;
-    this.playingId = data.id;
+    this.playingData = data;
     return this.getMoreDetail(data.id);
   };
 

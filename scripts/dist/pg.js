@@ -10586,7 +10586,7 @@ module.exports = MusicPlayerModel = (function(_super) {
     MusicPlayerModel.__super__.constructor.apply(this, arguments);
     this.playing = false;
     this.lyricsShowing = false;
-    this.playingId = 0;
+    this.playingData = {};
     this.seeking = false;
     this.audioTag = document.createElement('audio');
     document.body.appendChild(this.audioTag);
@@ -10608,10 +10608,23 @@ module.exports = MusicPlayerModel = (function(_super) {
     return this.audioTag.currentTime = x * this.audioTag.duration;
   };
 
+  MusicPlayerModel.prototype.fav = function() {
+    var song;
+    song = this.rootModel.playlists.fav.find(this.playingData.id);
+    if (song !== false) {
+      this.rootModel.playlists.fav.removeSong(this.playingData);
+      return this._emit('song-unfav', true);
+    } else {
+      this.rootModel.playlists.fav.addSong(this.playingData);
+      return this._emit('song-fav', true);
+    }
+  };
+
   MusicPlayerModel.prototype.play = function(data) {
+    var song;
     this._emit('play-music', data);
     this.rootModel.videoPlayer.pause();
-    if (data.id === this.playingId) {
+    if (data.id === this.playingData.id) {
       return;
     }
     if (this.playing) {
@@ -10622,9 +10635,15 @@ module.exports = MusicPlayerModel = (function(_super) {
     } else {
       this.audioTag.src = data.mp3_low;
     }
+    song = this.rootModel.playlists.fav.find(data.id);
+    if (song !== false) {
+      this._emit('song-fav', true);
+    } else {
+      this._emit('song-unfav', true);
+    }
     this.audioTag.play();
     this.playing = true;
-    this.playingId = data.id;
+    this.playingData = data;
     return this.getMoreDetail(data.id);
   };
 
@@ -11160,7 +11179,39 @@ module.exports = Playlist = (function(_super) {
   };
 
   Playlist.prototype.addSong = function(song) {
-    return this._emit('add-song', song);
+    if (this.find(song.id !== false)) {
+      return;
+    }
+    this.data.push(song);
+    this._emit('add-song', song);
+    return this._emit('add-success', song);
+  };
+
+  Playlist.prototype.removeSong = function(song) {
+    var index, result, s, _i, _len, _ref;
+    result = null;
+    _ref = this.data;
+    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+      s = _ref[index];
+      if (s.id === song.id) {
+        result = index;
+        break;
+      }
+    }
+    this.data.splice(result, 1);
+    return this._emit('remove-song', song);
+  };
+
+  Playlist.prototype.find = function(id) {
+    var song, _i, _len, _ref;
+    _ref = this.data;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      song = _ref[_i];
+      if (song.id === id) {
+        return song;
+      }
+    }
+    return false;
   };
 
   return Playlist;
@@ -11185,17 +11236,28 @@ module.exports = Playlists = (function(_super) {
   __extends(Playlists, _super);
 
   function Playlists(model) {
+    var json;
     this.model = model;
     this.createNewPlaylist = __bind(this.createNewPlaylist, this);
     Playlists.__super__.constructor.apply(this, arguments);
+    this.playlists = {};
+    json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"},{"id":"140809","type":"song","artist":"Masoud Emami","artist_id":"1905","songname":"Khoda Doosam Dasht","popularity":"3.6","ratecount":"9","view":"4457","time":"3:33","date":"1393-04-12","poster":"http:\/\/85.25.243.154\/img\/utxrohick-1404397432.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/Gallery\/[Medium]\/2u6wzwdn-1404397432.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Masoud+Emami\/-\/Khoda+Doosam+Dasht","mp3":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3"},{"id":"140785","type":"song","artist":"Amin Hayaei","artist_id":"12201","songname":"Owje Parvaz","popularity":"3.8","ratecount":"8","view":"2205","time":"5:22","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/gq9zswptj-1404332339.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/Gallery\/[Medium]\/qixdrptt-1404332339.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Amin+Hayaei\/-\/Owje+Parvaz","mp3":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3"},{"id":"140782","type":"song","artist":"Bakhtak Band","artist_id":"11623","songname":"Dame Sobh","popularity":"2.6","ratecount":"8","view":"2966","time":"3:27","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/1spygoohm-1404322313.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/Gallery\/[Medium]\/hxb0sre5-1404322313.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Bakhtak+Band\/-\/Dame+Sobh","mp3":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3"}]';
+    this.nowPlaying = new Playlist(this.model, 'Now Playing', JSON.parse(json));
+    this.fav = new Playlist(this.model, 'Favorites', JSON.parse(json));
+    this.playlists['Default'] = new Playlist(this.model, 'Default', JSON.parse(json));
   }
 
   Playlists.prototype.readPlaylists = function() {
-    var json;
-    json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"},{"id":"140809","type":"song","artist":"Masoud Emami","artist_id":"1905","songname":"Khoda Doosam Dasht","popularity":"3.6","ratecount":"9","view":"4457","time":"3:33","date":"1393-04-12","poster":"http:\/\/85.25.243.154\/img\/utxrohick-1404397432.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/Gallery\/[Medium]\/2u6wzwdn-1404397432.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Masoud+Emami\/-\/Khoda+Doosam+Dasht","mp3":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3"},{"id":"140785","type":"song","artist":"Amin Hayaei","artist_id":"12201","songname":"Owje Parvaz","popularity":"3.8","ratecount":"8","view":"2205","time":"5:22","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/gq9zswptj-1404332339.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/Gallery\/[Medium]\/qixdrptt-1404332339.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Amin+Hayaei\/-\/Owje+Parvaz","mp3":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3"},{"id":"140782","type":"song","artist":"Bakhtak Band","artist_id":"11623","songname":"Dame Sobh","popularity":"2.6","ratecount":"8","view":"2966","time":"3:27","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/1spygoohm-1404322313.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/Gallery\/[Medium]\/hxb0sre5-1404322313.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Bakhtak+Band\/-\/Dame+Sobh","mp3":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3"}]';
-    this._emit('playlist-add', new Playlist(this.model, 'Now Playing', JSON.parse(json)));
-    this._emit('playlist-add', new Playlist(this.model, 'Favorites', JSON.parse(json)));
-    return this._emit('playlist-add', new Playlist(this.model, 'Default', JSON.parse(json)));
+    var key, val, _ref, _results;
+    this._emit('playlist-add', this.nowPlaying);
+    this._emit('playlist-add', this.fav);
+    _ref = this.playlists;
+    _results = [];
+    for (key in _ref) {
+      val = _ref[key];
+      _results.push(this._emit('playlist-add', val));
+    }
+    return _results;
   };
 
   Playlists.prototype.createNewPlaylist = function(name) {
@@ -11800,7 +11862,7 @@ Seekbar = require('./MusicPlayer/Seekbar');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
-    var elHammer, hideBtnHammer, lock, playHammer, playTopHammer;
+    var elHammer, favHammer, hideBtnHammer, lock, playHammer, playTopHammer;
     this.mainView = mainView;
     this.transTime = 700;
     this.showing = false;
@@ -11850,9 +11912,11 @@ module.exports = MusicPlayer = (function() {
     this.lyric = new Lyric(this.posterContainer, this.mainView.model.musicPlayer);
     this.seekbar = new Seekbar(this.el, this.mainView.model.musicPlayer);
     this.buttons = Foxie('.musicplayer-buttons').putIn(this.el);
+    this.add = Foxie('.musicplayer-button.musicplayer-add').putIn(this.buttons);
     this.prev = Foxie('.musicplayer-button.musicplayer-prev').putIn(this.buttons);
     this.play = Foxie('.musicplayer-button.musicplayer-play').putIn(this.buttons);
     this.next = Foxie('.musicplayer-button.musicplayer-next').putIn(this.buttons);
+    this.fav = Foxie('.musicplayer-button.musicplayer-fav').putIn(this.buttons);
     window.addEventListener('resize', (function(_this) {
       return function(event) {
         _this.height = window.innerHeight;
@@ -11866,6 +11930,12 @@ module.exports = MusicPlayer = (function() {
     playHammer.on('tap', (function(_this) {
       return function(arg) {
         return _this.mainView.model.musicPlayer.toggle();
+      };
+    })(this));
+    favHammer = new Hammer(this.fav.node);
+    favHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.musicPlayer.fav();
       };
     })(this));
     hideBtnHammer = new Hammer(this.hideBtn.node);
@@ -11908,6 +11978,18 @@ module.exports = MusicPlayer = (function() {
       return function(data) {
         _this.lyric.text(data.lyric);
         _this.lyric.updateScrollSize();
+      };
+    })(this));
+    this.mainView.model.musicPlayer.on('song-fav', (function(_this) {
+      return function(data) {
+        _this.fav.node.classList.remove('musicplayer-fav');
+        return _this.fav.node.classList.add('musicplayer-faved');
+      };
+    })(this));
+    this.mainView.model.musicPlayer.on('song-unfav', (function(_this) {
+      return function(data) {
+        _this.fav.node.classList.remove('musicplayer-faved');
+        return _this.fav.node.classList.add('musicplayer-fav');
       };
     })(this));
   }
@@ -13066,6 +13148,10 @@ module.exports = MenuItem = (function() {
     return this.el.innerHTML(text);
   };
 
+  MenuItem.prototype.removeMe = function() {
+    return this.el.remove();
+  };
+
   return MenuItem;
 
 })();
@@ -13086,10 +13172,16 @@ module.exports = Playlist = (function() {
     this.parentNode = parentNode;
     this.mainView = mainView;
     this.model = model;
+    this.items = {};
     this.el = Foxie('.playlist').trans(300).scaleXTo(0).putIn(this.parentNode);
     this.model.on('add-song', (function(_this) {
       return function(song) {
         return _this.addSong(song);
+      };
+    })(this));
+    this.model.on('remove-song', (function(_this) {
+      return function(song) {
+        return _this.removeSong(song);
       };
     })(this));
     this.model.getSongs();
@@ -13104,11 +13196,23 @@ module.exports = Playlist = (function() {
   };
 
   Playlist.prototype.addSong = function(song) {
-    return new MenuItem(this.mainView.model.page, this.el, song.songname, (function(_this) {
+    var item;
+    item = new MenuItem(this.mainView.model.page, this.el, song.songname, (function(_this) {
       return function() {
         return _this.mainView.model.musicPlayer.play(song);
       };
     })(this));
+    return this.items[song.id] = item;
+  };
+
+  Playlist.prototype.removeSong = function(song) {
+    var item;
+    if (this.items[song.id] == null) {
+      return;
+    }
+    item = this.items[song.id];
+    item.removeMe();
+    return this.items[song.id] = void 0;
   };
 
   return Playlist;

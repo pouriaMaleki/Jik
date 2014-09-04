@@ -8,7 +8,7 @@ Seekbar = require('./MusicPlayer/Seekbar');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
-    var elHammer, hideBtnHammer, lock, playHammer, playTopHammer;
+    var elHammer, favHammer, hideBtnHammer, lock, playHammer, playTopHammer;
     this.mainView = mainView;
     this.transTime = 700;
     this.showing = false;
@@ -58,9 +58,11 @@ module.exports = MusicPlayer = (function() {
     this.lyric = new Lyric(this.posterContainer, this.mainView.model.musicPlayer);
     this.seekbar = new Seekbar(this.el, this.mainView.model.musicPlayer);
     this.buttons = Foxie('.musicplayer-buttons').putIn(this.el);
+    this.add = Foxie('.musicplayer-button.musicplayer-add').putIn(this.buttons);
     this.prev = Foxie('.musicplayer-button.musicplayer-prev').putIn(this.buttons);
     this.play = Foxie('.musicplayer-button.musicplayer-play').putIn(this.buttons);
     this.next = Foxie('.musicplayer-button.musicplayer-next').putIn(this.buttons);
+    this.fav = Foxie('.musicplayer-button.musicplayer-fav').putIn(this.buttons);
     window.addEventListener('resize', (function(_this) {
       return function(event) {
         _this.height = window.innerHeight;
@@ -74,6 +76,12 @@ module.exports = MusicPlayer = (function() {
     playHammer.on('tap', (function(_this) {
       return function(arg) {
         return _this.mainView.model.musicPlayer.toggle();
+      };
+    })(this));
+    favHammer = new Hammer(this.fav.node);
+    favHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.musicPlayer.fav();
       };
     })(this));
     hideBtnHammer = new Hammer(this.hideBtn.node);
@@ -116,6 +124,18 @@ module.exports = MusicPlayer = (function() {
       return function(data) {
         _this.lyric.text(data.lyric);
         _this.lyric.updateScrollSize();
+      };
+    })(this));
+    this.mainView.model.musicPlayer.on('song-fav', (function(_this) {
+      return function(data) {
+        _this.fav.node.classList.remove('musicplayer-fav');
+        return _this.fav.node.classList.add('musicplayer-faved');
+      };
+    })(this));
+    this.mainView.model.musicPlayer.on('song-unfav', (function(_this) {
+      return function(data) {
+        _this.fav.node.classList.remove('musicplayer-faved');
+        return _this.fav.node.classList.add('musicplayer-fav');
       };
     })(this));
   }
