@@ -10642,6 +10642,7 @@ module.exports = MusicPlayerModel = (function(_super) {
       this._emit('song-unfav', true);
     }
     this.audioTag.play();
+    this._emit('music-unpause');
     this.playing = true;
     this.playingData = data;
     return this.getMoreDetail(data.id);
@@ -11327,6 +11328,8 @@ module.exports = TitleModel = (function(_super) {
     TitleModel.__super__.constructor.apply(this, arguments);
     this.currentActive = 0;
     this.rightSwipe = false;
+    this.menu = false;
+    this.selector = false;
     this.settings = false;
     this.playlists = false;
   }
@@ -11365,6 +11368,42 @@ module.exports = TitleModel = (function(_super) {
   TitleModel.prototype.toggleRightSwipe = function() {
     this.rightSwipe = !this.rightSwipe;
     return this._emit('right-swipe', this.rightSwipe);
+  };
+
+  TitleModel.prototype.showMenu = function() {
+    this.showRightSwipe();
+    this.menu = true;
+    return this._emit('menu', this.menu);
+  };
+
+  TitleModel.prototype.hideMenu = function() {
+    this.hideRightSwipe();
+    this.menu = false;
+    return this._emit('menu', this.menu);
+  };
+
+  TitleModel.prototype.toggleMenu = function() {
+    this.toggleRightSwipe();
+    this.menu = !this.menu;
+    return this._emit('menu', this.menu);
+  };
+
+  TitleModel.prototype.showSelector = function() {
+    this.showRightSwipe();
+    this.selector = true;
+    return this._emit('selector', this.selector);
+  };
+
+  TitleModel.prototype.hideSelector = function() {
+    this.hideRightSwipe();
+    this.selector = false;
+    return this._emit('selector', this.selector);
+  };
+
+  TitleModel.prototype.toggleSelector = function() {
+    this.toggleRightSwipe();
+    this.selector = !this.selector;
+    return this._emit('selector', this.selector);
   };
 
   TitleModel.prototype.showSettings = function() {
@@ -11819,7 +11858,7 @@ VideoPlayer = require('./VideoPlayer');
 
 module.exports = Main = (function() {
   function Main(model) {
-    var hammer;
+    var btnHammer, hammer;
     this.model = model;
     this.el = Foxie('.master').putIn(document.body);
     this.bg = Foxie('.master-bg').moveXTo(-200).trans(300).putIn(this.el);
@@ -11837,10 +11876,17 @@ module.exports = Main = (function() {
     this.AlbumPage = new Album(this, this.ribbon.getPage(2), this.ribbon.getSubnameSelector(2));
     this.songPage = new Song(this, this.ribbon.getPage(3), this.ribbon.getSubnameSelector(3));
     this.videoPage = new Video(this, this.ribbon.getPage(4), this.ribbon.getSubnameSelector(4));
-    this.rightSwipe = new RightSwipe(this);
+    this.btn = Foxie('.rightSwipeBtn').putIn(document.body);
+    btnHammer = new Hammer(this.btn.node);
+    btnHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.model.page.toggleMenu();
+      };
+    })(this));
     this.musicPlayer = new MusicPlayer(this);
     this.videoPlayer = new VideoPlayer(this);
     this.settings = new Settings(this);
+    this.rightSwipe = new RightSwipe(this);
   }
 
   return Main;
@@ -11862,7 +11908,7 @@ Seekbar = require('./MusicPlayer/Seekbar');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
-    var elHammer, favHammer, hideBtnHammer, lock, playHammer, playTopHammer;
+    var addHammer, elHammer, favHammer, hideBtnHammer, lock, playHammer, playTopHammer;
     this.mainView = mainView;
     this.transTime = 700;
     this.showing = false;
@@ -11938,6 +11984,12 @@ module.exports = MusicPlayer = (function() {
         return _this.mainView.model.musicPlayer.fav();
       };
     })(this));
+    addHammer = new Hammer(this.add.node);
+    addHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.page.showSelector();
+      };
+    })(this));
     hideBtnHammer = new Hammer(this.hideBtn.node);
     hideBtnHammer.on('tap', (function(_this) {
       return function(arg) {
@@ -11998,6 +12050,7 @@ module.exports = MusicPlayer = (function() {
     if (this.mainView.model.musicPlayer.seeking) {
       return;
     }
+    this.mainView.model.page.hideSelector();
     this.showing = true;
     this.el.moveYTo(0);
     this.playTop.setOpacity(0);
@@ -12016,6 +12069,7 @@ module.exports = MusicPlayer = (function() {
     if (this.mainView.model.musicPlayer.seeking) {
       return;
     }
+    this.mainView.model.page.hideSelector();
     this.showing = false;
     if (this.mainView.model.musicPlayer.playing) {
       this.el.moveYTo(this.height - 50);
@@ -12948,25 +13002,19 @@ Scrolla = require('./Scrolla');
 
 module.exports = RightSwipe = (function() {
   function RightSwipe(mainView) {
-    var btnHammer, elHammer, y;
+    var elHammer, y;
     this.mainView = mainView;
     this.model = this.mainView.model.page;
     this.items = [];
-    this.btn = Foxie('.rightSwipeBtn').putIn(document.body);
     this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(document.body);
     this.pages = Foxie('.rightSwipePages').trans(300).putIn(this.el);
+    this.pages2 = Foxie('.rightSwipePages').setOpacity(0).putIn(this.el);
     this.page1 = Foxie('.rightSwipePage').putIn(this.pages);
     this.page2 = Foxie('.rightSwipePage').moveXTo(200).putIn(this.pages);
-    btnHammer = new Hammer(this.btn.node);
-    btnHammer.on('tap', (function(_this) {
-      return function(arg) {
-        return _this.model.toggleRightSwipe();
-      };
-    })(this));
     elHammer = new Hammer(this.el.node);
     elHammer.on('panleft', (function(_this) {
       return function(arg) {
-        return _this.model.hideRightSwipe();
+        return _this.model.hideMenu();
       };
     })(this));
     elHammer.on('panright', (function(_this) {
@@ -12982,6 +13030,16 @@ module.exports = RightSwipe = (function() {
         } else {
           return _this.hide();
         }
+      };
+    })(this));
+    this.mainView.model.page.on('menu', (function(_this) {
+      return function() {
+        return _this.showMenu();
+      };
+    })(this));
+    this.mainView.model.page.on('selector', (function(_this) {
+      return function() {
+        return _this.showSelector();
       };
     })(this));
     this.newItem('Home', (function(_this) {
@@ -13107,6 +13165,17 @@ module.exports = RightSwipe = (function() {
   RightSwipe.prototype.moveItemToEnd = function(item) {
     this.removeItem(item);
     return this.appendItem(item);
+  };
+
+  RightSwipe.prototype.showMenu = function() {
+    this.showPage(0);
+    this.pages.setOpacity(1);
+    return this.pages2.setOpacity(0);
+  };
+
+  RightSwipe.prototype.showSelector = function() {
+    this.pages.setOpacity(0);
+    return this.pages2.setOpacity(1);
   };
 
   return RightSwipe;

@@ -8,7 +8,7 @@ Seekbar = require('./MusicPlayer/Seekbar');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
-    var elHammer, favHammer, hideBtnHammer, lock, playHammer, playTopHammer;
+    var addHammer, elHammer, favHammer, hideBtnHammer, lock, playHammer, playTopHammer;
     this.mainView = mainView;
     this.transTime = 700;
     this.showing = false;
@@ -84,6 +84,12 @@ module.exports = MusicPlayer = (function() {
         return _this.mainView.model.musicPlayer.fav();
       };
     })(this));
+    addHammer = new Hammer(this.add.node);
+    addHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.page.showSelector();
+      };
+    })(this));
     hideBtnHammer = new Hammer(this.hideBtn.node);
     hideBtnHammer.on('tap', (function(_this) {
       return function(arg) {
@@ -144,6 +150,7 @@ module.exports = MusicPlayer = (function() {
     if (this.mainView.model.musicPlayer.seeking) {
       return;
     }
+    this.mainView.model.page.hideSelector();
     this.showing = true;
     this.el.moveYTo(0);
     this.playTop.setOpacity(0);
@@ -162,6 +169,7 @@ module.exports = MusicPlayer = (function() {
     if (this.mainView.model.musicPlayer.seeking) {
       return;
     }
+    this.mainView.model.page.hideSelector();
     this.showing = false;
     if (this.mainView.model.musicPlayer.playing) {
       this.el.moveYTo(this.height - 50);

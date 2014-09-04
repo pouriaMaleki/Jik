@@ -68,6 +68,7 @@ module.exports = MusicPlayerModel = (function(_super) {
       this._emit('song-unfav', true);
     }
     this.audioTag.play();
+    this._emit('music-unpause');
     this.playing = true;
     this.playingData = data;
     return this.getMoreDetail(data.id);

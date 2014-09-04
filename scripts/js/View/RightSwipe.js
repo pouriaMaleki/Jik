@@ -10,25 +10,19 @@ Scrolla = require('./Scrolla');
 
 module.exports = RightSwipe = (function() {
   function RightSwipe(mainView) {
-    var btnHammer, elHammer, y;
+    var elHammer, y;
     this.mainView = mainView;
     this.model = this.mainView.model.page;
     this.items = [];
-    this.btn = Foxie('.rightSwipeBtn').putIn(document.body);
     this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(document.body);
     this.pages = Foxie('.rightSwipePages').trans(300).putIn(this.el);
+    this.pages2 = Foxie('.rightSwipePages').setOpacity(0).putIn(this.el);
     this.page1 = Foxie('.rightSwipePage').putIn(this.pages);
     this.page2 = Foxie('.rightSwipePage').moveXTo(200).putIn(this.pages);
-    btnHammer = new Hammer(this.btn.node);
-    btnHammer.on('tap', (function(_this) {
-      return function(arg) {
-        return _this.model.toggleRightSwipe();
-      };
-    })(this));
     elHammer = new Hammer(this.el.node);
     elHammer.on('panleft', (function(_this) {
       return function(arg) {
-        return _this.model.hideRightSwipe();
+        return _this.model.hideMenu();
       };
     })(this));
     elHammer.on('panright', (function(_this) {
@@ -44,6 +38,16 @@ module.exports = RightSwipe = (function() {
         } else {
           return _this.hide();
         }
+      };
+    })(this));
+    this.mainView.model.page.on('menu', (function(_this) {
+      return function() {
+        return _this.showMenu();
+      };
+    })(this));
+    this.mainView.model.page.on('selector', (function(_this) {
+      return function() {
+        return _this.showSelector();
       };
     })(this));
     this.newItem('Home', (function(_this) {
@@ -169,6 +173,17 @@ module.exports = RightSwipe = (function() {
   RightSwipe.prototype.moveItemToEnd = function(item) {
     this.removeItem(item);
     return this.appendItem(item);
+  };
+
+  RightSwipe.prototype.showMenu = function() {
+    this.showPage(0);
+    this.pages.setOpacity(1);
+    return this.pages2.setOpacity(0);
+  };
+
+  RightSwipe.prototype.showSelector = function() {
+    this.pages.setOpacity(0);
+    return this.pages2.setOpacity(1);
   };
 
   return RightSwipe;

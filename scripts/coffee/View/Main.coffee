@@ -37,10 +37,15 @@ module.exports = class Main
 		@songPage = new Song @, @ribbon.getPage(3), @ribbon.getSubnameSelector(3)
 		@videoPage = new Video @, @ribbon.getPage(4), @ribbon.getSubnameSelector(4)
 
-		@rightSwipe = new RightSwipe @
+		@btn = Foxie '.rightSwipeBtn'
+		.putIn document.body
+
+		btnHammer = new Hammer @btn.node
+		btnHammer.on 'tap', (arg) => @model.page.toggleMenu()
 
 		@musicPlayer = new MusicPlayer @
 		@videoPlayer = new VideoPlayer @
 
 		@settings = new Settings @
 
+		@rightSwipe = new RightSwipe @

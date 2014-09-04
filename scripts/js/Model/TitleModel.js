@@ -11,6 +11,8 @@ module.exports = TitleModel = (function(_super) {
     TitleModel.__super__.constructor.apply(this, arguments);
     this.currentActive = 0;
     this.rightSwipe = false;
+    this.menu = false;
+    this.selector = false;
     this.settings = false;
     this.playlists = false;
   }
@@ -49,6 +51,42 @@ module.exports = TitleModel = (function(_super) {
   TitleModel.prototype.toggleRightSwipe = function() {
     this.rightSwipe = !this.rightSwipe;
     return this._emit('right-swipe', this.rightSwipe);
+  };
+
+  TitleModel.prototype.showMenu = function() {
+    this.showRightSwipe();
+    this.menu = true;
+    return this._emit('menu', this.menu);
+  };
+
+  TitleModel.prototype.hideMenu = function() {
+    this.hideRightSwipe();
+    this.menu = false;
+    return this._emit('menu', this.menu);
+  };
+
+  TitleModel.prototype.toggleMenu = function() {
+    this.toggleRightSwipe();
+    this.menu = !this.menu;
+    return this._emit('menu', this.menu);
+  };
+
+  TitleModel.prototype.showSelector = function() {
+    this.showRightSwipe();
+    this.selector = true;
+    return this._emit('selector', this.selector);
+  };
+
+  TitleModel.prototype.hideSelector = function() {
+    this.hideRightSwipe();
+    this.selector = false;
+    return this._emit('selector', this.selector);
+  };
+
+  TitleModel.prototype.toggleSelector = function() {
+    this.toggleRightSwipe();
+    this.selector = !this.selector;
+    return this._emit('selector', this.selector);
   };
 
   TitleModel.prototype.showSettings = function() {

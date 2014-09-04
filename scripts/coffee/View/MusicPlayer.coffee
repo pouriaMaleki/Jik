@@ -103,6 +103,9 @@ module.exports = class MusicPlayer
 		favHammer = new Hammer @fav.node
 		favHammer.on 'tap', (arg) => @mainView.model.musicPlayer.fav()
 
+		addHammer = new Hammer @add.node
+		addHammer.on 'tap', (arg) => @mainView.model.page.showSelector()
+
 		hideBtnHammer = new Hammer @hideBtn.node
 		hideBtnHammer.on 'tap', (arg) =>
 
@@ -161,6 +164,8 @@ module.exports = class MusicPlayer
 
 		return if @mainView.model.musicPlayer.seeking
 
+		@mainView.model.page.hideSelector()
+
 		@showing = true
 
 		@el
@@ -192,6 +197,8 @@ module.exports = class MusicPlayer
 	hide: ->
 
 		return if @mainView.model.musicPlayer.seeking
+
+		@mainView.model.page.hideSelector()
 
 		@showing = false
 

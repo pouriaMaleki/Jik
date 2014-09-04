@@ -76,6 +76,8 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 		@audioTag.play()
 
+		@_emit 'music-unpause'
+
 		@playing = true
 
 		@playingData = data

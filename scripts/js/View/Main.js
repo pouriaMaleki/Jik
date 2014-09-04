@@ -24,7 +24,7 @@ VideoPlayer = require('./VideoPlayer');
 
 module.exports = Main = (function() {
   function Main(model) {
-    var hammer;
+    var btnHammer, hammer;
     this.model = model;
     this.el = Foxie('.master').putIn(document.body);
     this.bg = Foxie('.master-bg').moveXTo(-200).trans(300).putIn(this.el);
@@ -42,10 +42,17 @@ module.exports = Main = (function() {
     this.AlbumPage = new Album(this, this.ribbon.getPage(2), this.ribbon.getSubnameSelector(2));
     this.songPage = new Song(this, this.ribbon.getPage(3), this.ribbon.getSubnameSelector(3));
     this.videoPage = new Video(this, this.ribbon.getPage(4), this.ribbon.getSubnameSelector(4));
-    this.rightSwipe = new RightSwipe(this);
+    this.btn = Foxie('.rightSwipeBtn').putIn(document.body);
+    btnHammer = new Hammer(this.btn.node);
+    btnHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.model.page.toggleMenu();
+      };
+    })(this));
     this.musicPlayer = new MusicPlayer(this);
     this.videoPlayer = new VideoPlayer(this);
     this.settings = new Settings(this);
+    this.rightSwipe = new RightSwipe(this);
   }
 
   return Main;
