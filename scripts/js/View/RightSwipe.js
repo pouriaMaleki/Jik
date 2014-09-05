@@ -1,6 +1,8 @@
-var Foxie, MenuItem, Playlists, RightSwipe, Scrolla;
+var Foxie, MenuItem, PlaylistSelector, Playlists, RightSwipe, Scrolla;
 
 Foxie = require('Foxie');
+
+PlaylistSelector = require('./RightSwipe/PlaylistSelector');
 
 Playlists = require('./RightSwipe/Playlists');
 
@@ -16,7 +18,8 @@ module.exports = RightSwipe = (function() {
     this.items = [];
     this.el = Foxie('.rightSwipe').moveXTo(-200).trans(300).putIn(document.body);
     this.pages = Foxie('.rightSwipePages').trans(300).putIn(this.el);
-    this.pages2 = Foxie('.rightSwipePages').setOpacity(0).putIn(this.el);
+    this.pages2 = Foxie('.rightSwipePages').moveXTo(-1000).putIn(this.el);
+    this.selectorPage = Foxie('.rightSwipePage').putIn(this.pages2);
     this.page1 = Foxie('.rightSwipePage').putIn(this.pages);
     this.page2 = Foxie('.rightSwipePage').moveXTo(200).putIn(this.pages);
     elHammer = new Hammer(this.el.node);
@@ -27,6 +30,9 @@ module.exports = RightSwipe = (function() {
     })(this));
     elHammer.on('panright', (function(_this) {
       return function(arg) {
+        if (_this.model.menu === false) {
+          return;
+        }
         _this.showPage(0);
         return _this.playlists.hide();
       };
@@ -86,6 +92,7 @@ module.exports = RightSwipe = (function() {
       return function() {};
     })(this)), true);
     this.playlists = new Playlists(this.mainView, this);
+    this.playlistSelector = new PlaylistSelector(this.mainView, this);
     this.scroll = new Scrolla({
       maxStretch: 500
     });
@@ -144,6 +151,12 @@ module.exports = RightSwipe = (function() {
     return item;
   };
 
+  RightSwipe.prototype.newItemInSelector = function(data, cb, stay) {
+    var item;
+    item = new MenuItem(this.model, this.selectorPage, data, cb, stay);
+    return item;
+  };
+
   RightSwipe.prototype.addItem = function(item) {
     return this.items.push(item);
   };
@@ -175,15 +188,20 @@ module.exports = RightSwipe = (function() {
     return this.appendItem(item);
   };
 
+  RightSwipe.prototype.moveItemToEndInSelector = function(item) {
+    this.selectorPage.node.removeChild(item.el.node);
+    return this.selectorPage.node.appendChild(item.el.node);
+  };
+
   RightSwipe.prototype.showMenu = function() {
     this.showPage(0);
-    this.pages.setOpacity(1);
-    return this.pages2.setOpacity(0);
+    this.pages.moveXTo(0);
+    return this.pages2.moveXTo(-1000);
   };
 
   RightSwipe.prototype.showSelector = function() {
-    this.pages.setOpacity(0);
-    return this.pages2.setOpacity(1);
+    this.pages.moveXTo(-1000);
+    return this.pages2.moveXTo(0);
   };
 
   return RightSwipe;
