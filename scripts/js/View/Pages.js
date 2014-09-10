@@ -23,6 +23,9 @@ module.exports = Pages = (function() {
     this.pullDown = Foxie('.pullDown').putIn(this.el).innerHTML('Loading');
     this.refresh = false;
     this.loadMore = true;
+    this.showSearch = false;
+    this.offsetScroll = -18;
+    this.offsetScrollSearch = -32;
     this.cancelAutoScroll = false;
     this.viewPort = window.innerHeight;
     document.addEventListener('resize', (function(_this) {
@@ -43,12 +46,14 @@ module.exports = Pages = (function() {
     x = 0;
     hammer.on('pan', (function(_this) {
       return function(arg) {
+        _this.showSearch = false;
         if (_this.scroll.position > 100) {
           _this.pullDown.innerHTML('Release to refresh');
           _this.refresh = true;
         } else {
           _this.pullDown.innerHTML('Pull down to refresh');
           _this.refresh = false;
+          _this.showSearch = true;
         }
         _this.scroll.drag(arg.deltaY - x);
         x = arg.deltaY;
@@ -82,14 +87,32 @@ module.exports = Pages = (function() {
             _this.model.loadmore();
             _this.loadMore = true;
           }
-        } else if (_this.scroll.position > -18) {
+        } else if (_this.scroll.position > _this.offsetScroll && _this.showSearch === false) {
           _this.hidePullup();
+        } else if (_this.scroll.position > _this.offsetScroll) {
+          _this.hidePullupButSearch();
         }
         return _this.cancelAutoScroll = false;
       };
     })(this));
     this.searchBar = new Item.searchBar(this.mainView, this.el);
   }
+
+  Pages.prototype._prepareSearchBar = function() {
+    this.searchBar.onSearch((function(_this) {
+      return function(data) {
+        _this.model.setOption('search');
+        return console.log(data);
+      };
+    })(this));
+    return this.model.on('option', (function(_this) {
+      return function(data) {
+        if (!isNaN(data)) {
+          return _this.searchBar.clear();
+        }
+      };
+    })(this));
+  };
 
   Pages.prototype.removeAll = function() {
     var item, _i, _len, _ref;
@@ -126,7 +149,7 @@ module.exports = Pages = (function() {
   };
 
   Pages.prototype.scrollToItem = function(index) {
-    return this.scrollTo(index * -78);
+    return this.scrollTo(index * -78 + this.offsetScrollSearch);
   };
 
   Pages.prototype.hidePullup = function() {
@@ -135,7 +158,22 @@ module.exports = Pages = (function() {
         if (_this.cancelAutoScroll === true) {
           return;
         }
-        return _this.scrollTo(-18);
+        if (_this.searchBar.isClear() === true) {
+          return _this.scrollTo(_this.offsetScroll + _this.offsetScrollSearch);
+        } else {
+          return _this.scrollTo(_this.offsetScroll);
+        }
+      };
+    })(this), 400);
+  };
+
+  Pages.prototype.hidePullupButSearch = function() {
+    return setTimeout((function(_this) {
+      return function() {
+        if (_this.cancelAutoScroll === true) {
+          return;
+        }
+        return _this.scrollTo(_this.offsetScroll);
       };
     })(this), 400);
   };

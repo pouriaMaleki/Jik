@@ -44,6 +44,8 @@ module.exports = Song = (function(_super) {
         _this.doneLoad();
       };
     })(this));
+    this.searchBar.addPlaceholder('Search Songs');
+    this._prepareSearchBar();
   }
 
   return Song;

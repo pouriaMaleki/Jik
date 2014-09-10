@@ -44,6 +44,8 @@ module.exports = Home = (function(_super) {
         _this.doneLoad();
       };
     })(this));
+    this.searchBar.addPlaceholder('Search Everywhere');
+    this._prepareSearchBar();
   }
 
   return Home;

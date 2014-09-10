@@ -169,7 +169,6 @@ body
 							position: absolute
 							top: 0
 							left: 0
-							padding-left: 30px
 							font-size: 22px
 
 							background-color: rgba(255,255,255,.1)
@@ -180,24 +179,38 @@ body
 
 								outline: 0
 
+							&::-webkit-input-placeholder
+
+								font-size: 18px
+								padding-top: 2px
+								padding-left: 5px
+
+							&:-moz-placeholder
+
+								font-size: 18px
+								padding-top: 2px
+								padding-left: 5px
+
+							&::-moz-placeholder
+
+								font-size: 18px
+								padding-top: 2px
+								padding-left: 5px
+
+							&:-ms-input-placeholder
+
+								font-size: 18px
+								padding-top: 2px
+								padding-left: 5px
+
 						.search-icon
 
-							height: 28px
-							width: 28px
+							height: 30px
+							width: 30px
 							position: absolute
-							top: 0
-							left: 0
-							background: rgba(0,0,0,.5) url(../../images/search.png) 0 0 no-repeat
-							background-size: cover
-
-						.remove-icon
-
-							height: 28px
-							width: 28px
-							position: absolute
-							top: 0
+							top: 0px
 							right: 10px
-							background: rgba(0,0,0,.5) url(../../images/remove.png) 0 0 no-repeat
+							background: rgba(0,0,0,.5) url(../../images/search.png) 0 3px no-repeat
 							background-size: cover
 
 				.video-item

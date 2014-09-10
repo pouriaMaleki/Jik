@@ -19,12 +19,28 @@ module.exports = SearchBar = (function() {
     })(this));
     this.input.node.addEventListener('change', (function(_this) {
       return function(event) {
-        return console.log(_this.input.node.value);
+        return _this.cb(_this.input.node.value);
       };
     })(this));
     this.searchBtn = Foxie('.search-icon').putIn(this.titlesContainer);
     this.el.putIn(this.parentNode);
   }
+
+  SearchBar.prototype.addPlaceholder = function(text) {
+    return this.input.attr('placeholder', text);
+  };
+
+  SearchBar.prototype.onSearch = function(cb) {
+    this.cb = cb;
+  };
+
+  SearchBar.prototype.clear = function() {
+    return this.input.node.value = '';
+  };
+
+  SearchBar.prototype.isClear = function() {
+    return this.input.node.value === '';
+  };
 
   return SearchBar;
 

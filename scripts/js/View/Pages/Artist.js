@@ -43,6 +43,8 @@ module.exports = Artist = (function(_super) {
         _this.doneLoad();
       };
     })(this));
+    this.searchBar.addPlaceholder('Search Artists');
+    this._prepareSearchBar();
   }
 
   return Artist;

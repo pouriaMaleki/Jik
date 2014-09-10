@@ -44,6 +44,8 @@ module.exports = Video = (function(_super) {
         _this.doneLoad();
       };
     })(this));
+    this.searchBar.addPlaceholder('Search Videos');
+    this._prepareSearchBar();
   }
 
   return Video;

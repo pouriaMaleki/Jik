@@ -44,6 +44,8 @@ module.exports = Album = (function(_super) {
         _this.doneLoad();
       };
     })(this));
+    this.searchBar.addPlaceholder('Search Albums');
+    this._prepareSearchBar();
   }
 
   return Album;
