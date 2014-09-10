@@ -13,6 +13,7 @@ module.exports = TitleModel = (function(_super) {
     this.rightSwipe = false;
     this.menu = false;
     this.selector = false;
+    this.search = false;
     this.settings = false;
     this.playlists = false;
   }
@@ -45,6 +46,10 @@ module.exports = TitleModel = (function(_super) {
 
   TitleModel.prototype.hideRightSwipe = function() {
     this.rightSwipe = false;
+    this.menu = false;
+    this._emit('menu', this.menu);
+    this.selector = false;
+    this._emit('selector', this.selector);
     return this._emit('right-swipe', this.rightSwipe);
   };
 
@@ -87,6 +92,21 @@ module.exports = TitleModel = (function(_super) {
     this.toggleRightSwipe();
     this.selector = !this.selector;
     return this._emit('selector', this.selector);
+  };
+
+  TitleModel.prototype.showSearch = function() {
+    this.search = true;
+    return this._emit('search', this.search);
+  };
+
+  TitleModel.prototype.hideSearch = function() {
+    this.search = false;
+    return this._emit('search', this.search);
+  };
+
+  TitleModel.prototype.toggleSearch = function() {
+    this.search = !this.search;
+    return this._emit('search', this.search);
   };
 
   TitleModel.prototype.showSettings = function() {

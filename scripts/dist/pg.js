@@ -10620,6 +10620,16 @@ module.exports = MusicPlayerModel = (function(_super) {
     }
   };
 
+  MusicPlayerModel.prototype._checkFavorited = function(data) {
+    var song;
+    song = this.rootModel.playlists.fav.find(data.id);
+    if (song !== false) {
+      return this._emit('song-fav', true);
+    } else {
+      return this._emit('song-unfav', true);
+    }
+  };
+
   MusicPlayerModel.prototype.play = function(data) {
     var song;
     this._emit('play-music', data);
@@ -10636,11 +10646,14 @@ module.exports = MusicPlayerModel = (function(_super) {
       this.audioTag.src = data.mp3_low;
     }
     song = this.rootModel.playlists.fav.find(data.id);
-    if (song !== false) {
-      this._emit('song-fav', true);
-    } else {
-      this._emit('song-unfav', true);
-    }
+    this._checkFavorited(data);
+    this.rootModel.playlists.fav.on('add-song', (function(_this) {
+      return function(songAdded) {
+        if (songAdded.id === data.id) {
+          return _this._checkFavorited(data);
+        }
+      };
+    })(this));
     this.audioTag.play();
     this._emit('music-unpause');
     this.playing = true;
@@ -11180,7 +11193,7 @@ module.exports = Playlist = (function(_super) {
   };
 
   Playlist.prototype.addSong = function(song) {
-    if (this.find(song.id !== false)) {
+    if (this.find(song.id) !== false) {
       return;
     }
     this.data.push(song);
@@ -11330,6 +11343,7 @@ module.exports = TitleModel = (function(_super) {
     this.rightSwipe = false;
     this.menu = false;
     this.selector = false;
+    this.search = false;
     this.settings = false;
     this.playlists = false;
   }
@@ -11362,6 +11376,10 @@ module.exports = TitleModel = (function(_super) {
 
   TitleModel.prototype.hideRightSwipe = function() {
     this.rightSwipe = false;
+    this.menu = false;
+    this._emit('menu', this.menu);
+    this.selector = false;
+    this._emit('selector', this.selector);
     return this._emit('right-swipe', this.rightSwipe);
   };
 
@@ -11404,6 +11422,21 @@ module.exports = TitleModel = (function(_super) {
     this.toggleRightSwipe();
     this.selector = !this.selector;
     return this._emit('selector', this.selector);
+  };
+
+  TitleModel.prototype.showSearch = function() {
+    this.search = true;
+    return this._emit('search', this.search);
+  };
+
+  TitleModel.prototype.hideSearch = function() {
+    this.search = false;
+    return this._emit('search', this.search);
+  };
+
+  TitleModel.prototype.toggleSearch = function() {
+    this.search = !this.search;
+    return this._emit('search', this.search);
   };
 
   TitleModel.prototype.showSettings = function() {
@@ -11758,7 +11791,44 @@ module.exports = AlbumItem = (function(_super) {
 //@ sourceMappingURL=AlbumItem.map
 */
 
-},{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","../SimpleSong":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\SimpleSong.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js":[function(require,module,exports){
+},{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","../SimpleSong":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\SimpleSong.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SearchBar.js":[function(require,module,exports){
+var Foxie, SearchBar;
+
+Foxie = require('Foxie');
+
+module.exports = SearchBar = (function() {
+  function SearchBar(mainView, parentNode) {
+    this.mainView = mainView;
+    this.parentNode = parentNode;
+    this.el = Foxie('.item.searchBar').perspective(4000);
+    this.titlesContainer = Foxie('.titles-container').putIn(this.el);
+    this.hammer = new Hammer(this.titlesContainer.node);
+    this.input = Foxie('input.search-input').attr('type', 'text').putIn(this.titlesContainer);
+    this.input.node.addEventListener('keydown', (function(_this) {
+      return function(event) {
+        if (event.keyCode === 13 || event.keyCode === 27) {
+          return _this.input.node.blur();
+        }
+      };
+    })(this));
+    this.input.node.addEventListener('change', (function(_this) {
+      return function(event) {
+        return console.log(_this.input.node.value);
+      };
+    })(this));
+    this.searchBtn = Foxie('.search-icon').putIn(this.titlesContainer);
+    this.el.putIn(this.parentNode);
+  }
+
+  return SearchBar;
+
+})();
+
+/*
+//@ sourceMappingURL=searchBar.map
+*/
+
+},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js":[function(require,module,exports){
 var Foxie, Item, SongItem,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -11832,7 +11902,7 @@ module.exports = VideoItem = (function(_super) {
 */
 
 },{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Main.js":[function(require,module,exports){
-var Album, Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings, Song, Video, VideoPlayer;
+var Album, Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Search, Settings, Song, Video, VideoPlayer;
 
 Foxie = require('foxie');
 
@@ -11847,6 +11917,8 @@ Album = require('./Pages/Album');
 Song = require('./Pages/Song');
 
 HomePage = require('./Pages/HomePage');
+
+Search = require('./Search');
 
 Settings = require('./Settings');
 
@@ -11885,6 +11957,7 @@ module.exports = Main = (function() {
     })(this));
     this.musicPlayer = new MusicPlayer(this);
     this.videoPlayer = new VideoPlayer(this);
+    this.search = new Search(this);
     this.settings = new Settings(this);
     this.rightSwipe = new RightSwipe(this);
   }
@@ -11897,7 +11970,7 @@ module.exports = Main = (function() {
 //@ sourceMappingURL=Main.map
 */
 
-},{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Album":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Album.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Pages/Song":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Song.js","./Pages/Video":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Video.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","./RightSwipe":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js","./VideoPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\VideoPlayer.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
+},{"./MusicPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js","./Pages/Album":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Album.js","./Pages/Artist":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Artist.js","./Pages/HomePage":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\HomePage.js","./Pages/Song":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Song.js","./Pages/Video":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Video.js","./Ribbon/Ribbon":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\Ribbon.js","./RightSwipe":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\RightSwipe.js","./Search":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Search.js","./Settings":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js","./VideoPlayer":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\VideoPlayer.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\MusicPlayer.js":[function(require,module,exports){
 var Foxie, Lyric, MusicPlayer, Seekbar;
 
 Foxie = require('Foxie');
@@ -12264,7 +12337,8 @@ Foxie = require('foxie');
 Item = {
   song: require('./Item/SongItem'),
   video: require('./Item/VideoItem'),
-  album: require('./Item/AlbumItem')
+  album: require('./Item/AlbumItem'),
+  searchBar: require('./Item/SearchBar')
 };
 
 Scrolla = require('./Scrolla');
@@ -12340,12 +12414,13 @@ module.exports = Pages = (function() {
             _this.model.loadmore();
             _this.loadMore = true;
           }
-        } else if (_this.scroll.position > -22) {
+        } else if (_this.scroll.position > -18) {
           _this.hidePullup();
         }
         return _this.cancelAutoScroll = false;
       };
     })(this));
+    this.searchBar = new Item.searchBar(this.mainView, this.el);
   }
 
   Pages.prototype.removeAll = function() {
@@ -12392,7 +12467,7 @@ module.exports = Pages = (function() {
         if (_this.cancelAutoScroll === true) {
           return;
         }
-        return _this.scrollTo(-22);
+        return _this.scrollTo(-18);
       };
     })(this), 400);
   };
@@ -12425,7 +12500,7 @@ module.exports = Pages = (function() {
 //@ sourceMappingURL=Pages.map
 */
 
-},{"./Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","./Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","./Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","./Ribbon/SubnameSelector":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\SubnameSelector.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Album.js":[function(require,module,exports){
+},{"./Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","./Item/SearchBar":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SearchBar.js","./Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","./Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","./Ribbon/SubnameSelector":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\SubnameSelector.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Album.js":[function(require,module,exports){
 var Album, Foxie, Item, Pages,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -13074,6 +13149,11 @@ module.exports = RightSwipe = (function() {
       };
     })(this));
     this.newItem('</br>');
+    this.newItem('Search', (function(_this) {
+      return function() {
+        return _this.model.showSearch();
+      };
+    })(this));
     this.newItem('Settings', (function(_this) {
       return function() {
         return _this.model.showSettings();
@@ -13378,8 +13458,7 @@ module.exports = Playlists = (function() {
 
   Playlists.prototype.cancelMakingNew = function(plus) {
     this.update(plus, '+');
-    plus.el.attr('contenteditable', 'false');
-    return this.rightSwipe.scroll.forceSetPosition(-this.rightSwipe.selectorPage.node.getBoundingClientRect().height + this.rightSwipe.viewportHeight - 200);
+    return plus.el.attr('contenteditable', 'false');
   };
 
   Playlists.prototype.endMakingNew = function(plus) {
@@ -13469,6 +13548,7 @@ module.exports = Playlists = (function() {
     return this.prepareNewPlaylist(playlistModel.name, (function(_this) {
       return function() {
         _this.rightSwipe.showPage(1);
+        _this.hide();
         return el.show();
       };
     })(this));
@@ -13905,7 +13985,50 @@ initBezier = function() {
 //@ sourceMappingURL=Scrolla.map
 */
 
-},{"../Model/_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js","raf-timing/scripts/js/lib/raf":"D:\\xampp\\htdocs\\jik\\node_modules\\raf-timing\\scripts\\js\\lib\\raf.js","timing-function":"D:\\xampp\\htdocs\\jik\\node_modules\\timing-function\\scripts\\js\\lib\\timingFunction.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js":[function(require,module,exports){
+},{"../Model/_Emitter":"D:\\xampp\\htdocs\\jik\\scripts\\js\\Model\\_Emitter.js","raf-timing/scripts/js/lib/raf":"D:\\xampp\\htdocs\\jik\\node_modules\\raf-timing\\scripts\\js\\lib\\raf.js","timing-function":"D:\\xampp\\htdocs\\jik\\node_modules\\timing-function\\scripts\\js\\lib\\timingFunction.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Search.js":[function(require,module,exports){
+var Foxie, Settings;
+
+Foxie = require('Foxie');
+
+module.exports = Settings = (function() {
+  function Settings(mainView) {
+    var elHammer;
+    this.mainView = mainView;
+    this.el = Foxie('.settings').scaleXTo(0).trans(400).putIn(document.body);
+    elHammer = new Hammer(this.el.node);
+    elHammer.on('panleft panright', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.page.hideSearch();
+      };
+    })(this));
+    this.mainView.model.page.on('search', (function(_this) {
+      return function(flag) {
+        if (flag) {
+          return _this.show();
+        } else {
+          return _this.hide();
+        }
+      };
+    })(this));
+  }
+
+  Settings.prototype.show = function() {
+    return this.el.scaleXTo(1);
+  };
+
+  Settings.prototype.hide = function() {
+    return this.el.scaleXTo(0);
+  };
+
+  return Settings;
+
+})();
+
+/*
+//@ sourceMappingURL=Search.map
+*/
+
+},{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Settings.js":[function(require,module,exports){
 var Foxie, Settings;
 
 Foxie = require('Foxie');

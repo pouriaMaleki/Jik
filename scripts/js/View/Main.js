@@ -1,4 +1,4 @@
-var Album, Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Settings, Song, Video, VideoPlayer;
+var Album, Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Search, Settings, Song, Video, VideoPlayer;
 
 Foxie = require('foxie');
 
@@ -13,6 +13,8 @@ Album = require('./Pages/Album');
 Song = require('./Pages/Song');
 
 HomePage = require('./Pages/HomePage');
+
+Search = require('./Search');
 
 Settings = require('./Settings');
 
@@ -51,6 +53,7 @@ module.exports = Main = (function() {
     })(this));
     this.musicPlayer = new MusicPlayer(this);
     this.videoPlayer = new VideoPlayer(this);
+    this.search = new Search(this);
     this.settings = new Settings(this);
     this.rightSwipe = new RightSwipe(this);
   }

@@ -65,8 +65,7 @@ module.exports = Playlists = (function() {
 
   Playlists.prototype.cancelMakingNew = function(plus) {
     this.update(plus, '+');
-    plus.el.attr('contenteditable', 'false');
-    return this.rightSwipe.scroll.forceSetPosition(-this.rightSwipe.selectorPage.node.getBoundingClientRect().height + this.rightSwipe.viewportHeight - 200);
+    return plus.el.attr('contenteditable', 'false');
   };
 
   Playlists.prototype.endMakingNew = function(plus) {

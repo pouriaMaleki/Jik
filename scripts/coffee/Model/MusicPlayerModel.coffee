@@ -44,6 +44,18 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 			@_emit 'song-fav', true
 
+	_checkFavorited: (data) ->
+
+		song = @rootModel.playlists.fav.find data.id
+
+		if song isnt false
+
+			@_emit 'song-fav', true
+
+		else
+
+			@_emit 'song-unfav', true
+
 	play: (data) ->
 
 		@_emit 'play-music', data
@@ -66,13 +78,13 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 		song = @rootModel.playlists.fav.find data.id
 
-		if song isnt false
+		@_checkFavorited data
 
-			@_emit 'song-fav', true
+		@rootModel.playlists.fav.on 'add-song', (songAdded) =>
 
-		else
+			if songAdded.id is data.id
 
-			@_emit 'song-unfav', true
+				@_checkFavorited data
 
 		@audioTag.play()
 

@@ -50,6 +50,7 @@ module.exports = Playlists = (function() {
     return this.prepareNewPlaylist(playlistModel.name, (function(_this) {
       return function() {
         _this.rightSwipe.showPage(1);
+        _this.hide();
         return el.show();
       };
     })(this));

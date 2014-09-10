@@ -5,6 +5,7 @@ Video = require './Pages/Video'
 Album = require './Pages/Album'
 Song = require './Pages/Song'
 HomePage = require './Pages/HomePage'
+Search = require './Search'
 Settings = require './Settings'
 RightSwipe = require './RightSwipe'
 MusicPlayer = require './MusicPlayer'
@@ -46,6 +47,7 @@ module.exports = class Main
 		@musicPlayer = new MusicPlayer @
 		@videoPlayer = new VideoPlayer @
 
+		@search = new Search @
 		@settings = new Settings @
 
 		@rightSwipe = new RightSwipe @

@@ -5,7 +5,8 @@ Foxie = require('foxie');
 Item = {
   song: require('./Item/SongItem'),
   video: require('./Item/VideoItem'),
-  album: require('./Item/AlbumItem')
+  album: require('./Item/AlbumItem'),
+  searchBar: require('./Item/SearchBar')
 };
 
 Scrolla = require('./Scrolla');
@@ -81,12 +82,13 @@ module.exports = Pages = (function() {
             _this.model.loadmore();
             _this.loadMore = true;
           }
-        } else if (_this.scroll.position > -22) {
+        } else if (_this.scroll.position > -18) {
           _this.hidePullup();
         }
         return _this.cancelAutoScroll = false;
       };
     })(this));
+    this.searchBar = new Item.searchBar(this.mainView, this.el);
   }
 
   Pages.prototype.removeAll = function() {
@@ -133,7 +135,7 @@ module.exports = Pages = (function() {
         if (_this.cancelAutoScroll === true) {
           return;
         }
-        return _this.scrollTo(-22);
+        return _this.scrollTo(-18);
       };
     })(this), 400);
   };

@@ -82,6 +82,11 @@ module.exports = RightSwipe = (function() {
       };
     })(this));
     this.newItem('</br>');
+    this.newItem('Search', (function(_this) {
+      return function() {
+        return _this.model.showSearch();
+      };
+    })(this));
     this.newItem('Settings', (function(_this) {
       return function() {
         return _this.model.showSettings();

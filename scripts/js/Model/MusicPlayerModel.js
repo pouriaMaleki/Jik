@@ -46,6 +46,16 @@ module.exports = MusicPlayerModel = (function(_super) {
     }
   };
 
+  MusicPlayerModel.prototype._checkFavorited = function(data) {
+    var song;
+    song = this.rootModel.playlists.fav.find(data.id);
+    if (song !== false) {
+      return this._emit('song-fav', true);
+    } else {
+      return this._emit('song-unfav', true);
+    }
+  };
+
   MusicPlayerModel.prototype.play = function(data) {
     var song;
     this._emit('play-music', data);
@@ -62,11 +72,14 @@ module.exports = MusicPlayerModel = (function(_super) {
       this.audioTag.src = data.mp3_low;
     }
     song = this.rootModel.playlists.fav.find(data.id);
-    if (song !== false) {
-      this._emit('song-fav', true);
-    } else {
-      this._emit('song-unfav', true);
-    }
+    this._checkFavorited(data);
+    this.rootModel.playlists.fav.on('add-song', (function(_this) {
+      return function(songAdded) {
+        if (songAdded.id === data.id) {
+          return _this._checkFavorited(data);
+        }
+      };
+    })(this));
     this.audioTag.play();
     this._emit('music-unpause');
     this.playing = true;

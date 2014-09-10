@@ -28,7 +28,7 @@ module.exports = Playlist = (function(_super) {
   };
 
   Playlist.prototype.addSong = function(song) {
-    if (this.find(song.id !== false)) {
+    if (this.find(song.id) !== false) {
       return;
     }
     this.data.push(song);
