@@ -12,6 +12,7 @@ module.exports = Playlist = (function(_super) {
     this.model = model;
     this.name = name;
     this.data = data;
+    this.addSongToEnd = __bind(this.addSongToEnd, this);
     this.addSong = __bind(this.addSong, this);
     Playlist.__super__.constructor.apply(this, arguments);
   }
@@ -30,6 +31,15 @@ module.exports = Playlist = (function(_super) {
   Playlist.prototype.addSong = function(song) {
     if (this.find(song.id) !== false) {
       return;
+    }
+    this.data.push(song);
+    this._emit('add-song', song);
+    return this._emit('add-success', song);
+  };
+
+  Playlist.prototype.addSongToEnd = function(song) {
+    if (this.find(song.id) !== false) {
+      this.removeSong(song);
     }
     this.data.push(song);
     this._emit('add-song', song);

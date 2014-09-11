@@ -87,4 +87,5 @@ module.exports = class AlbumItem extends Item
 	createSong: (data) ->
 
 		song = new SimpleSong @mainView, @el, data
+
 		@songs.push song

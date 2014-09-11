@@ -56,6 +56,14 @@ module.exports = MusicPlayerModel = (function(_super) {
     }
   };
 
+  MusicPlayerModel.prototype._addNowPlaying = function(data) {
+    var song;
+    song = this.rootModel.playlists.nowPlaying.find(data.id);
+    if (song === false) {
+      this.rootModel.playlists.nowPlaying.addSong(data);
+    }
+  };
+
   MusicPlayerModel.prototype.play = function(data) {
     var song;
     this._emit('play-music', data);
@@ -80,6 +88,7 @@ module.exports = MusicPlayerModel = (function(_super) {
         }
       };
     })(this));
+    this.rootModel.playlists.nowPlaying.addSongToEnd(data);
     this.audioTag.play();
     this._emit('music-unpause');
     this.playing = true;

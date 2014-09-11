@@ -14,15 +14,9 @@ module.exports = class MusicPlayerModel extends _Emitter
 		@audioTag = document.createElement 'audio'
 		document.body.appendChild @audioTag
 
-		@audioTag.addEventListener 'timeupdate', (event) =>
+		@audioTag.addEventListener 'timeupdate', (event) => @_emit 'seeker-update', @audioTag.currentTime / @audioTag.duration
 
-			@_emit 'seeker-update', @audioTag.currentTime / @audioTag.duration
-
-		@audioTag.addEventListener 'progress', (event) =>
-
-			try
-
-				@_emit 'buffer-update', @audioTag.buffered.end(@audioTag.buffered.length-1)  / @audioTag.duration
+		@audioTag.addEventListener 'progress', (event) => try @_emit 'buffer-update', @audioTag.buffered.end(@audioTag.buffered.length-1)  / @audioTag.duration
 
 	seekTo: (x) ->
 
@@ -56,6 +50,16 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 			@_emit 'song-unfav', true
 
+	_addNowPlaying: (data) ->
+
+		song = @rootModel.playlists.nowPlaying.find data.id
+
+		if song is false
+
+			@rootModel.playlists.nowPlaying.addSong data
+
+		return
+
 	play: (data) ->
 
 		@_emit 'play-music', data
@@ -85,6 +89,8 @@ module.exports = class MusicPlayerModel extends _Emitter
 			if songAdded.id is data.id
 
 				@_checkFavorited data
+
+		@rootModel.playlists.nowPlaying.addSongToEnd data
 
 		@audioTag.play()
 

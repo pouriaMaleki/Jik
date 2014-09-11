@@ -31,6 +31,12 @@ module.exports = Playlists = (function() {
         }
       };
     })(this));
+    this.mainView.model.playlists.on('playlist', (function(_this) {
+      return function(playlistModel) {
+        _this.createNewPlaylist(playlistModel);
+        return _this.rightSwipe.moveItemToEnd(plus);
+      };
+    })(this));
     this.mainView.model.playlists.on('playlist-add', (function(_this) {
       return function(playlistModel) {
         _this.createNewPlaylist(playlistModel);
