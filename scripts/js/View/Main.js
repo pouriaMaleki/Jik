@@ -53,7 +53,6 @@ module.exports = Main = (function() {
     })(this));
     this.musicPlayer = new MusicPlayer(this);
     this.videoPlayer = new VideoPlayer(this);
-    this.search = new Search(this);
     this.settings = new Settings(this);
     this.rightSwipe = new RightSwipe(this);
   }

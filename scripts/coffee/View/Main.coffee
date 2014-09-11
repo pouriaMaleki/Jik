@@ -47,7 +47,7 @@ module.exports = class Main
 		@musicPlayer = new MusicPlayer @
 		@videoPlayer = new VideoPlayer @
 
-		@search = new Search @
+		# @search = new Search @
 		@settings = new Settings @
 
 		@rightSwipe = new RightSwipe @
