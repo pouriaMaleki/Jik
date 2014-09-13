@@ -56,7 +56,7 @@ module.exports = MusicPlayerModel = (function(_super) {
     }
   };
 
-  MusicPlayerModel.prototype._addNowPlaying = function(data) {
+  MusicPlayerModel.prototype.addToNowPlaying = function(data) {
     var song;
     song = this.rootModel.playlists.nowPlaying.find(data.id);
     if (song === false) {

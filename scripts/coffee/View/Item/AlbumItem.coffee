@@ -8,49 +8,27 @@ module.exports = class AlbumItem extends Item
 
 		super
 
-		Foxie '.album-icon'
-		.putIn @titlesContainer
-
-		@detailNotLoaded = Foxie '.simple-songname'
-		.innerHTML 'Loading Album'
-		.moveYTo 85
-		.putIn @el
-
-		@detailsLoaded = no
-
 		@title1
 		.innerHTML data.album
 
 		@title2
 		.innerHTML data.artist
 
+		@plusBtn = Foxie '.album-plus'
+		.putIn @el
+
+		plusHammer = new Hammer @plusBtn.node
+		plusHammer.on 'tap', (arg) =>
+
+			do @songs[0].play
+
+			for song in @songs
+
+				do song.addToNowPlaying
+
 		@hammer.on 'tap', =>
 
-			if @detailsLoaded is no
-
-				@mainView.model.albumDetail.loadDetail(data.id)
-
 			@mainView.model.albumDetail.toggleDetail(data.id)
-
-			return
-
-		@mainView.model.albumDetail.on 'details', (albumDetail) =>
-
-			return if albumDetail.id isnt data.id
-
-			@detailsLoaded = yes
-
-			@el.node.removeChild @detailNotLoaded.node
-
-			for song in albumDetail.songs
-
-				@createSong song
-
-			if @mainView.model.albumDetail.detail is data.id
-
-				@el.setHeight @songs.length * 50 + 75
-
-				do @page.updateSize
 
 			return
 
@@ -58,13 +36,7 @@ module.exports = class AlbumItem extends Item
 
 			return if id isnt data.id
 
-			if @detailsLoaded is no
-
-				@el.setHeight 120
-
-			else
-
-				@el.setHeight @songs.length * 50 + 75
+			@el.setHeight @songs.length * 50 + 75
 
 			do @page.updateSize
 
@@ -83,6 +55,18 @@ module.exports = class AlbumItem extends Item
 			return
 
 		@songs = []
+
+		if data.albumtracks?
+
+			for song in data.albumtracks
+
+				@createSong song
+
+			# if @mainView.model.data.detail is data.id
+
+			# 	@el.setHeight @songs.length * 50 + 75
+
+			# 	do @page.updateSize
 
 	createSong: (data) ->
 

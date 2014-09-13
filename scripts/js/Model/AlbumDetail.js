@@ -30,19 +30,6 @@ module.exports = AlbumDetail = (function(_super) {
     return this._emit('detail-show', id);
   };
 
-  AlbumDetail.prototype.loadDetail = function(id) {
-    return setTimeout((function(_this) {
-      return function() {
-        var data;
-        data = {
-          id: id,
-          songs: ['do', 're', 'me', 'fa', 'so', 'la', 'si']
-        };
-        return _this._emit('details', data);
-      };
-    })(this), 1000);
-  };
-
   return AlbumDetail;
 
 })(_Emitter);

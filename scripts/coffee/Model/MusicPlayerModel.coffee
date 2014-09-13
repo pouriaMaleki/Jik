@@ -50,7 +50,7 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 			@_emit 'song-unfav', true
 
-	_addNowPlaying: (data) ->
+	addToNowPlaying: (data) ->
 
 		song = @rootModel.playlists.nowPlaying.find data.id
 
