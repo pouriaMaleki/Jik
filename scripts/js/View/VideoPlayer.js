@@ -1,4 +1,5 @@
-var Foxie, videoPlayer;
+var Foxie, videoPlayer,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Foxie = require('Foxie');
 
@@ -6,6 +7,8 @@ module.exports = videoPlayer = (function() {
   function videoPlayer(mainView) {
     var elHammer, hideHammer;
     this.mainView = mainView;
+    this.pause = __bind(this.pause, this);
+    this.play = __bind(this.play, this);
     this.transTime = 700;
     this.showing = false;
     this.height = window.innerHeight;
@@ -37,6 +40,7 @@ module.exports = videoPlayer = (function() {
     })(this));
     this.songName = Foxie('.musicplayer-songname').putIn(this.el);
     this.artist = Foxie('.musicplayer-artist').putIn(this.el);
+    this.playPauseBtn = Foxie('.videoplayer-playpause').putIn(this.el);
     this.videoTag = document.createElement('video');
     this.el.node.appendChild(this.videoTag);
     this.mainView.model.videoPlayer.on('show-player', (function(_this) {
@@ -50,16 +54,8 @@ module.exports = videoPlayer = (function() {
         return _this.videoTag.play();
       };
     })(this));
-    this.mainView.model.videoPlayer.on('video-unpause', (function(_this) {
-      return function() {
-        return _this.videoTag.play();
-      };
-    })(this));
-    this.mainView.model.videoPlayer.on('video-pause', (function(_this) {
-      return function(data) {
-        return _this.videoTag.pause();
-      };
-    })(this));
+    this.mainView.model.videoPlayer.on('video-unpause', this.play);
+    this.mainView.model.videoPlayer.on('video-pause', this.pause);
     window.addEventListener('resize', (function(_this) {
       return function(event) {
         _this.height = window.innerHeight;
@@ -72,6 +68,23 @@ module.exports = videoPlayer = (function() {
       };
     })(this));
   }
+
+  videoPlayer.prototype.play = function() {
+    this.videoTag.play();
+    this.playPauseBtn.node.classList.remove('videoplayer-resume');
+    this.playPauseBtn.setOpacity(.3);
+    return setTimeout((function(_this) {
+      return function() {
+        return _this.playPauseBtn.setOpacity(0);
+      };
+    })(this), 2000);
+  };
+
+  videoPlayer.prototype.pause = function() {
+    this.videoTag.pause();
+    this.playPauseBtn.node.classList.add('videoplayer-resume');
+    return this.playPauseBtn.setOpacity(1);
+  };
 
   videoPlayer.prototype.show = function(data) {
     if (this.mainView.model.videoPlayer.seeking) {
@@ -89,7 +102,8 @@ module.exports = videoPlayer = (function() {
       this.videoTag.src = data.lowq;
     }
     this.songName.innerHTML(data.videoname);
-    return this.artist.innerHTML(data.artist);
+    this.artist.innerHTML(data.artist);
+    return this.play();
   };
 
   videoPlayer.prototype.hide = function() {

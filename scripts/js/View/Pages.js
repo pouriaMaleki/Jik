@@ -6,6 +6,7 @@ Item = {
   song: require('./Item/SongItem'),
   video: require('./Item/VideoItem'),
   album: require('./Item/AlbumItem'),
+  artist: require('./Item/ArtistItem'),
   searchBar: require('./Item/SearchBar')
 };
 

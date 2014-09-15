@@ -14,7 +14,21 @@ module.exports = class MusicPlayerModel extends _Emitter
 		@audioTag = document.createElement 'audio'
 		document.body.appendChild @audioTag
 
-		@audioTag.addEventListener 'timeupdate', (event) => @_emit 'seeker-update', @audioTag.currentTime / @audioTag.duration
+		@audioTag.addEventListener 'timeupdate', (event) =>
+
+			@_emit 'seeker-update', @audioTag.currentTime / @audioTag.duration
+
+			if @audioTag.currentTime is @audioTag.duration
+
+				nextSong = @rootModel.playlists.nowPlaying.getNextSong @playingData
+
+				if nextSong isnt false
+
+					@play(nextSong, false)
+
+				else
+
+					do @pause
 
 		@audioTag.addEventListener 'progress', (event) => try @_emit 'buffer-update', @audioTag.buffered.end(@audioTag.buffered.length-1)  / @audioTag.duration
 
@@ -60,7 +74,7 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 		return
 
-	play: (data) ->
+	play: (data, gotoEnd = true) ->
 
 		@_emit 'play-music', data
 
@@ -90,7 +104,7 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 				@_checkFavorited data
 
-		@rootModel.playlists.nowPlaying.addSongToEnd data
+		if gotoEnd is true then @rootModel.playlists.nowPlaying.addSongToEnd(data)
 
 		@audioTag.play()
 

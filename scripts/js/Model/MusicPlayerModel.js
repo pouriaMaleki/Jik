@@ -18,7 +18,16 @@ module.exports = MusicPlayerModel = (function(_super) {
     document.body.appendChild(this.audioTag);
     this.audioTag.addEventListener('timeupdate', (function(_this) {
       return function(event) {
-        return _this._emit('seeker-update', _this.audioTag.currentTime / _this.audioTag.duration);
+        var nextSong;
+        _this._emit('seeker-update', _this.audioTag.currentTime / _this.audioTag.duration);
+        if (_this.audioTag.currentTime === _this.audioTag.duration) {
+          nextSong = _this.rootModel.playlists.nowPlaying.getNextSong(_this.playingData);
+          if (nextSong !== false) {
+            return _this.play(nextSong, false);
+          } else {
+            return _this.pause();
+          }
+        }
       };
     })(this));
     this.audioTag.addEventListener('progress', (function(_this) {
@@ -64,8 +73,11 @@ module.exports = MusicPlayerModel = (function(_super) {
     }
   };
 
-  MusicPlayerModel.prototype.play = function(data) {
+  MusicPlayerModel.prototype.play = function(data, gotoEnd) {
     var song;
+    if (gotoEnd == null) {
+      gotoEnd = true;
+    }
     this._emit('play-music', data);
     this.rootModel.videoPlayer.pause();
     if (data.id === this.playingData.id) {
@@ -88,7 +100,9 @@ module.exports = MusicPlayerModel = (function(_super) {
         }
       };
     })(this));
-    this.rootModel.playlists.nowPlaying.addSongToEnd(data);
+    if (gotoEnd === true) {
+      this.rootModel.playlists.nowPlaying.addSongToEnd(data);
+    }
     this.audioTag.play();
     this._emit('music-unpause');
     this.playing = true;

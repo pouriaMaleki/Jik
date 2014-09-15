@@ -10,13 +10,20 @@ module.exports = ArtistItem = (function(_super) {
   __extends(ArtistItem, _super);
 
   function ArtistItem(mainView, parentNode, page, data) {
+    var t2;
     this.mainView = mainView;
     this.parentNode = parentNode;
     this.page = page;
     ArtistItem.__super__.constructor.apply(this, arguments);
+    this.title1.innerHTML(data.artist);
+    t2 = data.fans + ' fan';
+    if (data.following === 1) {
+      t2 = t2 + ' plus you';
+    }
+    this.title2.innerHTML(t2);
     this.hammer.on('tap', (function(_this) {
       return function(arg) {
-        return console.log('artist');
+        return console.log(data);
       };
     })(this));
   }

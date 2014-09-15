@@ -10579,7 +10579,16 @@ module.exports = MusicPlayerModel = (function(_super) {
     document.body.appendChild(this.audioTag);
     this.audioTag.addEventListener('timeupdate', (function(_this) {
       return function(event) {
-        return _this._emit('seeker-update', _this.audioTag.currentTime / _this.audioTag.duration);
+        var nextSong;
+        _this._emit('seeker-update', _this.audioTag.currentTime / _this.audioTag.duration);
+        if (_this.audioTag.currentTime === _this.audioTag.duration) {
+          nextSong = _this.rootModel.playlists.nowPlaying.getNextSong(_this.playingData);
+          if (nextSong !== false) {
+            return _this.play(nextSong, false);
+          } else {
+            return _this.pause();
+          }
+        }
       };
     })(this));
     this.audioTag.addEventListener('progress', (function(_this) {
@@ -10625,8 +10634,11 @@ module.exports = MusicPlayerModel = (function(_super) {
     }
   };
 
-  MusicPlayerModel.prototype.play = function(data) {
+  MusicPlayerModel.prototype.play = function(data, gotoEnd) {
     var song;
+    if (gotoEnd == null) {
+      gotoEnd = true;
+    }
     this._emit('play-music', data);
     this.rootModel.videoPlayer.pause();
     if (data.id === this.playingData.id) {
@@ -10649,7 +10661,9 @@ module.exports = MusicPlayerModel = (function(_super) {
         }
       };
     })(this));
-    this.rootModel.playlists.nowPlaying.addSongToEnd(data);
+    if (gotoEnd === true) {
+      this.rootModel.playlists.nowPlaying.addSongToEnd(data);
+    }
     this.audioTag.play();
     this._emit('music-unpause');
     this.playing = true;
@@ -10855,7 +10869,7 @@ module.exports = ArtistModel = (function(_super) {
       setTimeout((function(_this) {
         return function() {
           var json;
-          json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"},{"id":"140809","type":"song","artist":"Masoud Emami","artist_id":"1905","songname":"Khoda Doosam Dasht","popularity":"3.6","ratecount":"9","view":"4457","time":"3:33","date":"1393-04-12","poster":"http:\/\/85.25.243.154\/img\/utxrohick-1404397432.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/Gallery\/[Medium]\/2u6wzwdn-1404397432.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Masoud+Emami\/-\/Khoda+Doosam+Dasht","mp3":"http:\/\/85.25.95.231\/music\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/Masoud Emami\/[one]\/Khoda Doosam Dasht [WikiSeda].mp3"},{"id":"140785","type":"song","artist":"Amin Hayaei","artist_id":"12201","songname":"Owje Parvaz","popularity":"3.8","ratecount":"8","view":"2205","time":"5:22","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/gq9zswptj-1404332339.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/Gallery\/[Medium]\/qixdrptt-1404332339.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Amin+Hayaei\/-\/Owje+Parvaz","mp3":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3"},{"id":"140782","type":"song","artist":"Bakhtak Band","artist_id":"11623","songname":"Dame Sobh","popularity":"2.6","ratecount":"8","view":"2966","time":"3:27","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/1spygoohm-1404322313.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/Gallery\/[Medium]\/hxb0sre5-1404322313.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Bakhtak+Band\/-\/Dame+Sobh","mp3":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3"},{"id":"9826","type":"album","artist":"Mohsen-sharifian","artist_id":"631","album":"Dingue Marrow","trackcount":"9","popularity":"5","date":"1393-04-14","url":"http:\/\/www.wikiseda.com\/Mohsen-sharifian\/Dingue+Marrow","view":"551","poster":"http:\/\/85.25.243.154\/img\/un79cef6qp-1404554657.jpg","year":"1393"},{"id":"9821","type":"album","artist":"O-hum","artist_id":"3927","album":"Hafez In Love","trackcount":"4","popularity":"5","date":"1393-04-08","url":"http:\/\/www.wikiseda.com\/O-hum\/Hafez+In+Love","view":"1756","poster":"http:\/\/85.25.243.154\/img\/1xxwe9fwdz-1404025213.jpg","year":"1393"},{"id":"9809","type":"album","artist":"Alireza Ghorbani","artist_id":"472","album":"Raftamo Bare Safar Bastam","trackcount":"6","popularity":"4.7","date":"1393-04-02","url":"http:\/\/www.wikiseda.com\/Alireza+Ghorbani\/Raftamo+Bare+Safar+Bastam","view":"18170","poster":"http:\/\/85.25.243.154\/img\/pf2m3p18sw-1403542665.jpg","year":"1393"},{"id":"9807","type":"album","artist":"Salar Aghili","artist_id":"97","album":"Vatan","trackcount":"9","popularity":"4.8","date":"1393-03-31","url":"http:\/\/www.wikiseda.com\/Salar+Aghili\/Vatan","view":"10829","poster":"http:\/\/85.25.243.154\/img\/obldv0b5l4-1403360590.jpg","year":"1393"},{"id":"4023","type":"video","artist":"Matin do hanjare","poster":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/[Gallery]\/8c1e2f4f65d428d910ece8e1c83cbc26-3.jpg","time":"3:2","videoname":"Marg Bar Man","lowq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-l.mp4","highq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-h.mp4","popularity":"3.8","view":"2292","url":"http:\/\/www.wikiseda.com\/Matin+do+hanjare\/+video\/Marg+Bar+Man","year":"1393"},{"id":"4022","type":"video","artist":"Amir Farjam","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/[Gallery]\/5fddee48dfa042d0664b066720a71bda-3.jpg","time":"3:32","videoname":"KHodaya","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-h.mp4","popularity":"5","view":"1769","url":"http:\/\/www.wikiseda.com\/Amir+Farjam\/+video\/KHodaya","year":"1393"},{"id":"4021","type":"video","artist":"Emo Band","poster":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/[Gallery]\/6ab639b8fef2f4fe7f9841d6f8d9f70d-3.jpg","time":"4:34","videoname":"Donyamo Live","lowq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-l.mp4","highq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-h.mp4","popularity":"4.1","view":"1728","url":"http:\/\/www.wikiseda.com\/Emo+Band\/+video\/Donyamo+Live","year":"1393"},{"id":"4019","type":"video","artist":"Amir Tataloo","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/[Gallery]\/d2931b538ae36b30847c9c139610311a-3.jpg","time":"3:29","videoname":"Baa To","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-h.mp4","popularity":"4.2","view":"10730","url":"http:\/\/www.wikiseda.com\/Amir+Tataloo\/+video\/Baa+To","year":"1393"}]';
+          json = '[{"id":"482","type":"artist","artist":"Bahram","artist_id":"482","fans":"1953","url":"http:\/\/www.wikiseda.com\/Bahram","poster":"http:\/\/85.25.243.154\/thumb_image\/Bahram.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bahram-thumb.jpg","following":0},{"id":"255","type":"artist","artist":"Babak Jahan Bakhsh","artist_id":"255","fans":"1447","url":"http:\/\/www.wikiseda.com\/Babak+Jahan+Bakhsh","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Jahan Bakhsh.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Jahan Bakhsh-thumb.jpg","following":1},{"id":"147","type":"artist","artist":"Behnam safavi","artist_id":"147","fans":"1371","url":"http:\/\/www.wikiseda.com\/Behnam+safavi","poster":"http:\/\/85.25.243.154\/thumb_image\/Behnam safavi.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Behnam safavi-thumb.jpg","following":0},{"id":"151","type":"artist","artist":"barobax","artist_id":"151","fans":"860","url":"http:\/\/www.wikiseda.com\/barobax","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/barobax-thumb.jpg","following":0},{"id":"5699","type":"artist","artist":"Baran","artist_id":"5699","fans":"852","url":"http:\/\/www.wikiseda.com\/Baran","poster":"http:\/\/85.25.243.154\/thumb_image\/Baran.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Baran-thumb.jpg","following":0},{"id":"71","type":"artist","artist":"Benyamin","artist_id":"71","fans":"689","url":"http:\/\/www.wikiseda.com\/Benyamin","poster":"http:\/\/85.25.243.154\/thumb_image\/Benyamin.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Benyamin-thumb.jpg","following":0},{"id":"50","type":"artist","artist":"Bijan mortazavi","artist_id":"50","fans":"615","url":"http:\/\/www.wikiseda.com\/Bijan+mortazavi","poster":"http:\/\/85.25.243.154\/thumb_image\/Bijan mortazavi.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bijan mortazavi-thumb.jpg","following":0},{"id":"7318","type":"artist","artist":"Babak Nahrein","artist_id":"7318","fans":"437","url":"http:\/\/www.wikiseda.com\/Babak+Nahrein","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Nahrein.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Nahrein-thumb.jpg","following":0},{"id":"159","type":"artist","artist":"behzad paks","artist_id":"159","fans":"236","url":"http:\/\/www.wikiseda.com\/behzad+paks","poster":"http:\/\/85.25.243.154\/thumb_image\/behzad paks.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/behzad paks-thumb.jpg","following":0},{"id":"180","type":"artist","artist":"barad","artist_id":"180","fans":"234","url":"http:\/\/www.wikiseda.com\/barad","poster":"http:\/\/85.25.243.154\/thumb_image\/barad.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/barad-thumb.jpg","following":0},{"id":"5174","type":"artist","artist":"Babak Saeedi","artist_id":"5174","fans":"208","url":"http:\/\/www.wikiseda.com\/Babak+Saeedi","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Saeedi.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Saeedi-thumb.jpg","following":0},{"id":"796","type":"artist","artist":"Black Cats","artist_id":"796","fans":"194","url":"http:\/\/www.wikiseda.com\/Black+Cats","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Black Cats-thumb.jpg","following":0},{"id":"3206","type":"artist","artist":"Behzad Leito","artist_id":"3206","fans":"192","url":"http:\/\/www.wikiseda.com\/Behzad+Leito","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Behzad Leito-thumb.jpg","following":0},{"id":"253","type":"artist","artist":"Babak Rahnama","artist_id":"253","fans":"192","url":"http:\/\/www.wikiseda.com\/Babak+Rahnama","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Rahnama.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Rahnama-thumb.jpg","following":0},{"id":"288","type":"artist","artist":"Banan","artist_id":"288","fans":"172","url":"http:\/\/www.wikiseda.com\/Banan","poster":"http:\/\/85.25.243.154\/thumb_image\/Banan.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Banan-thumb.jpg","following":0},{"id":"693","type":"artist","artist":"Behnam Alamshahi","artist_id":"693","fans":"122","url":"http:\/\/www.wikiseda.com\/Behnam+Alamshahi","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Behnam Alamshahi-thumb.jpg","following":0},{"id":"5110","type":"artist","artist":"Babak Bayat","artist_id":"5110","fans":"120","url":"http:\/\/www.wikiseda.com\/Babak+Bayat","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Bayat-thumb.jpg","following":0},{"id":"3937","type":"artist","artist":"Bahram Radan","artist_id":"3937","fans":"95","url":"http:\/\/www.wikiseda.com\/Bahram+Radan","poster":"http:\/\/85.25.243.154\/thumb_image\/Bahram Radan.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bahram Radan-thumb.jpg","following":0},{"id":"611","type":"artist","artist":"Babk Mafi","artist_id":"611","fans":"90","url":"http:\/\/www.wikiseda.com\/Babk+Mafi","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babk Mafi-thumb.jpg","following":0},{"id":"1186","type":"artist","artist":"Beti","artist_id":"1186","fans":"87","url":"http:\/\/www.wikiseda.com\/Beti","poster":"http:\/\/85.25.243.154\/thumb_image\/Beti.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Beti-thumb.jpg","following":0}]';
           _this._emit('load', JSON.parse(json));
           return _this.loading = false;
         };
@@ -10864,7 +10878,7 @@ module.exports = ArtistModel = (function(_super) {
       setTimeout((function(_this) {
         return function() {
           var json;
-          json = '[{"id":"140785","type":"song","artist":"Amin Hayaei","artist_id":"12201","songname":"Owje Parvaz","popularity":"3.8","ratecount":"8","view":"2205","time":"5:22","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/gq9zswptj-1404332339.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/Gallery\/[Medium]\/qixdrptt-1404332339.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Amin+Hayaei\/-\/Owje+Parvaz","mp3":"http:\/\/85.25.95.231\/music\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/A\/Amin Hayaei\/[one]\/Owje Parvaz [WikiSeda].mp3"},{"id":"140782","type":"song","artist":"Bakhtak Band","artist_id":"11623","songname":"Dame Sobh","popularity":"2.6","ratecount":"8","view":"2966","time":"3:27","date":"1393-04-11","poster":"http:\/\/85.25.243.154\/img\/1spygoohm-1404322313.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/Gallery\/[Medium]\/hxb0sre5-1404322313.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/Bakhtak+Band\/-\/Dame+Sobh","mp3":"http:\/\/85.25.95.231\/music\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/B\/Bakhtak Band\/[one]\/Dame Sobh [WikiSeda].mp3"},{"id":"9826","type":"album","artist":"Mohsen-sharifian","artist_id":"631","album":"Dingue Marrow","trackcount":"9","popularity":"5","date":"1393-04-14","url":"http:\/\/www.wikiseda.com\/Mohsen-sharifian\/Dingue+Marrow","view":"551","poster":"http:\/\/85.25.243.154\/img\/un79cef6qp-1404554657.jpg","year":"1393"},{"id":"9821","type":"album","artist":"O-hum","artist_id":"3927","album":"Hafez In Love","trackcount":"4","popularity":"5","date":"1393-04-08","url":"http:\/\/www.wikiseda.com\/O-hum\/Hafez+In+Love","view":"1756","poster":"http:\/\/85.25.243.154\/img\/1xxwe9fwdz-1404025213.jpg","year":"1393"},{"id":"9809","type":"album","artist":"Alireza Ghorbani","artist_id":"472","album":"Raftamo Bare Safar Bastam","trackcount":"6","popularity":"4.7","date":"1393-04-02","url":"http:\/\/www.wikiseda.com\/Alireza+Ghorbani\/Raftamo+Bare+Safar+Bastam","view":"18170","poster":"http:\/\/85.25.243.154\/img\/pf2m3p18sw-1403542665.jpg","year":"1393"},{"id":"9807","type":"album","artist":"Salar Aghili","artist_id":"97","album":"Vatan","trackcount":"9","popularity":"4.8","date":"1393-03-31","url":"http:\/\/www.wikiseda.com\/Salar+Aghili\/Vatan","view":"10829","poster":"http:\/\/85.25.243.154\/img\/obldv0b5l4-1403360590.jpg","year":"1393"},{"id":"4023","type":"video","artist":"Matin do hanjare","poster":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/[Gallery]\/8c1e2f4f65d428d910ece8e1c83cbc26-3.jpg","time":"3:2","videoname":"Marg Bar Man","lowq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-l.mp4","highq":"http:\/\/85.25.243.154\/video\/M\/Matin do hanjare\/1393\/04\/\/8c1e2f4f65d428d910ece8e1c83cbc26-h.mp4","popularity":"3.8","view":"2292","url":"http:\/\/www.wikiseda.com\/Matin+do+hanjare\/+video\/Marg+Bar+Man","year":"1393"},{"id":"4022","type":"video","artist":"Amir Farjam","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/[Gallery]\/5fddee48dfa042d0664b066720a71bda-3.jpg","time":"3:32","videoname":"KHodaya","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Farjam\/1393\/04\/\/5fddee48dfa042d0664b066720a71bda-h.mp4","popularity":"5","view":"1769","url":"http:\/\/www.wikiseda.com\/Amir+Farjam\/+video\/KHodaya","year":"1393"},{"id":"4021","type":"video","artist":"Emo Band","poster":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/[Gallery]\/6ab639b8fef2f4fe7f9841d6f8d9f70d-3.jpg","time":"4:34","videoname":"Donyamo Live","lowq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-l.mp4","highq":"http:\/\/85.25.243.154\/video\/E\/Emo Band\/1393\/04\/\/6ab639b8fef2f4fe7f9841d6f8d9f70d-h.mp4","popularity":"4.1","view":"1728","url":"http:\/\/www.wikiseda.com\/Emo+Band\/+video\/Donyamo+Live","year":"1393"},{"id":"4019","type":"video","artist":"Amir Tataloo","poster":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/[Gallery]\/d2931b538ae36b30847c9c139610311a-3.jpg","time":"3:29","videoname":"Baa To","lowq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-l.mp4","highq":"http:\/\/85.25.243.154\/video\/A\/Amir Tataloo\/1393\/04\/\/d2931b538ae36b30847c9c139610311a-h.mp4","popularity":"4.2","view":"10730","url":"http:\/\/www.wikiseda.com\/Amir+Tataloo\/+video\/Baa+To","year":"1393"}]';
+          json = '[{"id":"482","type":"artist","artist":"Bahram","artist_id":"482","fans":"1953","url":"http:\/\/www.wikiseda.com\/Bahram","poster":"http:\/\/85.25.243.154\/thumb_image\/Bahram.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bahram-thumb.jpg","following":0},{"id":"255","type":"artist","artist":"Babak Jahan Bakhsh","artist_id":"255","fans":"1447","url":"http:\/\/www.wikiseda.com\/Babak+Jahan+Bakhsh","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Jahan Bakhsh.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Jahan Bakhsh-thumb.jpg","following":0},{"id":"147","type":"artist","artist":"Behnam safavi","artist_id":"147","fans":"1371","url":"http:\/\/www.wikiseda.com\/Behnam+safavi","poster":"http:\/\/85.25.243.154\/thumb_image\/Behnam safavi.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Behnam safavi-thumb.jpg","following":0},{"id":"151","type":"artist","artist":"barobax","artist_id":"151","fans":"860","url":"http:\/\/www.wikiseda.com\/barobax","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/barobax-thumb.jpg","following":0},{"id":"5699","type":"artist","artist":"Baran","artist_id":"5699","fans":"852","url":"http:\/\/www.wikiseda.com\/Baran","poster":"http:\/\/85.25.243.154\/thumb_image\/Baran.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Baran-thumb.jpg","following":0},{"id":"71","type":"artist","artist":"Benyamin","artist_id":"71","fans":"689","url":"http:\/\/www.wikiseda.com\/Benyamin","poster":"http:\/\/85.25.243.154\/thumb_image\/Benyamin.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Benyamin-thumb.jpg","following":0},{"id":"50","type":"artist","artist":"Bijan mortazavi","artist_id":"50","fans":"615","url":"http:\/\/www.wikiseda.com\/Bijan+mortazavi","poster":"http:\/\/85.25.243.154\/thumb_image\/Bijan mortazavi.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bijan mortazavi-thumb.jpg","following":0},{"id":"7318","type":"artist","artist":"Babak Nahrein","artist_id":"7318","fans":"437","url":"http:\/\/www.wikiseda.com\/Babak+Nahrein","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Nahrein.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Nahrein-thumb.jpg","following":0},{"id":"159","type":"artist","artist":"behzad paks","artist_id":"159","fans":"236","url":"http:\/\/www.wikiseda.com\/behzad+paks","poster":"http:\/\/85.25.243.154\/thumb_image\/behzad paks.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/behzad paks-thumb.jpg","following":0},{"id":"180","type":"artist","artist":"barad","artist_id":"180","fans":"234","url":"http:\/\/www.wikiseda.com\/barad","poster":"http:\/\/85.25.243.154\/thumb_image\/barad.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/barad-thumb.jpg","following":0},{"id":"5174","type":"artist","artist":"Babak Saeedi","artist_id":"5174","fans":"208","url":"http:\/\/www.wikiseda.com\/Babak+Saeedi","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Saeedi.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Saeedi-thumb.jpg","following":0},{"id":"796","type":"artist","artist":"Black Cats","artist_id":"796","fans":"194","url":"http:\/\/www.wikiseda.com\/Black+Cats","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Black Cats-thumb.jpg","following":0},{"id":"3206","type":"artist","artist":"Behzad Leito","artist_id":"3206","fans":"192","url":"http:\/\/www.wikiseda.com\/Behzad+Leito","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Behzad Leito-thumb.jpg","following":0},{"id":"253","type":"artist","artist":"Babak Rahnama","artist_id":"253","fans":"192","url":"http:\/\/www.wikiseda.com\/Babak+Rahnama","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Rahnama.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Rahnama-thumb.jpg","following":0},{"id":"288","type":"artist","artist":"Banan","artist_id":"288","fans":"172","url":"http:\/\/www.wikiseda.com\/Banan","poster":"http:\/\/85.25.243.154\/thumb_image\/Banan.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Banan-thumb.jpg","following":0},{"id":"693","type":"artist","artist":"Behnam Alamshahi","artist_id":"693","fans":"122","url":"http:\/\/www.wikiseda.com\/Behnam+Alamshahi","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Behnam Alamshahi-thumb.jpg","following":0},{"id":"5110","type":"artist","artist":"Babak Bayat","artist_id":"5110","fans":"120","url":"http:\/\/www.wikiseda.com\/Babak+Bayat","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Bayat-thumb.jpg","following":0},{"id":"3937","type":"artist","artist":"Bahram Radan","artist_id":"3937","fans":"95","url":"http:\/\/www.wikiseda.com\/Bahram+Radan","poster":"http:\/\/85.25.243.154\/thumb_image\/Bahram Radan.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bahram Radan-thumb.jpg","following":0},{"id":"611","type":"artist","artist":"Babk Mafi","artist_id":"611","fans":"90","url":"http:\/\/www.wikiseda.com\/Babk+Mafi","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babk Mafi-thumb.jpg","following":0},{"id":"1186","type":"artist","artist":"Beti","artist_id":"1186","fans":"87","url":"http:\/\/www.wikiseda.com\/Beti","poster":"http:\/\/85.25.243.154\/thumb_image\/Beti.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Beti-thumb.jpg","following":0}]';
           _this._emit('load', JSON.parse(json));
           return _this.loading = false;
         };
@@ -10883,7 +10897,7 @@ module.exports = ArtistModel = (function(_super) {
     return setTimeout((function(_this) {
       return function() {
         var json;
-        json = '[{"id":"140863","type":"song","artist":"mostafa yeganeh","artist_id":"116","songname":"Bavar Kardani Nist","popularity":"3.4","ratecount":"15","view":"3393","time":"2:59","date":"1393-04-13","poster":"http:\/\/85.25.243.154\/img\/5oh2a70em-1404491150.jpeg","poster_big":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/Gallery\/[Medium]\/bc6dsgnp-1404491150.jpg","year":"1393","url":"http:\/\/www.wikiseda.com\/mostafa+yeganeh\/-\/Bavar+Kardani+Nist","mp3":"http:\/\/85.25.95.231\/music\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3","mp3_low":"http:\/\/85.25.95.231\/music48\/M\/mostafa yeganeh\/[one]\/Bavar Kardani Nist [WikiSeda].mp3"}]';
+        json = '[{"id":"7618","type":"artist","artist":"Bigrez","artist_id":"7618","fans":"63","url":"http:\/\/www.wikiseda.com\/Bigrez","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"224","type":"artist","artist":"babak tighe","artist_id":"224","fans":"62","url":"http:\/\/www.wikiseda.com\/babak+tighe","poster":"http:\/\/85.25.243.154\/thumb_image\/babak tighe.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/babak tighe-thumb.jpg","following":0},{"id":"1924","type":"artist","artist":"Bita","artist_id":"1924","fans":"60","url":"http:\/\/www.wikiseda.com\/Bita","poster":"http:\/\/85.25.243.154\/thumb_image\/Bita.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bita-thumb.jpg","following":0},{"id":"591","type":"artist","artist":"Behzad Pax","artist_id":"591","fans":"57","url":"http:\/\/www.wikiseda.com\/Behzad+Pax","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"1477","type":"artist","artist":"Bahar Atish","artist_id":"1477","fans":"56","url":"http:\/\/www.wikiseda.com\/Bahar+Atish","poster":"http:\/\/85.25.243.154\/thumb_image\/Bahar Atish.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bahar Atish-thumb.jpg","following":0},{"id":"2243","type":"artist","artist":"Babak Taslimi","artist_id":"2243","fans":"40","url":"http:\/\/www.wikiseda.com\/Babak+Taslimi","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Taslimi-thumb.jpg","following":0},{"id":"4634","type":"artist","artist":"Bidad","artist_id":"4634","fans":"39","url":"http:\/\/www.wikiseda.com\/Bidad","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"6237","type":"artist","artist":"Babak Sahraee","artist_id":"6237","fans":"34","url":"http:\/\/www.wikiseda.com\/Babak+Sahraee","poster":"http:\/\/85.25.243.154\/thumb_image\/Babak Sahraee.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"1364","type":"artist","artist":"Bijan Bijani","artist_id":"1364","fans":"33","url":"http:\/\/www.wikiseda.com\/Bijan+Bijani","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"755","type":"artist","artist":"Bahador","artist_id":"755","fans":"31","url":"http:\/\/www.wikiseda.com\/Bahador","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bahador-thumb.jpg","following":0},{"id":"2220","type":"artist","artist":"Borzoo Arjmand","artist_id":"2220","fans":"30","url":"http:\/\/www.wikiseda.com\/Borzoo+Arjmand","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Borzoo Arjmand-thumb.jpg","following":0},{"id":"592","type":"artist","artist":"Binam","artist_id":"592","fans":"30","url":"http:\/\/www.wikiseda.com\/Binam","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"1362","type":"artist","artist":"Bahram Hasiri","artist_id":"1362","fans":"28","url":"http:\/\/www.wikiseda.com\/Bahram+Hasiri","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"2731","type":"artist","artist":"Babak Rahmani","artist_id":"2731","fans":"25","url":"http:\/\/www.wikiseda.com\/Babak+Rahmani","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Rahmani-thumb.jpg","following":0},{"id":"2795","type":"artist","artist":"Babak Radmanesh","artist_id":"2795","fans":"25","url":"http:\/\/www.wikiseda.com\/Babak+Radmanesh","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Babak Radmanesh-thumb.jpg","following":0},{"id":"1084","type":"artist","artist":"Behzad Va Baran","artist_id":"1084","fans":"24","url":"http:\/\/www.wikiseda.com\/Behzad+Va+Baran","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"2681","type":"artist","artist":"Bi Kalam","artist_id":"2681","fans":"23","url":"http:\/\/www.wikiseda.com\/Bi+Kalam","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"1140","type":"artist","artist":"Bamdad","artist_id":"1140","fans":"19","url":"http:\/\/www.wikiseda.com\/Bamdad","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Bamdad-thumb.jpg","following":0},{"id":"1592","type":"artist","artist":"Badi Zade","artist_id":"1592","fans":"19","url":"http:\/\/www.wikiseda.com\/Badi+Zade","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","following":0},{"id":"3106","type":"artist","artist":"Behrouz Safarian","artist_id":"3106","fans":"17","url":"http:\/\/www.wikiseda.com\/Behrouz+Safarian","poster":"http:\/\/85.25.243.154\/static\/images\/notfound.jpg","thumb":"http:\/\/85.25.243.154\/thumb_image\/Behrouz Safarian-thumb.jpg","following":0}]';
         _this._emit('loadmore', JSON.parse(json));
         return _this.loading = false;
       };
@@ -11210,6 +11224,22 @@ module.exports = Playlist = (function(_super) {
     this.addSong = __bind(this.addSong, this);
     Playlist.__super__.constructor.apply(this, arguments);
   }
+
+  Playlist.prototype.getNextSong = function(song) {
+    var data, i, index, _i, _len, _ref;
+    i = 0;
+    _ref = this.data;
+    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+      data = _ref[index];
+      if (song.id === data.id) {
+        i = index;
+      }
+    }
+    if (this.data[i + 1] != null) {
+      return this.data[i + 1];
+    }
+    return false;
+  };
 
   Playlist.prototype.getSongs = function() {
     var song, _i, _len, _ref, _results;
@@ -11824,7 +11854,46 @@ module.exports = AlbumItem = (function(_super) {
 //@ sourceMappingURL=AlbumItem.map
 */
 
-},{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","../SimpleSong":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\SimpleSong.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SearchBar.js":[function(require,module,exports){
+},{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","../SimpleSong":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\SimpleSong.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\ArtistItem.js":[function(require,module,exports){
+var ArtistItem, Foxie, Item,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Foxie = require('Foxie');
+
+Item = require('../Item');
+
+module.exports = ArtistItem = (function(_super) {
+  __extends(ArtistItem, _super);
+
+  function ArtistItem(mainView, parentNode, page, data) {
+    var t2;
+    this.mainView = mainView;
+    this.parentNode = parentNode;
+    this.page = page;
+    ArtistItem.__super__.constructor.apply(this, arguments);
+    this.title1.innerHTML(data.artist);
+    t2 = data.fans + ' fan';
+    if (data.following === 1) {
+      t2 = t2 + ' plus you';
+    }
+    this.title2.innerHTML(t2);
+    this.hammer.on('tap', (function(_this) {
+      return function(arg) {
+        return console.log(data);
+      };
+    })(this));
+  }
+
+  return ArtistItem;
+
+})(Item);
+
+/*
+//@ sourceMappingURL=ArtistItem.map
+*/
+
+},{"../Item":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item.js","Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SearchBar.js":[function(require,module,exports){
 var Foxie, SearchBar;
 
 Foxie = require('Foxie');
@@ -12386,6 +12455,7 @@ Item = {
   song: require('./Item/SongItem'),
   video: require('./Item/VideoItem'),
   album: require('./Item/AlbumItem'),
+  artist: require('./Item/ArtistItem'),
   searchBar: require('./Item/SearchBar')
 };
 
@@ -12586,7 +12656,7 @@ module.exports = Pages = (function() {
 //@ sourceMappingURL=Pages.map
 */
 
-},{"./Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","./Item/SearchBar":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SearchBar.js","./Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","./Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","./Ribbon/SubnameSelector":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\SubnameSelector.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Album.js":[function(require,module,exports){
+},{"./Item/AlbumItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\AlbumItem.js","./Item/ArtistItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\ArtistItem.js","./Item/SearchBar":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SearchBar.js","./Item/SongItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\SongItem.js","./Item/VideoItem":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Item\\VideoItem.js","./Ribbon/SubnameSelector":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Ribbon\\SubnameSelector.js","./Scrolla":"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Scrolla.js","foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\Pages\\Album.js":[function(require,module,exports){
 var Album, Foxie, Item, Pages,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -13457,7 +13527,15 @@ module.exports = Playlist = (function() {
     var item;
     item = new MenuItem(this.mainView.model.page, this.el, song.songname, (function(_this) {
       return function() {
-        return _this.mainView.model.musicPlayer.play(song);
+        var data, _i, _len, _ref, _results;
+        _this.mainView.model.musicPlayer.play(song);
+        _ref = _this.model.data;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          data = _ref[_i];
+          _results.push(_this.mainView.model.musicPlayer.addToNowPlaying(data));
+        }
+        return _results;
       };
     })(this));
     return this.items[song.id] = item;
@@ -14234,7 +14312,8 @@ module.exports = SimpleSong = (function() {
 */
 
 },{"Foxie":"D:\\xampp\\htdocs\\jik\\node_modules\\Foxie\\scripts\\js\\lib\\Foxie.js"}],"D:\\xampp\\htdocs\\jik\\scripts\\js\\View\\VideoPlayer.js":[function(require,module,exports){
-var Foxie, videoPlayer;
+var Foxie, videoPlayer,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Foxie = require('Foxie');
 
@@ -14242,6 +14321,8 @@ module.exports = videoPlayer = (function() {
   function videoPlayer(mainView) {
     var elHammer, hideHammer;
     this.mainView = mainView;
+    this.pause = __bind(this.pause, this);
+    this.play = __bind(this.play, this);
     this.transTime = 700;
     this.showing = false;
     this.height = window.innerHeight;
@@ -14273,6 +14354,7 @@ module.exports = videoPlayer = (function() {
     })(this));
     this.songName = Foxie('.musicplayer-songname').putIn(this.el);
     this.artist = Foxie('.musicplayer-artist').putIn(this.el);
+    this.playPauseBtn = Foxie('.videoplayer-playpause').putIn(this.el);
     this.videoTag = document.createElement('video');
     this.el.node.appendChild(this.videoTag);
     this.mainView.model.videoPlayer.on('show-player', (function(_this) {
@@ -14286,16 +14368,8 @@ module.exports = videoPlayer = (function() {
         return _this.videoTag.play();
       };
     })(this));
-    this.mainView.model.videoPlayer.on('video-unpause', (function(_this) {
-      return function() {
-        return _this.videoTag.play();
-      };
-    })(this));
-    this.mainView.model.videoPlayer.on('video-pause', (function(_this) {
-      return function(data) {
-        return _this.videoTag.pause();
-      };
-    })(this));
+    this.mainView.model.videoPlayer.on('video-unpause', this.play);
+    this.mainView.model.videoPlayer.on('video-pause', this.pause);
     window.addEventListener('resize', (function(_this) {
       return function(event) {
         _this.height = window.innerHeight;
@@ -14308,6 +14382,23 @@ module.exports = videoPlayer = (function() {
       };
     })(this));
   }
+
+  videoPlayer.prototype.play = function() {
+    this.videoTag.play();
+    this.playPauseBtn.node.classList.remove('videoplayer-resume');
+    this.playPauseBtn.setOpacity(.3);
+    return setTimeout((function(_this) {
+      return function() {
+        return _this.playPauseBtn.setOpacity(0);
+      };
+    })(this), 2000);
+  };
+
+  videoPlayer.prototype.pause = function() {
+    this.videoTag.pause();
+    this.playPauseBtn.node.classList.add('videoplayer-resume');
+    return this.playPauseBtn.setOpacity(1);
+  };
 
   videoPlayer.prototype.show = function(data) {
     if (this.mainView.model.videoPlayer.seeking) {
@@ -14325,7 +14416,8 @@ module.exports = videoPlayer = (function() {
       this.videoTag.src = data.lowq;
     }
     this.songName.innerHTML(data.videoname);
-    return this.artist.innerHTML(data.artist);
+    this.artist.innerHTML(data.artist);
+    return this.play();
   };
 
   videoPlayer.prototype.hide = function() {

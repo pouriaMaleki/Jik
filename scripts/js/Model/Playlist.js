@@ -17,6 +17,22 @@ module.exports = Playlist = (function(_super) {
     Playlist.__super__.constructor.apply(this, arguments);
   }
 
+  Playlist.prototype.getNextSong = function(song) {
+    var data, i, index, _i, _len, _ref;
+    i = 0;
+    _ref = this.data;
+    for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+      data = _ref[index];
+      if (song.id === data.id) {
+        i = index;
+      }
+    }
+    if (this.data[i + 1] != null) {
+      return this.data[i + 1];
+    }
+    return false;
+  };
+
   Playlist.prototype.getSongs = function() {
     var song, _i, _len, _ref, _results;
     _ref = this.data;

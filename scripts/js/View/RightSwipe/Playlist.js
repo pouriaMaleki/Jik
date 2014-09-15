@@ -36,7 +36,15 @@ module.exports = Playlist = (function() {
     var item;
     item = new MenuItem(this.mainView.model.page, this.el, song.songname, (function(_this) {
       return function() {
-        return _this.mainView.model.musicPlayer.play(song);
+        var data, _i, _len, _ref, _results;
+        _this.mainView.model.musicPlayer.play(song);
+        _ref = _this.model.data;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          data = _ref[_i];
+          _results.push(_this.mainView.model.musicPlayer.addToNowPlaying(data));
+        }
+        return _results;
       };
     })(this));
     return this.items[song.id] = item;
