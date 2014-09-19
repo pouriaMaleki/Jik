@@ -82,7 +82,7 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 		return if data.id is @playingData.id
 
-		if @playing
+		if @playing is true
 
 			@audioTag.pause()
 

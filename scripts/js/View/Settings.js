@@ -4,11 +4,12 @@ Foxie = require('Foxie');
 
 module.exports = Settings = (function() {
   function Settings(mainView) {
-    var elHammer;
+    var close, closeHammer;
     this.mainView = mainView;
     this.el = Foxie('.settings').scaleXTo(0).trans(400).putIn(document.body);
-    elHammer = new Hammer(this.el.node);
-    elHammer.on('panleft panright', (function(_this) {
+    close = Foxie('.close').css('z-index', '10').putIn(this.el);
+    closeHammer = new Hammer(close.node);
+    closeHammer.on('tap pan', (function(_this) {
       return function(arg) {
         return _this.mainView.model.page.hideSettings();
       };

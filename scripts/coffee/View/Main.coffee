@@ -10,6 +10,7 @@ Settings = require './Settings'
 RightSwipe = require './RightSwipe'
 MusicPlayer = require './MusicPlayer'
 VideoPlayer = require './VideoPlayer'
+ArtistLanding = require './ArtistLanding'
 
 module.exports = class Main
 
@@ -44,10 +45,13 @@ module.exports = class Main
 		btnHammer = new Hammer @btn.node
 		btnHammer.on 'tap', (arg) => @model.page.toggleMenu()
 
+		@artistLanding = new ArtistLanding @
+
 		@musicPlayer = new MusicPlayer @
 		@videoPlayer = new VideoPlayer @
 
 		# @search = new Search @
 		@settings = new Settings @
+
 
 		@rightSwipe = new RightSwipe @

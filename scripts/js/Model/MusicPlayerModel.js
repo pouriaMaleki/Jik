@@ -83,7 +83,7 @@ module.exports = MusicPlayerModel = (function(_super) {
     if (data.id === this.playingData.id) {
       return;
     }
-    if (this.playing) {
+    if (this.playing === true) {
       this.audioTag.pause();
     }
     if (this.rootModel.settings.quality) {

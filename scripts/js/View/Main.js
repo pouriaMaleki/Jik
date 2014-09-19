@@ -1,4 +1,4 @@
-var Album, Artist, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Search, Settings, Song, Video, VideoPlayer;
+var Album, Artist, ArtistLanding, Foxie, HomePage, Main, MusicPlayer, Ribbon, RightSwipe, Search, Settings, Song, Video, VideoPlayer;
 
 Foxie = require('foxie');
 
@@ -23,6 +23,8 @@ RightSwipe = require('./RightSwipe');
 MusicPlayer = require('./MusicPlayer');
 
 VideoPlayer = require('./VideoPlayer');
+
+ArtistLanding = require('./ArtistLanding');
 
 module.exports = Main = (function() {
   function Main(model) {
@@ -51,6 +53,7 @@ module.exports = Main = (function() {
         return _this.model.page.toggleMenu();
       };
     })(this));
+    this.artistLanding = new ArtistLanding(this);
     this.musicPlayer = new MusicPlayer(this);
     this.videoPlayer = new VideoPlayer(this);
     this.settings = new Settings(this);

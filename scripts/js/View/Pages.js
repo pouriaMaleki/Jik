@@ -123,6 +123,8 @@ module.exports = Pages = (function() {
       item.remove();
     }
     this.items = [];
+    this.el.moveYTo(0);
+    this.scroll.forceSetPosition(0);
   };
 
   Pages.prototype.addMultiple = function(itemDatas) {
@@ -135,7 +137,7 @@ module.exports = Pages = (function() {
   };
 
   Pages.prototype.updateSize = function() {
-    this.height = this.el.node.getBoundingClientRect().height;
+    this.height = this.items.length * 100;
     return this.scroll.setSizeAndSpace(this.height, this.viewPort);
   };
 

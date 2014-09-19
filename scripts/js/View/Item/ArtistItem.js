@@ -21,9 +21,10 @@ module.exports = ArtistItem = (function(_super) {
       t2 = t2 + ' plus you';
     }
     this.title2.innerHTML(t2);
+    this.poster.attr('src', data.thumb);
     this.hammer.on('tap', (function(_this) {
       return function(arg) {
-        return console.log(data);
+        return _this.mainView.model.artist.selectArtist(data);
       };
     })(this));
   }
