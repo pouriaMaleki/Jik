@@ -51,6 +51,14 @@ module.exports = VideoPlayer = (function(_super) {
     })(this), 2500);
   };
 
+  VideoPlayer.prototype.seekerUpdate = function(x) {
+    return console.log(x);
+  };
+
+  VideoPlayer.prototype.bufferUpdate = function(x) {
+    return console.log(x);
+  };
+
   return VideoPlayer;
 
 })(_Emitter);

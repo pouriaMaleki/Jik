@@ -8,7 +8,7 @@ Seekbar = require('./MusicPlayer/Seekbar');
 
 module.exports = MusicPlayer = (function() {
   function MusicPlayer(mainView) {
-    var addHammer, elHammer, favHammer, hideBtnHammer, lock, playHammer, playTopHammer;
+    var addHammer, elHammer, favHammer, hideBtnHammer, lock, nextHammer, playHammer, playTopHammer, prevHammer;
     this.mainView = mainView;
     this.transTime = 700;
     this.showing = false;
@@ -76,6 +76,18 @@ module.exports = MusicPlayer = (function() {
     playHammer.on('tap', (function(_this) {
       return function(arg) {
         return _this.mainView.model.musicPlayer.toggle();
+      };
+    })(this));
+    nextHammer = new Hammer(this.next.node);
+    nextHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.musicPlayer.playNext();
+      };
+    })(this));
+    prevHammer = new Hammer(this.prev.node);
+    prevHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.musicPlayer.playPrev();
       };
     })(this));
     favHammer = new Hammer(this.fav.node);

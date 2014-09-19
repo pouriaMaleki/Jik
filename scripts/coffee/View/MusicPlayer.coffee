@@ -100,6 +100,12 @@ module.exports = class MusicPlayer
 		playHammer = new Hammer @play.node
 		playHammer.on 'tap', (arg) => @mainView.model.musicPlayer.toggle()
 
+		nextHammer = new Hammer @next.node
+		nextHammer.on 'tap', (arg) => @mainView.model.musicPlayer.playNext()
+
+		prevHammer = new Hammer @prev.node
+		prevHammer.on 'tap', (arg) => @mainView.model.musicPlayer.playPrev()
+
 		favHammer = new Hammer @fav.node
 		favHammer.on 'tap', (arg) => @mainView.model.musicPlayer.fav()
 

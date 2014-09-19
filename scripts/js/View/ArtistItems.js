@@ -13,7 +13,7 @@ Scrolla = require('./Scrolla');
 
 module.exports = Pages = (function() {
   function Pages(mainView, parentNode) {
-    var hammer, x;
+    var followHammer, hammer, x;
     this.mainView = mainView;
     this.parentNode = parentNode;
     this.el = Foxie('.insider').putIn(this.parentNode);
@@ -69,6 +69,17 @@ module.exports = Pages = (function() {
     this.artistName = Foxie('.artistName').putIn(this.uplineHolder);
     this.fans = Foxie('.fans').putIn(this.uplineHolder);
     this.follow = Foxie('.follow').putIn(this.uplineHolder);
+    followHammer = new Hammer(this.follow.node);
+    followHammer.on('tap', (function(_this) {
+      return function(arg) {
+        return _this.mainView.model.artist.followSwitch();
+      };
+    })(this));
+    this.mainView.model.artist.on('follow-change', (function(_this) {
+      return function(artist) {
+        return _this.updateCover(artist);
+      };
+    })(this));
     this.removeCover();
   }
 

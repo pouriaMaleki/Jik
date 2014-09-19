@@ -15,31 +15,21 @@ module.exports = Seekbar = (function() {
     elHammer = new Hammer(this.el.node);
     elHammer.on('tap', (function(_this) {
       return function(arg) {
-        return _this.model.seekTo(arg.srcEvent.layerX / _this.width);
+        _this.model.seekTo(arg.srcEvent.layerX / _this.width);
+        return _this.x = _this.model.audioTag.currentTime / _this.model.audioTag.duration;
       };
     })(this));
-    elHammer.on('pan', (function(_this) {
-      return function(arg) {
-        _this.model.seekTo(arg.deltaX / _this.width);
-        return _this.model.seeking = true;
-      };
-    })(this));
-    elHammer.on('panend', (function(_this) {
-      return function(arg) {
-        return setTimeout(function() {
-          return _this.model.seeking = false;
-        });
-      };
-    })(this), 100);
+    this.x = 0;
     seekerHammer = new Hammer(this.seeker.node);
     seekerHammer.on('pan', (function(_this) {
       return function(arg) {
-        _this.model.seekTo(arg.deltaX / _this.width);
+        _this.model.seekTo(_this.x + arg.deltaX / _this.width);
         return _this.model.seeking = true;
       };
     })(this));
     seekerHammer.on('panend', (function(_this) {
       return function(arg) {
+        _this.x = _this.model.audioTag.currentTime / _this.model.audioTag.duration;
         return setTimeout(function() {
           return _this.model.seeking = false;
         });
@@ -53,6 +43,11 @@ module.exports = Seekbar = (function() {
     this.model.on('buffer-update', (function(_this) {
       return function(cent) {
         return _this.buffer.moveXTo(cent * _this.width);
+      };
+    })(this));
+    this.model.on('music-playing', (function(_this) {
+      return function() {
+        return _this.x = 0;
       };
     })(this));
   }

@@ -10,24 +10,36 @@ module.exports = ArtistItem = (function(_super) {
   __extends(ArtistItem, _super);
 
   function ArtistItem(mainView, parentNode, page, data) {
-    var t2;
     this.mainView = mainView;
     this.parentNode = parentNode;
     this.page = page;
     ArtistItem.__super__.constructor.apply(this, arguments);
     this.title1.innerHTML(data.artist);
-    t2 = data.fans + ' fan';
-    if (data.following === 1) {
-      t2 = t2 + ' plus you';
-    }
-    this.title2.innerHTML(t2);
+    this.updateFans(data);
     this.poster.attr('src', data.thumb);
     this.hammer.on('tap', (function(_this) {
       return function(arg) {
         return _this.mainView.model.artist.selectArtist(data);
       };
     })(this));
+    this.mainView.model.artist.on('follow-change', (function(_this) {
+      return function(artist) {
+        if (artist.id !== data.id) {
+          return;
+        }
+        return _this.updateFans(artist);
+      };
+    })(this));
   }
+
+  ArtistItem.prototype.updateFans = function(data) {
+    var t2;
+    t2 = data.fans + ' fan';
+    if (data.following === 1) {
+      t2 = t2 + ' plus you';
+    }
+    return this.title2.innerHTML(t2);
+  };
 
   return ArtistItem;
 

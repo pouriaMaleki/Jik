@@ -1,7 +1,9 @@
-var Foxie, videoPlayer,
+var Foxie, Seekbar, videoPlayer,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Foxie = require('Foxie');
+
+Seekbar = require('./musicPlayer/Seekbar');
 
 module.exports = videoPlayer = (function() {
   function videoPlayer(mainView) {
@@ -43,6 +45,18 @@ module.exports = videoPlayer = (function() {
     this.playPauseBtn = Foxie('.videoplayer-playpause').putIn(this.el);
     this.videoTag = document.createElement('video');
     this.el.node.appendChild(this.videoTag);
+    this.videoTag.addEventListener('seeked', (function(_this) {
+      return function(event) {
+        return _this.model.seekerUpdate(_this.videoTag.currentTime / _this.videoTag.duration);
+      };
+    })(this));
+    this.videoTag.addEventListener('progress', (function(_this) {
+      return function(event) {
+        try {
+          return _this.model.bufferUpdate(_this.videoTag.buffered.end(_this.videoTag.buffered.length - 1) / _this.audioTag.duration);
+        } catch (_error) {}
+      };
+    })(this));
     this.mainView.model.videoPlayer.on('show-player', (function(_this) {
       return function() {
         return _this.show();
@@ -67,6 +81,7 @@ module.exports = videoPlayer = (function() {
         }
       };
     })(this));
+    this.seekbar = new Seekbar(this.el, this.mainView.model.videoPlayer);
   }
 
   videoPlayer.prototype.play = function() {

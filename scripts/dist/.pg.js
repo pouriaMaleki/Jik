@@ -11652,6 +11652,14 @@ module.exports = VideoPlayer = (function(_super) {
     })(this), 2500);
   };
 
+  VideoPlayer.prototype.seekerUpdate = function(x) {
+    return console.log(x);
+  };
+
+  VideoPlayer.prototype.bufferUpdate = function(x) {
+    return console.log(x);
+  };
+
   return VideoPlayer;
 
 })(_Emitter);
@@ -14676,6 +14684,18 @@ module.exports = videoPlayer = (function() {
     this.playPauseBtn = Foxie('.videoplayer-playpause').putIn(this.el);
     this.videoTag = document.createElement('video');
     this.el.node.appendChild(this.videoTag);
+    this.videoTag.addEventListener('seeked', (function(_this) {
+      return function(event) {
+        return _this.model.seekerUpdate(_this.videoTag.currentTime / _this.videoTag.duration);
+      };
+    })(this));
+    this.videoTag.addEventListener('progress', (function(_this) {
+      return function(event) {
+        try {
+          return _this.model.bufferUpdate(_this.videoTag.buffered.end(_this.videoTag.buffered.length - 1) / _this.audioTag.duration);
+        } catch (_error) {}
+      };
+    })(this));
     this.mainView.model.videoPlayer.on('show-player', (function(_this) {
       return function() {
         return _this.show();

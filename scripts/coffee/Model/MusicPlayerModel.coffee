@@ -18,23 +18,43 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 			@_emit 'seeker-update', @audioTag.currentTime / @audioTag.duration
 
-			if @audioTag.currentTime is @audioTag.duration
+			if @audioTag.currentTime is @audioTag.duration and @audioTag.duration isnt 0
 
-				nextSong = @rootModel.playlists.nowPlaying.getNextSong @playingData
-
-				if nextSong isnt false
-
-					@play(nextSong, false)
-
-				else
-
-					do @pause
+				do @playNext
 
 		@audioTag.addEventListener 'progress', (event) => try @_emit 'buffer-update', @audioTag.buffered.end(@audioTag.buffered.length-1)  / @audioTag.duration
+
+	playNext: ->
+
+		nextSong = @rootModel.playlists.nowPlaying.getNextSong @playingData
+
+		if nextSong isnt false
+
+			@play(nextSong, false)
+
+		else
+
+			do @pause
+
+	playPrev: ->
+
+		prevSong = @rootModel.playlists.nowPlaying.getPrevSong @playingData
+
+		if prevSong isnt false
+
+			@play(prevSong, false)
+
+		else
+
+			do @pause
 
 	seekTo: (x) ->
 
 		@audioTag.currentTime = x * @audioTag.duration
+
+	seek: (x) ->
+
+		@audioTag.currentTime = @audioTag.currentTime + x * @audioTag.duration
 
 	fav: ->
 
@@ -108,6 +128,8 @@ module.exports = class MusicPlayerModel extends _Emitter
 
 		@audioTag.play()
 
+		@_emit 'music-playing'
+
 		@_emit 'music-unpause'
 
 		@playing = true
@@ -166,3 +188,4 @@ module.exports = class MusicPlayerModel extends _Emitter
 			@_emit 'lyrics-show'
 
 			@lyricsShowing = yes
+

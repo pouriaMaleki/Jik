@@ -18,15 +18,9 @@ module.exports = MusicPlayerModel = (function(_super) {
     document.body.appendChild(this.audioTag);
     this.audioTag.addEventListener('timeupdate', (function(_this) {
       return function(event) {
-        var nextSong;
         _this._emit('seeker-update', _this.audioTag.currentTime / _this.audioTag.duration);
-        if (_this.audioTag.currentTime === _this.audioTag.duration) {
-          nextSong = _this.rootModel.playlists.nowPlaying.getNextSong(_this.playingData);
-          if (nextSong !== false) {
-            return _this.play(nextSong, false);
-          } else {
-            return _this.pause();
-          }
+        if (_this.audioTag.currentTime === _this.audioTag.duration && _this.audioTag.duration !== 0) {
+          return _this.playNext();
         }
       };
     })(this));
@@ -39,8 +33,32 @@ module.exports = MusicPlayerModel = (function(_super) {
     })(this));
   }
 
+  MusicPlayerModel.prototype.playNext = function() {
+    var nextSong;
+    nextSong = this.rootModel.playlists.nowPlaying.getNextSong(this.playingData);
+    if (nextSong !== false) {
+      return this.play(nextSong, false);
+    } else {
+      return this.pause();
+    }
+  };
+
+  MusicPlayerModel.prototype.playPrev = function() {
+    var prevSong;
+    prevSong = this.rootModel.playlists.nowPlaying.getPrevSong(this.playingData);
+    if (prevSong !== false) {
+      return this.play(prevSong, false);
+    } else {
+      return this.pause();
+    }
+  };
+
   MusicPlayerModel.prototype.seekTo = function(x) {
     return this.audioTag.currentTime = x * this.audioTag.duration;
+  };
+
+  MusicPlayerModel.prototype.seek = function(x) {
+    return this.audioTag.currentTime = this.audioTag.currentTime + x * this.audioTag.duration;
   };
 
   MusicPlayerModel.prototype.fav = function() {
@@ -104,6 +122,7 @@ module.exports = MusicPlayerModel = (function(_super) {
       this.rootModel.playlists.nowPlaying.addSongToEnd(data);
     }
     this.audioTag.play();
+    this._emit('music-playing');
     this._emit('music-unpause');
     this.playing = true;
     this.playingData = data;
