@@ -6,7 +6,7 @@ module.exports = SearchBar = (function() {
   function SearchBar(mainView, parentNode) {
     this.mainView = mainView;
     this.parentNode = parentNode;
-    this.el = Foxie('.item.searchBar').perspective(4000);
+    this.el = Foxie('.item.searchBar').rotateXTo(0);
     this.titlesContainer = Foxie('.titles-container').putIn(this.el);
     this.hammer = new Hammer(this.titlesContainer.node);
     this.input = Foxie('input.search-input').attr('type', 'text').putIn(this.titlesContainer);

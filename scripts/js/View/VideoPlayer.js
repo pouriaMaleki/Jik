@@ -14,7 +14,7 @@ module.exports = videoPlayer = (function() {
     this.transTime = 700;
     this.showing = false;
     this.height = window.innerHeight;
-    this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(document.body);
+    this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).putIn(document.body);
     elHammer = new Hammer(this.el.node);
     elHammer.on('panup', (function(_this) {
       return function(arg) {

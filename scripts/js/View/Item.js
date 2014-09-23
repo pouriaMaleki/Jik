@@ -8,7 +8,7 @@ module.exports = Item = (function() {
     this.parentNode = parentNode;
     this.page = page;
     this.count = count;
-    this.el = Foxie('.item').perspective(4000);
+    this.el = Foxie('.item');
     this.titlesContainer = Foxie('.titles-container').putIn(this.el);
     this.hammer = new Hammer(this.titlesContainer.node);
     this.title1 = Foxie('.item-songname').putIn(this.titlesContainer);

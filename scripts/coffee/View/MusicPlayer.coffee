@@ -11,10 +11,11 @@ module.exports = class MusicPlayer
 
 		@height = window.innerHeight
 
+		console.log @height
+
 		@el = Foxie '.musicplayer'
 		.moveYTo @height
 		.trans @transTime
-		.perspective 4000
 		.putIn document.body
 
 		lock = false

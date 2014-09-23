@@ -11652,6 +11652,14 @@ module.exports = VideoPlayer = (function(_super) {
     })(this), 2500);
   };
 
+  VideoPlayer.prototype.seekerUpdate = function(x) {
+    return console.log(x);
+  };
+
+  VideoPlayer.prototype.bufferUpdate = function(x) {
+    return console.log(x);
+  };
+
   return VideoPlayer;
 
 })(_Emitter);
@@ -12024,7 +12032,7 @@ module.exports = Item = (function() {
     this.parentNode = parentNode;
     this.page = page;
     this.count = count;
-    this.el = Foxie('.item').perspective(4000);
+    this.el = Foxie('.item');
     this.titlesContainer = Foxie('.titles-container').putIn(this.el);
     this.hammer = new Hammer(this.titlesContainer.node);
     this.title1 = Foxie('.item-songname').putIn(this.titlesContainer);
@@ -12206,7 +12214,7 @@ module.exports = SearchBar = (function() {
   function SearchBar(mainView, parentNode) {
     this.mainView = mainView;
     this.parentNode = parentNode;
-    this.el = Foxie('.item.searchBar').perspective(4000);
+    this.el = Foxie('.item.searchBar').rotateXTo(0);
     this.titlesContainer = Foxie('.titles-container').putIn(this.el);
     this.hammer = new Hammer(this.titlesContainer.node);
     this.input = Foxie('input.search-input').attr('type', 'text').putIn(this.titlesContainer);
@@ -12410,7 +12418,8 @@ module.exports = MusicPlayer = (function() {
     this.transTime = 700;
     this.showing = false;
     this.height = window.innerHeight;
-    this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(document.body);
+    console.log(this.height);
+    this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).putIn(document.body);
     lock = false;
     elHammer = new Hammer(this.el.node);
     elHammer.on('panup', (function(_this) {
@@ -14645,7 +14654,7 @@ module.exports = videoPlayer = (function() {
     this.transTime = 700;
     this.showing = false;
     this.height = window.innerHeight;
-    this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).perspective(4000).putIn(document.body);
+    this.el = Foxie('.musicplayer').moveYTo(this.height).trans(this.transTime).putIn(document.body);
     elHammer = new Hammer(this.el.node);
     elHammer.on('panup', (function(_this) {
       return function(arg) {
@@ -14676,6 +14685,18 @@ module.exports = videoPlayer = (function() {
     this.playPauseBtn = Foxie('.videoplayer-playpause').putIn(this.el);
     this.videoTag = document.createElement('video');
     this.el.node.appendChild(this.videoTag);
+    this.videoTag.addEventListener('seeked', (function(_this) {
+      return function(event) {
+        return _this.model.seekerUpdate(_this.videoTag.currentTime / _this.videoTag.duration);
+      };
+    })(this));
+    this.videoTag.addEventListener('progress', (function(_this) {
+      return function(event) {
+        try {
+          return _this.model.bufferUpdate(_this.videoTag.buffered.end(_this.videoTag.buffered.length - 1) / _this.audioTag.duration);
+        } catch (_error) {}
+      };
+    })(this));
     this.mainView.model.videoPlayer.on('show-player', (function(_this) {
       return function() {
         return _this.show();

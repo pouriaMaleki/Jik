@@ -5,7 +5,6 @@ module.exports = class Item
 	constructor: (@mainView, @parentNode, @page, data, @count) ->
 
 		@el = Foxie '.item'
-		.perspective 4000
 
 		@titlesContainer = Foxie '.titles-container'
 		.putIn @el
